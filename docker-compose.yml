@@ -1,0 +1,59 @@
+version: '3.8'
+services:
+  dndgate-db:
+    image:  mysql/mysql-server:5.6
+    command: --max_allowed_packet=32505856
+    environment:
+      MYSQL_DATABASE: dndgate
+      MYSQL_USER: dndgate
+      MYSQL_PASSWORD: dndgate
+      MYSQL_ROOT_PASSWORD: dndgate
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_TCP_PORT: 3306
+    networks:
+      - dndgate-network
+    restart: unless-stopped
+
+  dndgate-api:
+    depends_on:
+      - dndgate-db
+    image: barlords/dndgate-api:latest
+    environment:
+      PORT: 4000
+      DB_SERVICE_NAME: dndgate-db
+      DB_NAME: dndgate
+      DB_USER: root
+      DB_PASSWORD: dndgate
+      SPRING_PROFILES_ACTIVE: prod
+    networks:
+      - dndgate-network
+    ports:
+      - "4000:4000"
+    restart: unless-stopped
+
+  dndgate-front:
+    image: barlords/dndgate-front:latest
+    networks:
+      - dndgate-network
+    ports:
+      - "5000:80"
+    restart: unless-stopped
+
+  dndgate-minio:
+    image: minio/minio
+    volumes:
+      - minio_storage:/data
+    environment:
+      MINIO_ROOT_USER: dndgate
+      MINIO_ROOT_PASSWORD: dndgate
+    command: server --console-address ":9001" /data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    restart: unless-stopped
+
+volumes:
+  minio_storage: { }
+
+networks:
+  dndgate-network:
