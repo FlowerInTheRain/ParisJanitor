@@ -5,12 +5,12 @@
       <input type="text" placeholder="Rechercher une destination" class="input-field">
     </div>
     <div class="separator"></div>
-    <div class="navbar-item">
+    <div class="navbar-date-item">
       <span class="label">Arrivée</span>
       <input type="date" placeholder="Quand ?" class="input-field">
     </div>
     <div class="separator"></div>
-    <div class="navbar-item">
+    <div class="navbar-date-item">
       <span class="label">Départ</span>
       <input type="date" placeholder="Quand ?" class="input-field">
     </div>
@@ -37,6 +37,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 10px;
+  width: 800px;
   background-color: #fff;
   border-radius: 30px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -46,6 +47,12 @@ export default {
   display: flex;
   flex-direction: column;
   margin-right: 15px;
+}
+
+.navbar-date-item {
+  display: flex;
+  flex-direction: column;
+  margin-right: 10px;
 }
 
 .label {

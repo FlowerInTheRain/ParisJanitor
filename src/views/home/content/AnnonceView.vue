@@ -16,7 +16,6 @@ export default {
     return {
       ads: [
         { id: 1, title: "Entraînez-vous à l'Institut Xavier", price: 35 },
-        // Ajoutez d'autres annonces ici
       ],
     };
   },

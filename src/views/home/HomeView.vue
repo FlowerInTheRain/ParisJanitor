@@ -21,8 +21,9 @@ export default {
 </script>
 
 <style scoped>
-#background-homeview {
-  display: flex;
-  flex-direction: column;
-}
+  #background-homeview {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+  }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="ad-card" v-if="ad">
     <div class="ad-image">
-      <!-- Insérez l'image ici -->
+
     </div>
     <div class="ad-content">
       <h3 v-if="ad.title">{{ ad.title }}</h3>
