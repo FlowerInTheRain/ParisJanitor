@@ -38,6 +38,7 @@ export default {
 
 .logo {
   height: 40px;
+  margin-left: 10px;
 }
 
 .navigation ul {

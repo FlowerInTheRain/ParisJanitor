@@ -2,6 +2,7 @@
   <div class="user-menu">
     <button @click="toggleMenu" class="menu-button">
       <font-awesome-icon :icon="['fas', 'bars']" class="menu-icon" />
+      <font-awesome-icon :icon="['far', 'user']" class="user-icon" />
     </button>
     <div v-if="isMenuOpen" class="menu-dropdown">
       <ul>
@@ -45,13 +46,18 @@ export default {
   border: none;
   cursor: pointer;
   padding: 5px;
-  border-radius: 50%;
+  border-radius: 30%;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 10px;
 }
 
-.menu-icon {
-  width: 20px;
-  height: 20px;
+.menu-icon, .user-icon {
+  font-size: 20px;
+  color: #333;
+  padding: 5px;
 }
 
 .menu-dropdown {
