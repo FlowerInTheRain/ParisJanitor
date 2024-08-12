@@ -20,7 +20,7 @@
       <input type="number" placeholder="Ajouter des voyageurs" class="input-field">
     </div>
     <button class="search-button">
-      <img src="path-to-search-icon" alt="Rechercher" class="search-icon">
+      <font-awesome-icon :icon="['fas', 'magnifying-glass']" class="search-icon" alt="Rechercher"/>
     </button>
   </div>
 </template>
@@ -36,11 +36,11 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px;
-  width: 800px;
-  background-color: #fff;
-  border-radius: 30px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 13px;
+  width: 80%;
+  background-color: #f2f2f2;
+  border-radius: 50px;
+  box-shadow: 1px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-item {

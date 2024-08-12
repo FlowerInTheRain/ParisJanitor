@@ -1,7 +1,7 @@
 <template>
   <div id="background-homeview">
     <HeaderView />
-    <NavContent />
+    <NavContent class="nav-item"/>
     <CardView />
   </div>
 </template>
@@ -25,5 +25,9 @@ export default {
      display: flex;
      flex-direction: column;
      align-items: center;
+  }
+
+  .nav-item{
+    margin-top: 5px;
   }
 </style>
