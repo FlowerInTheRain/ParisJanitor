@@ -9,7 +9,7 @@
       </ul>
     </nav>
     <div class="user-profile">
-      <UserMenu />
+      <UserMenu @login="showLoginPopup" />
     </div>
   </div>
 </template>
@@ -22,6 +22,11 @@ export default {
   components: {
     UserMenu,
   },
+  methods: {
+    showLoginPopup() {
+      this.$emit('showLoginPopup');
+    }
+  }
 };
 </script>
 

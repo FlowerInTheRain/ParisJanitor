@@ -5,7 +5,7 @@
       <font-awesome-icon :icon="['far', 'user']" class="user-icon" />
     </button>
     <div v-if="isMenuOpen" class="menu-dropdown">
-      <ul>
+      <ul v-if="isAuthenticated">
         <li><a href="#">Messages</a></li>
         <li><a href="#">Voyages</a></li>
         <li><a href="#">Favoris</a></li>
@@ -13,24 +13,47 @@
         <li><a href="#">Compte</a></li>
         <li><a href="#">Cartes cadeaux</a></li>
         <li><a href="#">Centre d'aide</a></li>
-        <li><a href="#">Déconnexion</a></li>
+        <li><a @click="handleLogout" >Déconnexion</a></li>
+      </ul>
+      <ul v-else>
+        <li><a @click="handleLogin" >Connexion</a></li>
+        <li><a href="#">Inscription</a></li>
+        <li><a href="#">Cartes cadeaux</a></li>
+        <li><a href="#">Mettre mon logement sur Paris Janitor</a></li>
+        <li><a href="#">Centre d'aide</a></li>
       </ul>
     </div>
   </div>
 </template>
 
 <script>
+import {mapState} from "vuex";
+
 export default {
+
+  computed: {
+    ...mapState(['isAuthenticated'])
+  },
   data() {
     return {
       isMenuOpen: false,
+      isAuthenticated: false,
     };
   },
   methods: {
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen;
     },
-  },
+    handleLogout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('id');
+      this.$store.dispatch('updateAuthentication', false);
+      this.$emit('logout');
+    },
+    handleLogin() {
+      this.$emit('login');
+    }
+  }
 };
 </script>
 
