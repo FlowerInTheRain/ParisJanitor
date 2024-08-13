@@ -7,17 +7,22 @@
       <p class="welcome-text">Bienvenue sur Paris Janitor</p>
 
       <form @submit.prevent="handleSignIn">
-        <div class="country-selector">
-          <label for="country">Pays/région</label>
-          <select id="country" v-model="country" class="country-dropdown">
-            <option value="france">France (+33)</option>
-            <option value="usa">USA (+1)</option>
-            <!-- Ajoutez d'autres options ici -->
-          </select>
+        <!-- Affichage conditionnel basé sur le choix de l'utilisateur -->
+        <div v-if="useEmail">
+          <input class="log-input" type="email" v-model="email" placeholder="Adresse e-mail" required>
         </div>
-        <input class="log-input" type="tel" v-model="phone" placeholder="Numéro de téléphone" required>
-
-        <p class="info-text">
+        <div v-else>
+          <div class="country-selector">
+            <label for="country">Pays/région</label>
+            <select id="country" v-model="country" class="country-dropdown">
+              <option value="france">France (+33)</option>
+              <option value="usa">USA (+1)</option>
+              <!-- Ajoutez d'autres options ici -->
+            </select>
+          </div>
+          <input class="log-input" type="tel" v-model="phone" placeholder="Numéro de téléphone" required>
+        </div>
+        <p class="info-text" v-if="!useEmail">
           Nous vous appellerons ou vous enverrons un SMS pour confirmer votre numéro.
           Les frais standards d'envoi de messages et d'échange de données s'appliquent.
           <a href="#" class="privacy-policy-link">Politique de confidentialité</a>
@@ -40,7 +45,7 @@
         <font-awesome-icon :icon="['fab', 'apple']" />
         Continuer avec Apple
       </button>
-      <button class="social-login-button email-button">
+      <button class="social-login-button email-button" @click="useEmail = true">
         <font-awesome-icon :icon="['fas', 'envelope']" />
         Continuer avec une adresse e-mail
       </button>
@@ -54,6 +59,8 @@ export default {
     return {
       phone: '',
       country: 'france',
+      email: '',
+      useEmail: false, // Variable pour gérer l'affichage conditionnel
     };
   },
   methods: {
@@ -84,10 +91,10 @@ export default {
 #login-popup {
   background-color: #fff;
   padding: 20px;
-  width: 30%;
+  width: 400px;
   max-width: 90%;
-  height: 75%;
-  max-height: 75%;
+  height: 70%;
+  max-height: 70%;
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   text-align: center;
