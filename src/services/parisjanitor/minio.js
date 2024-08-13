@@ -1,8 +1,8 @@
 export class MinioClass {
 
 
-    static bucketName = "dndgate"
-    static endPoint = process.env.DNDGATE_MINIO_URL
+    static bucketName = "parisjanitor"
+    static endPoint = process.env.PARISJANITOR_MINIO_URL
 
 
     static getImageUrl(picturePath) {

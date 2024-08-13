@@ -48,6 +48,18 @@ const getUserById = async (id) => {
     }
 }
 
+export const getUserByEmail = async (email) => {
+    try {
+        const url = `${endpoint}/email/${email}`;
+        console.log('Sending request to URL:', url);
+        const response = await axios.get(`${endpoint}/email/${email}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error while getting user account: ', error)
+        throw error;
+    }
+};
+
 const getAllUser = async () => {
     try {
         const response = await axios.get(`${endpoint}`);

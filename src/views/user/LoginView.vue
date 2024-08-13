@@ -2,65 +2,52 @@
   <div class="popup-overlay">
     <div id="login-popup">
       <button @click="closePopup" class="close-button"> X </button>
-      <h2 class="popup-title">Connexion ou inscription</h2>
+      <h2 class="popup-title">{{ popupTitle }}</h2>
       <div class="separator-line"></div>
-      <p class="welcome-text">Bienvenue sur Paris Janitor</p>
 
       <form @submit.prevent="handleSignIn">
-        <!-- Affichage conditionnel basé sur le choix de l'utilisateur -->
-        <div v-if="useEmail">
+        <div v-if="!showSignUp">
           <input class="log-input" type="email" v-model="email" placeholder="Adresse e-mail" required>
         </div>
-        <div v-else>
-          <div class="country-selector">
-            <label for="country">Pays/région</label>
-            <select id="country" v-model="country" class="country-dropdown">
-              <option value="france">France (+33)</option>
-              <option value="usa">USA (+1)</option>
-              <!-- Ajoutez d'autres options ici -->
-            </select>
-          </div>
-          <input class="log-input" type="tel" v-model="phone" placeholder="Numéro de téléphone" required>
+
+        <div v-if="showSignUp">
+          <!-- Champs d'inscription -->
+          <input class="log-input" type="text" v-model="firstName" placeholder="Prénom sur la pièce d'identité" required>
+          <input class="log-input" type="text" v-model="lastName" placeholder="Nom sur la pièce d'identité" required>
+          <input class="log-input" type="date" v-model="birthDate" placeholder="Date de naissance" required>
+          <input class="log-input" type="email" v-model="email" placeholder="E-mail" required>
+          <input class="log-input" type="password" v-model="password" placeholder="Mot de passe" required>
         </div>
-        <p class="info-text" v-if="!useEmail">
+
+        <p class="info-text" v-if="!showSignUp">
           Nous vous appellerons ou vous enverrons un SMS pour confirmer votre numéro.
           Les frais standards d'envoi de messages et d'échange de données s'appliquent.
           <a href="#" class="privacy-policy-link">Politique de confidentialité</a>
         </p>
 
-        <button class="log-button" type="submit">Continuer</button>
+        <button class="log-button" type="submit">
+          {{ showSignUp ? 'Accepter et continuer' : 'Continuer' }}
+        </button>
+
+        <p v-if="!showSignUp" class="forgot-password">Mot de passe oublié ?</p>
       </form>
-
-      <div class="divider">ou</div>
-
-      <button class="social-login-button facebook-button">
-        <font-awesome-icon :icon="['fab', 'facebook']" />
-        Continuer avec Facebook
-      </button>
-      <button class="social-login-button google-button">
-        <font-awesome-icon :icon="['fab', 'google']" />
-        Continuer avec Google
-      </button>
-      <button class="social-login-button apple-button">
-        <font-awesome-icon :icon="['fab', 'apple']" />
-        Continuer avec Apple
-      </button>
-      <button class="social-login-button email-button" @click="useEmail = true">
-        <font-awesome-icon :icon="['fas', 'envelope']" />
-        Continuer avec une adresse e-mail
-      </button>
     </div>
   </div>
 </template>
 
 <script>
+import { getUserByEmail } from "@/services/parisjanitor/endpoints/users";
+
 export default {
   data() {
     return {
-      phone: '',
-      country: 'france',
       email: '',
-      useEmail: false, // Variable pour gérer l'affichage conditionnel
+      showSignUp: false,
+      popupTitle: 'Connexion ou inscription',
+      firstName: '',
+      lastName: '',
+      birthDate: '',
+      password: ''
     };
   },
   methods: {
@@ -68,13 +55,23 @@ export default {
       this.$emit('close-popup');
     },
     async handleSignIn() {
-      // Logique de connexion
+      try {
+        const user = await getUserByEmail(this.email);
+        if (user) {
+          this.popupTitle = 'Connexion';
+          this.showSignUp = false;
+        }
+      } catch (error) {
+        this.popupTitle = 'Terminer mon inscription';
+        this.showSignUp = true;
+      }
     }
   }
 };
 </script>
 
 <style scoped>
+/* Votre CSS existant */
 .popup-overlay {
   position: fixed;
   top: 0;
@@ -126,23 +123,6 @@ export default {
   margin: 10px 0 20px 0;
 }
 
-.welcome-text {
-  font-size: 16px;
-  margin-bottom: 15px;
-}
-
-.country-selector {
-  margin-bottom: 15px;
-}
-
-.country-dropdown {
-  width: 100%;
-  padding: 10px;
-  margin-top: 5px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
 .log-input {
   width: 100%;
   padding: 10px;
@@ -178,43 +158,14 @@ export default {
   cursor: pointer;
 }
 
-.divider {
-  margin: 20px 0;
+.forgot-password {
   font-size: 14px;
-  color: #999;
-}
-
-.social-login-button {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin-bottom: 10px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  color: #007BFF;
   cursor: pointer;
-  background-color: white;
+  text-align: left;
 }
 
-.social-login-button .fa-icon {
-  margin-right: 10px;
-}
-
-.facebook-button {
-  color: #3b5998;
-}
-
-.google-button {
-  color: #db4437;
-}
-
-.apple-button {
-  color: #333;
-}
-
-.email-button {
-  color: #666;
+.forgot-password:hover {
+  text-decoration: underline;
 }
 </style>
