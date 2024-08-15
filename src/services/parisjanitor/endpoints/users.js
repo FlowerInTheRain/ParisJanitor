@@ -48,14 +48,12 @@ const getUserById = async (id) => {
     }
 }
 
-export const getUserByEmail = async (email) => {
+const getUserByEmail = async (email) => {
     try {
-        const url = `${endpoint}/email/${email}`;
-        console.log('Sending request to URL:', url);
-        const response = await axios.get(`${endpoint}/email/${email}`);
+        const response = await axios.get(`http://localhost:4000/parisjanitor-api/users/email/${email}`);
         return response.data;
     } catch (error) {
-        console.error('Error while getting user account: ', error)
+        console.error('Error while getting user account: ', error);
         throw error;
     }
 };
@@ -70,4 +68,4 @@ const getAllUser = async () => {
     }
 }
 
-export {signUp, signIn, getMyProfile, getUserById, getAllUser}
+export {signUp, signIn, getMyProfile, getUserByEmail, getUserById, getAllUser}

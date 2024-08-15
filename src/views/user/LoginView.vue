@@ -1,8 +1,14 @@
 <template>
   <div class="popup-overlay">
     <div id="login-popup">
-      <button @click="closePopup" class="close-button"> X </button>
+      <button v-if="showSignUp" @click="goBack" class="back-button">
+        <font-awesome-icon :icon="['fas', 'arrow-left']" />
+      </button>
+
       <h2 class="popup-title">{{ popupTitle }}</h2>
+      <button @click="closePopup" class="close-button">
+        <font-awesome-icon :icon="['fas', 'xmark']" />
+      </button>
       <div class="separator-line"></div>
 
       <form @submit.prevent="handleSignIn">
@@ -11,7 +17,6 @@
         </div>
 
         <div v-if="showSignUp">
-          <!-- Champs d'inscription -->
           <input class="log-input" type="text" v-model="firstName" placeholder="Prénom sur la pièce d'identité" required>
           <input class="log-input" type="text" v-model="lastName" placeholder="Nom sur la pièce d'identité" required>
           <input class="log-input" type="date" v-model="birthDate" placeholder="Date de naissance" required>
@@ -54,6 +59,10 @@ export default {
     closePopup() {
       this.$emit('close-popup');
     },
+    goBack() {
+      this.popupTitle = 'Connexion ou inscription';
+      this.showSignUp = false;
+    },
     async handleSignIn() {
       try {
         const user = await getUserByEmail(this.email);
@@ -71,14 +80,13 @@ export default {
 </script>
 
 <style scoped>
-/* Votre CSS existant */
 .popup-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Griser le fond */
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -97,7 +105,20 @@ export default {
   text-align: center;
   position: relative;
   z-index: 9999;
-  overflow-y: auto; /* Rendre la pop-up scrollable */
+  overflow-y: auto;
+}
+
+.back-button {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  width: 30px;
+  height: 30px;
 }
 
 .close-button {
