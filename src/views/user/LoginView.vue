@@ -4,6 +4,9 @@
       <button v-if="showSignUp" @click="goBack" class="back-button">
         <font-awesome-icon :icon="['fas', 'arrow-left']" />
       </button>
+      <button v-else-if="showSignIn" @click="goBack" class="back-button">
+        <font-awesome-icon :icon="['fas', 'arrow-left']" />
+      </button>
 
       <h2 class="popup-title">{{ popupTitle }}</h2>
       <button @click="closePopup" class="close-button">
@@ -14,6 +17,10 @@
       <form @submit.prevent="handleSignIn">
         <div v-if="!showSignUp">
           <input class="log-input" type="email" v-model="email" placeholder="Adresse e-mail" required>
+        </div>
+
+        <div v-if="showSignIn">
+          <input class="log-input" type="password" v-model="password" placeholder="password" required>
         </div>
 
         <div v-if="showSignUp">
@@ -31,7 +38,7 @@
         </p>
 
         <button class="log-button" type="submit">
-          {{ showSignUp ? 'Accepter et continuer' : 'Continuer' }}
+          {{ showSignUp ? 'Accepter et continuer' : 'Connecter' }}
         </button>
 
         <p v-if="!showSignUp" class="forgot-password">Mot de passe oublié ?</p>
@@ -41,13 +48,14 @@
 </template>
 
 <script>
-import { getUserByEmail } from "@/services/parisjanitor/endpoints/users";
+import { getUserByEmail, signIn } from "@/services/parisjanitor/endpoints/users";
 
 export default {
   data() {
     return {
       email: '',
       showSignUp: false,
+      showSignIn: false,
       popupTitle: 'Connexion ou inscription',
       firstName: '',
       lastName: '',
@@ -62,17 +70,39 @@ export default {
     goBack() {
       this.popupTitle = 'Connexion ou inscription';
       this.showSignUp = false;
+      this.showSignIn = false;
     },
     async handleSignIn() {
-      try {
-        const user = await getUserByEmail(this.email);
-        if (user) {
-          this.popupTitle = 'Connexion';
-          this.showSignUp = false;
+      if (this.showSignIn) {
+        try {
+          const loginData = {
+            email: this.email,
+            password: this.password
+          };
+          const response = await signIn(loginData);
+          console.log("Login Successful:", response);
+          this.closePopup();
+        } catch (error) {
+          console.error("Login Failed:", error);
         }
-      } catch (error) {
-        this.popupTitle = 'Terminer mon inscription';
-        this.showSignUp = true;
+      } else {
+        try {
+          const user = await getUserByEmail(this.email);
+          if (user) {
+            this.popupTitle = 'Veuillez saisir votre mot de passe';
+            this.showSignUp = false;
+            this.showSignIn = true;
+          } else {
+            this.popupTitle = 'Terminer mon inscription';
+            this.showSignUp = true;
+            this.showSignIn = false;
+          }
+        } catch (error) {
+          console.error("Error while checking user:", error);
+          this.popupTitle = 'Terminer mon inscription';
+          this.showSignUp = true;
+          this.showSignIn = false;
+        }
       }
     }
   }

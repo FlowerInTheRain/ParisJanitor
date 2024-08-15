@@ -9,17 +9,15 @@
         <li><a href="#">Messages</a></li>
         <li><a href="#">Voyages</a></li>
         <li><a href="#">Favoris</a></li>
-        <li><a href="#">Mettre mon logement sur Paris Janitor</a></li>
+        <li><a href="#">Mettre mon logement en location</a></li>
         <li><a href="#">Compte</a></li>
-        <li><a href="#">Cartes cadeaux</a></li>
         <li><a href="#">Centre d'aide</a></li>
-        <li><a @click="handleLogout" >Déconnexion</a></li>
+        <li><a @click="handleLogout">Déconnexion</a></li>
       </ul>
       <ul v-else>
-        <li><a @click="handleLogin" >Connexion</a></li>
-        <li><a href="#">Inscription</a></li>
-        <li><a href="#">Cartes cadeaux</a></li>
-        <li><a href="#">Mettre mon logement sur Paris Janitor</a></li>
+        <li><a @click="handleLogin">Connexion</a></li>
+        <li><a @click="handleLogin">Inscription</a></li>
+        <li><a href="#">Mettre mon logement en location</a></li>
         <li><a href="#">Centre d'aide</a></li>
       </ul>
     </div>
@@ -37,7 +35,6 @@ export default {
   data() {
     return {
       isMenuOpen: false,
-      isAuthenticated: false,
     };
   },
   methods: {
@@ -45,9 +42,7 @@ export default {
       this.isMenuOpen = !this.isMenuOpen;
     },
     handleLogout() {
-      localStorage.removeItem('token');
-      localStorage.removeItem('id');
-      this.$store.dispatch('updateAuthentication', false);
+      this.$store.dispatch('logout');
       this.$emit('logout');
     },
     handleLogin() {
