@@ -1,5 +1,5 @@
 export default class UserCreationRequestDto {
-    constructor(email, password, lastName, firstName, birthday, phoneNumber, region, adresse1, adresse2) {
+    constructor(email, password, lastName, firstName, birthday, phoneNumber = "", region = "", adresse1 = "", adresse2 = "") {
         this.email = email;
         this.password = password;
         this.lastName = lastName;

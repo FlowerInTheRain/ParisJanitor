@@ -1,6 +1,9 @@
 <template>
   <div class="popup-overlay">
-    <div id="login-popup">
+    <!-- Afficher la popup VerificationCodeView au-dessus du login-popup si showVerification est true -->
+    <VerificationCodeView v-if="showVerification" @close="closeVerification" />
+
+    <div id="login-popup" :class="{ 'popup-blur': showVerification }">
       <button v-if="showSignUp" @click="goBack" class="back-button">
         <font-awesome-icon :icon="['fas', 'arrow-left']" />
       </button>
@@ -15,15 +18,15 @@
       <div class="separator-line"></div>
 
       <form @submit.prevent="handleSignIn">
-        <div v-if="!showSignUp">
+        <div v-if="!showSignUp && !showVerification">
           <input class="log-input" type="email" v-model="email" placeholder="Adresse e-mail" required>
         </div>
 
-        <div v-if="showSignIn">
-          <input class="log-input" type="password" v-model="password" placeholder="password" required>
+        <div v-if="showSignIn && !showVerification">
+          <input class="log-input" type="password" v-model="password" placeholder="Mot de passe" required>
         </div>
 
-        <div v-if="showSignUp">
+        <div v-if="showSignUp && !showVerification">
           <input class="log-input" type="text" v-model="firstName" placeholder="Prénom sur la pièce d'identité" required>
           <input class="log-input" type="text" v-model="lastName" placeholder="Nom sur la pièce d'identité" required>
           <input class="log-input" type="date" v-model="birthDate" placeholder="Date de naissance" required>
@@ -31,77 +34,117 @@
           <input class="log-input" type="password" v-model="password" placeholder="Mot de passe" required>
         </div>
 
-        <p class="info-text" v-if="!showSignUp">
+        <p class="info-text" v-if="!showSignUp && !showVerification">
           Nous vous appellerons ou vous enverrons un SMS pour confirmer votre numéro.
           Les frais standards d'envoi de messages et d'échange de données s'appliquent.
           <a href="#" class="privacy-policy-link">Politique de confidentialité</a>
         </p>
 
-        <button class="log-button" type="submit">
-          {{ showSignUp ? 'Accepter et continuer' : 'Connecter' }}
+        <button class="log-button" type="submit" v-if="showSignUp && !showVerification">
+          Accepter et continuer
         </button>
 
-        <p v-if="!showSignUp" class="forgot-password">Mot de passe oublié ?</p>
+        <button class="log-button" type="submit" v-else>
+          Connecter
+        </button>
+
+        <p v-if="!showSignUp && !showVerification" class="forgot-password">Mot de passe oublié ?</p>
       </form>
     </div>
   </div>
 </template>
 
 <script>
-import { getUserByEmail, signIn } from "@/services/parisjanitor/endpoints/users";
+import { getUserByEmail, signIn, signUp } from "@/services/parisjanitor/endpoints/users";
+import UserCreationRequestDto from "@/dto/request/UserCreationRequestDto";
+import VerificationCodeView from './VerificationCodeView.vue';
 
 export default {
+  components: {
+    VerificationCodeView
+  },
   data() {
     return {
       email: '',
       showSignUp: false,
       showSignIn: false,
+      showVerification: false,
+      verificationCode: '',
       popupTitle: 'Connexion ou inscription',
       firstName: '',
       lastName: '',
       birthDate: '',
-      password: ''
+      password: '',
+      phoneNumber: '',
+      region: '',
+      adresse1: '',
+      adresse2: ''
     };
   },
   methods: {
     closePopup() {
       this.$emit('close-popup');
     },
+    closeVerification() {
+      this.showVerification = false;
+    },
     goBack() {
       this.popupTitle = 'Connexion ou inscription';
       this.showSignUp = false;
       this.showSignIn = false;
+      this.showVerification = false;
     },
     async handleSignIn() {
       if (this.showSignIn) {
+        const loginData = {
+          email: this.email,
+          password: this.password
+        };
         try {
-          const loginData = {
-            email: this.email,
-            password: this.password
-          };
           const response = await signIn(loginData);
           console.log("Login Successful:", response);
           this.closePopup();
         } catch (error) {
           console.error("Login Failed:", error);
         }
+      } else if (this.showSignUp) {
+        const dto = new UserCreationRequestDto(
+            this.email,
+            this.password,
+            this.lastName,
+            this.firstName,
+            this.birthDate,
+            this.phoneNumber,
+            this.region,
+            this.adresse1,
+            this.adresse2
+        );
+
+        console.log("Registration Data:", dto);
+
+        try {
+          const response = await signUp(dto);
+          console.log("Registration Successful:", response);
+          this.showVerification = true; // Afficher la pop-up de vérification du code
+        } catch (error) {
+          console.error("Registration Failed:", error);
+        }
       } else {
         try {
           const user = await getUserByEmail(this.email);
           if (user) {
             this.popupTitle = 'Veuillez saisir votre mot de passe';
-            this.showSignUp = false;
             this.showSignIn = true;
-          } else {
+            this.showSignUp = false;
+          }
+        } catch (error) {
+          if (error.response && error.response.status === 404) {
             this.popupTitle = 'Terminer mon inscription';
             this.showSignUp = true;
             this.showSignIn = false;
+          } else {
+            console.error("Error while checking user:", error);
           }
-        } catch (error) {
-          console.error("Error while checking user:", error);
-          this.popupTitle = 'Terminer mon inscription';
-          this.showSignUp = true;
-          this.showSignIn = false;
         }
       }
     }
@@ -136,6 +179,10 @@ export default {
   position: relative;
   z-index: 9999;
   overflow-y: auto;
+}
+
+#login-popup.popup-blur {
+  filter: blur(5px); /* Désactivez temporairement le flou pour tester */
 }
 
 .back-button {
