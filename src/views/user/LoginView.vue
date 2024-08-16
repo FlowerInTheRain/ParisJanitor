@@ -1,9 +1,6 @@
 <template>
   <div class="popup-overlay">
-    <!-- Afficher la popup VerificationCodeView au-dessus du login-popup si showVerification est true -->
-    <VerificationCodeView v-if="showVerification" @close="closeVerification" />
-
-    <div id="login-popup" :class="{ 'popup-blur': showVerification }">
+    <div id="login-popup">
       <button v-if="showSignUp" @click="goBack" class="back-button">
         <font-awesome-icon :icon="['fas', 'arrow-left']" />
       </button>
@@ -18,15 +15,15 @@
       <div class="separator-line"></div>
 
       <form @submit.prevent="handleSignIn">
-        <div v-if="!showSignUp && !showVerification">
+        <div v-if="!showSignUp">
           <input class="log-input" type="email" v-model="email" placeholder="Adresse e-mail" required>
         </div>
 
-        <div v-if="showSignIn && !showVerification">
+        <div v-if="showSignIn">
           <input class="log-input" type="password" v-model="password" placeholder="Mot de passe" required>
         </div>
 
-        <div v-if="showSignUp && !showVerification">
+        <div v-if="showSignUp">
           <input class="log-input" type="text" v-model="firstName" placeholder="Prénom sur la pièce d'identité" required>
           <input class="log-input" type="text" v-model="lastName" placeholder="Nom sur la pièce d'identité" required>
           <input class="log-input" type="date" v-model="birthDate" placeholder="Date de naissance" required>
@@ -34,13 +31,13 @@
           <input class="log-input" type="password" v-model="password" placeholder="Mot de passe" required>
         </div>
 
-        <p class="info-text" v-if="!showSignUp && !showVerification">
+        <p class="info-text" v-if="!showSignUp">
           Nous vous appellerons ou vous enverrons un SMS pour confirmer votre numéro.
           Les frais standards d'envoi de messages et d'échange de données s'appliquent.
           <a href="#" class="privacy-policy-link">Politique de confidentialité</a>
         </p>
 
-        <button class="log-button" type="submit" v-if="showSignUp && !showVerification">
+        <button class="log-button" type="submit" v-if="showSignUp">
           Accepter et continuer
         </button>
 
@@ -48,7 +45,7 @@
           Connecter
         </button>
 
-        <p v-if="!showSignUp && !showVerification" class="forgot-password">Mot de passe oublié ?</p>
+        <p v-if="!showSignUp" class="forgot-password">Mot de passe oublié ?</p>
       </form>
     </div>
   </div>
@@ -57,19 +54,13 @@
 <script>
 import { getUserByEmail, signIn, signUp } from "@/services/parisjanitor/endpoints/users";
 import UserCreationRequestDto from "@/dto/request/UserCreationRequestDto";
-import VerificationCodeView from './VerificationCodeView.vue';
 
 export default {
-  components: {
-    VerificationCodeView
-  },
   data() {
     return {
       email: '',
       showSignUp: false,
       showSignIn: false,
-      showVerification: false,
-      verificationCode: '',
       popupTitle: 'Connexion ou inscription',
       firstName: '',
       lastName: '',
@@ -85,14 +76,10 @@ export default {
     closePopup() {
       this.$emit('close-popup');
     },
-    closeVerification() {
-      this.showVerification = false;
-    },
     goBack() {
       this.popupTitle = 'Connexion ou inscription';
       this.showSignUp = false;
       this.showSignIn = false;
-      this.showVerification = false;
     },
     async handleSignIn() {
       if (this.showSignIn) {
@@ -125,7 +112,7 @@ export default {
         try {
           const response = await signUp(dto);
           console.log("Registration Successful:", response);
-          this.showVerification = true; // Afficher la pop-up de vérification du code
+          this.closePopup();
         } catch (error) {
           console.error("Registration Failed:", error);
         }
@@ -179,10 +166,6 @@ export default {
   position: relative;
   z-index: 9999;
   overflow-y: auto;
-}
-
-#login-popup.popup-blur {
-  filter: blur(5px); /* Désactivez temporairement le flou pour tester */
 }
 
 .back-button {
