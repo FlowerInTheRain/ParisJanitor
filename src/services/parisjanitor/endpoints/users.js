@@ -68,4 +68,20 @@ const getAllUser = async () => {
     }
 }
 
-export {signUp, signIn, getMyProfile, getUserByEmail, getUserById, getAllUser}
+const updateUserProfile = async (userProfile) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.patch(`${endpoint}`, userProfile, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error while updating user profile: ', error);
+        throw error;
+    }
+};
+
+
+export {signUp, signIn, getMyProfile, getUserByEmail, getUserById, getAllUser, updateUserProfile}

@@ -2,11 +2,11 @@
   <div>
     <HeaderView />
 
-    <div class="container profile">
+    <div class="container profile" v-if="user">
       <div class="row">
         <div class="col-md-3">
           <div class="profile-img">
-            <img :src="user.imageUrl" alt="User Image"/>
+            <img :src="user.imageUrl || 'https://via.placeholder.com/150'" alt="User Image"/>
             <div class="file btn btn-lg btn-primary">
               Change Photo
               <input type="file" name="file"/>
@@ -15,13 +15,20 @@
         </div>
         <div class="col-md-7">
           <div class="profile-head">
-            <h5>{{ user.name }}</h5>
-            <h6>{{ user.region }}</h6>
-            <p class="proile-rating">RANKINGS : <span>{{ user.rank }}/10</span></p>
+            <h5 v-if="!isEditing">{{ user.firstName }} {{ user.lastName }}</h5>
+            <input v-if="isEditing" v-model="editUser.firstName" placeholder="Prénom" class="edit-input" />
+            <input v-if="isEditing" v-model="editUser.lastName" placeholder="Nom" class="edit-input" />
+
+            <h6 v-if="!isEditing">{{ user.region }}</h6>
+            <input v-if="isEditing" v-model="editUser.region" placeholder="Région" class="edit-input" />
+
+            <p class="proile-rating">RANKINGS : <span>{{ user.rank || 'N/A' }}/10</span></p>
           </div>
         </div>
         <div class="col-md-2">
-          <button @click="editProfile" class="profile-edit-btn">Edit Profile</button>
+          <button v-if="!isEditing" @click="editProfile" class="profile-edit-btn">Edit Profile</button>
+          <button v-if="isEditing" @click="saveProfile" class="profile-save-btn">Save</button>
+          <button v-if="isEditing" @click="cancelEdit" class="profile-cancel-btn">Cancel</button>
         </div>
       </div>
       <div class="row">
@@ -40,7 +47,7 @@
                 <label>User Id</label>
               </div>
               <div class="col-md-6">
-                <p>{{ user.userId }}</p>
+                <p>{{ user.id }}</p>
               </div>
             </div>
             <div class="row">
@@ -48,7 +55,9 @@
                 <label>Name</label>
               </div>
               <div class="col-md-6">
-                <p>{{ user.name }}</p>
+                <p v-if="!isEditing">{{ user.firstName }} {{ user.lastName }}</p>
+                <input v-if="isEditing" v-model="editUser.firstName" placeholder="Prénom" class="edit-input" />
+                <input v-if="isEditing" v-model="editUser.lastName" placeholder="Nom" class="edit-input" />
               </div>
             </div>
             <div class="row">
@@ -56,7 +65,8 @@
                 <label>Email</label>
               </div>
               <div class="col-md-6">
-                <p>{{ user.email }}</p>
+                <p v-if="!isEditing">{{ user.email }}</p>
+                <input v-if="isEditing" v-model="editUser.email" placeholder="Email" class="edit-input" />
               </div>
             </div>
             <div class="row">
@@ -64,7 +74,8 @@
                 <label>Phone</label>
               </div>
               <div class="col-md-6">
-                <p>{{ user.phone }}</p>
+                <p v-if="!isEditing">{{ user.phoneNumber }}</p>
+                <input v-if="isEditing" v-model="editUser.phoneNumber" placeholder="Téléphone" class="edit-input" />
               </div>
             </div>
             <div class="row">
@@ -72,75 +83,81 @@
                 <label>Région</label>
               </div>
               <div class="col-md-6">
-                <p>{{ user.region }}</p>
+                <p v-if="!isEditing">{{ user.region }}</p>
+                <input v-if="isEditing" v-model="editUser.region" placeholder="Région" class="edit-input" />
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <div v-else>
+      <p>Loading...</p>
+    </div>
   </div>
 </template>
 
 <script>
 import HeaderView from "@/views/home/content/HeaderView.vue";
+import { getMyProfile, updateUser } from "@/services/parisjanitor/endpoints/users";
 
 export default {
   components: {
-    HeaderView
+    HeaderView,
   },
   data() {
     return {
-      user: {
-        userId: 'Kshiti123',
-        name: 'Kshiti Ghelani',
-        email: 'kshitighelani@gmail.com',
-        phone: '123 456 7890',
-        region: 'Ile-de-France',
-        imageUrl: 'https://via.placeholder.com/150',
-        rank: 8
-      },
-      upcomingLocations: [
-        { id: 1, name: 'Location 1' },
-        { id: 2, name: 'Location 2' },
-        { id: 3, name: 'Location 3' }
-      ],
-      pastLocations: [
-        { id: 4, name: 'Location 4' },
-        { id: 5, name: 'Location 5' },
-        { id: 6, name: 'Location 6' }
-      ]
+      user: null,
+      editUser: {},
+      isEditing: false,
+      upcomingLocations: [], // Replace with actual data or fetch dynamically
+      pastLocations: [], // Replace with actual data or fetch dynamically
     };
+  },
+  async created() {
+    try {
+      const profileData = await getMyProfile();
+      this.user = profileData;
+      this.editUser = { ...profileData };
+    } catch (error) {
+      console.error("Failed to load profile data:", error);
+    }
   },
   methods: {
     editProfile() {
+      this.isEditing = true;
+    },
+    async saveProfile() {
+      try {
+        await updateUser(this.editUser);
+        this.user = { ...this.editUser };
+        this.isEditing = false;
+        alert("Profile updated successfully");
+      } catch (error) {
+        console.error("Failed to update profile:", error);
+        alert("Failed to update profile");
+      }
+    },
+    cancelEdit() {
+      this.editUser = { ...this.user };
+      this.isEditing = false;
     }
   }
 };
 </script>
 
 <style scoped>
-.container {
-  max-width: 1000px;
-  margin: 20px auto;
-}
-
-.profile {
-  padding: 20px;
-  background: #f8f9fa;
-  border-radius: 10px;
-}
-
+/* Add your styles here */
 .profile-img img {
-  width: 150px;
-  height: 150px;
+  width: 100%;
+  height: auto;
   border-radius: 50%;
 }
 
 .profile-img .file {
   position: relative;
   overflow: hidden;
-  margin-top: -20%;
+  margin-top: -20px;
   width: 70%;
   border: none;
   border-radius: 0;
@@ -163,32 +180,38 @@ export default {
   color: #0062cc;
 }
 
-.profile-head .proile-rating {
-  font-size: 12px;
-  color: #818182;
-  margin-top: 5px;
-}
-
 .profile-edit-btn {
   border: none;
   border-radius: 1.5rem;
   width: 100%;
-  padding: 8px;
+  padding: 5%;
   font-weight: 600;
   color: #6c757d;
   cursor: pointer;
 }
 
-.profile-work {
-  padding: 14%;
-  margin-top: -15%;
+.profile-save-btn,
+.profile-cancel-btn {
+  border: none;
+  border-radius: 1.5rem;
+  width: 100%;
+  padding: 5%;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  background-color: #28a745;
+}
+
+.profile-cancel-btn {
+  background-color: #dc3545;
+  margin-top: 10px;
 }
 
 .profile-work p {
-  font-size: 14px;
+  font-size: 12px;
   color: #818182;
   font-weight: 600;
-  margin-top: 10px;
+  margin-top: 10%;
 }
 
 .profile-work a {
@@ -198,12 +221,14 @@ export default {
   font-size: 14px;
 }
 
-.profile-tab label {
-  font-weight: 600;
+.profile-work ul {
+  list-style: none;
 }
-
-.profile-tab p {
-  font-weight: 600;
-  color: #0062cc;
+.edit-input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 </style>
