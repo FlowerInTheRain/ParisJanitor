@@ -10,7 +10,7 @@
         <li><a href="#">Voyages</a></li>
         <li><a href="#">Favoris</a></li>
         <li><a href="#">Mettre mon logement en location</a></li>
-        <li><a href="#">Compte</a></li>
+        <li><router-link to="/mon-compte">Mon compte</router-link></li> <!-- Lien vers Mon Compte -->
         <li><a href="#">Centre d'aide</a></li>
         <li><a @click="handleLogout">Déconnexion</a></li>
       </ul>
@@ -25,10 +25,9 @@
 </template>
 
 <script>
-import {mapState} from "vuex";
+import { mapState } from "vuex";
 
 export default {
-
   computed: {
     ...mapState(['isAuthenticated'])
   },
@@ -53,6 +52,7 @@ export default {
 </script>
 
 <style scoped>
+/* Styles du UserMenu */
 .user-menu {
   position: relative;
   display: flex;

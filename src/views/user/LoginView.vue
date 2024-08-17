@@ -74,7 +74,9 @@ export default {
   },
   methods: {
     closePopup() {
-      this.$emit('close-popup');
+      setTimeout(() => {
+        this.$emit('close-popup');
+      }, 20);
     },
     goBack() {
       this.popupTitle = 'Connexion ou inscription';
@@ -90,6 +92,10 @@ export default {
         try {
           const response = await signIn(loginData);
           console.log("Login Successful:", response);
+
+          localStorage.setItem('token', response.token);
+          this.$store.dispatch('updateAuthentication', true);
+
           this.closePopup();
         } catch (error) {
           console.error("Login Failed:", error);
@@ -106,15 +112,21 @@ export default {
             this.adresse1,
             this.adresse2
         );
-
-        console.log("Registration Data:", dto);
-
         try {
-          const response = await signUp(dto);
-          console.log("Registration Successful:", response);
+          const signUpResponse = await signUp(dto);
+          console.log("Registration Successful:", signUpResponse);
+          console.log( this.email, this.password);
+          const loginData = { email: this.email, password: this.password };
+          const loginResponse = await signIn(loginData);
+          console.log("Login Successful after registration:", loginResponse);
+
+          localStorage.setItem('token', loginResponse.token);
+          this.$store.dispatch('updateAuthentication', true);
+
           this.closePopup();
+
         } catch (error) {
-          console.error("Registration Failed:", error);
+          console.error("Registration or Login Failed:", error);
         }
       } else {
         try {
