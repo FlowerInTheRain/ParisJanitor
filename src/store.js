@@ -14,7 +14,6 @@ const store = createStore({
             commit('setAuthentication', status);
         },
         login({ commit }) {
-            // Vous pouvez également stocker le token ici si besoin
             localStorage.setItem('token', 'your-token-value');
             commit('setAuthentication', true);
         },

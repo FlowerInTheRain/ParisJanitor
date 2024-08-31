@@ -6,11 +6,12 @@
   </div>
 
   <LoginView v-if="showLogin"
-               @close-popup="closeLoginPopup"
-               @userCreateAccountEvent="handleUserCreateAccountEvent"
-               @userConnectedEvent="handleUserConnectedEvent"
-    ></LoginView>
-    <div v-if="showNotification" class="notification">{{ notificationMessage }}</div>
+             @close-popup="closeLoginPopup"
+             @userCreateAccountEvent="handleUserCreateAccountEvent"
+             @userConnectedEvent="handleUserConnectedEvent">
+  </LoginView>
+
+  <div v-if="showNotification" class="notification">{{ notificationMessage }}</div>
 </template>
 
 <script>
@@ -56,8 +57,8 @@ export default {
   }
 };
 </script>
-<style scoped>
 
+<style scoped>
 #background-homeview {
   display: flex;
   flex-direction: column;
@@ -69,8 +70,8 @@ export default {
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #dff0d8; /* light green background */
-  color: green; /* green text */
+  background-color: #dff0d8;
+  color: green;
   padding: 10px 20px;
   border-radius: 5px;
   border: 1px solid green;
@@ -78,7 +79,7 @@ export default {
   animation: fadeOut 2.5s forwards;
 }
 
-.nav-item{
+.nav-item {
   margin-top: 5px;
 }
 
