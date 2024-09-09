@@ -1,6 +1,6 @@
-
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from './views/home/HomeView.vue';
+import ProfilView from './views/user/ProfilView.vue';
 
 const routes = [
   {
@@ -8,6 +8,12 @@ const routes = [
     name: 'home',
     component: HomeView,
     meta: { title: 'Paris Janitor' }
+  },
+  {
+    path: '/mon-compte',
+    name: 'profil',
+    component: ProfilView,
+    meta: { title: 'Mon Compte - Paris Janitor' }
   }
 ];
 
@@ -20,5 +26,4 @@ router.afterEach((to) => {
   document.title = to.meta.title || 'Paris Janitor';
 });
 
-export default router
-
+export default router;
