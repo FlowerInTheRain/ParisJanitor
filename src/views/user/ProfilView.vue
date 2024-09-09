@@ -283,7 +283,7 @@ export default {
   width: 100%;
   border: none;
   border-radius: 0;
-  font-size: 15px;
+  font-size: 14px;
   background: #212529b8;
 }
 
