@@ -18,6 +18,7 @@ stages:
             displayName: 'Install Node.js'
           - script: |
               ls -l
+              npm install
               npm run build
             displayName: 'npm install, buid, and test'
           - task: ArchiveFiles@2
