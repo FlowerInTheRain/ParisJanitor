@@ -17,11 +17,8 @@ stages:
               versionSpec: '18.14'
             displayName: 'Install Node.js'
           - script: |
-              cd Parisjanitor
+              cd ParisJanitor
               npm run build
-            displayName: 'npm install, buid, and test'
-          - script: |
-              cd PrisJanitor
             displayName: 'npm install, buid, and test'
           - task: ArchiveFiles@2
             displayName: Archive build artifact
