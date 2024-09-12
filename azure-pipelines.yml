@@ -18,7 +18,6 @@ stages:
             displayName: 'Install Node.js'
           - script: |
               ls -l
-              cd ParisJanitor
               npm run build
             displayName: 'npm install, buid, and test'
           - task: ArchiveFiles@2
