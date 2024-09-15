@@ -33,4 +33,4 @@ stages:
             displayName: Publish build artifact
             inputs:
               PathtoPublish: '$(Build.ArtifactStagingDirectory)/paris-janitor.zip'
-              ArtifactName: 'petpals-backoffice'
+              ArtifactName: 'paris-janitor'
