@@ -32,8 +32,8 @@ stages:
               ls -l
           - task: ExtractFiles@1
             inputs:
-              archiveFilePatterns: '**/paris-janitor.zip'
-              destinationFolder: '$(System.ArtifactsDirectory)/app'
+              archiveFilePatterns: 'paris-janitor/paris-janitor.zip'
+              destinationFolder: '$(System.ArtifactsDirectory)/paris-janitor'
               cleanDestinationFolder: false
               overwriteExistingFiles: true
           - script: |
