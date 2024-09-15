@@ -24,8 +24,8 @@ stages:
               buildVersionToDownload: 'latest'
               downloadType: 'single'
               artifactName: 'paris-janitor'
-              itemPattern: ''
-              downloadPath: '$(System.ArtifactsDirectory)/paris-janitor'
+              itemPattern: '*.zip'
+              downloadPath: '$(System.ArtifactsDirectory)'
               cleanDestinationFolder: true
               checkDownloadedFiles: true
           - task: ExtractFiles@1
