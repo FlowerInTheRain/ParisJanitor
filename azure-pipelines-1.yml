@@ -29,7 +29,7 @@ stages:
               checkDownloadedFiles: true
           - task: ExtractFiles@1
             inputs:
-              archiveFilePatterns: '**/paris-janitor/*.zip'
+              archiveFilePatterns: '*.zip'
               destinationFolder: '$(System.ArtifactsDirectory)/app'
               cleanDestinationFolder: false
               overwriteExistingFiles: true
