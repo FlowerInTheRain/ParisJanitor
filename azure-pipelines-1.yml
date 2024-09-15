@@ -1,0 +1,45 @@
+# Node.js with Angular
+# Build a Node.js project that uses Angular.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- main
+
+name: 'Deploy angular app'
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: Deploy
+    displayName: Deploy to paris-janitor
+    jobs:
+      - job: Deploy
+        steps:
+          - task: DownloadBuildArtifacts@1
+            inputs:
+              buildType: 'specific'
+              project: '12e6b272-e75b-4b73-aebc-da22ad6551a2'
+              pipeline: '6'
+              buildVersionToDownload: 'latest'
+              downloadType: 'single'
+              artifactName: 'paris-janitor'
+              itemPattern: 'paris-janitor'
+              downloadPath: '$(System.ArtifactsDirectory)'
+              checkDownloadedFiles: true
+          - task: ExtractFiles@1
+            inputs:
+              archiveFilePatterns: '**/paris-janitor/*.zip'
+              destinationFolder: '$(System.ArtifactsDirectory)/app'
+              cleanDestinationFolder: false
+              overwriteExistingFiles: true
+          - task: AzureStaticWebApp@0
+            displayName: Deploy to Azure Static Web App
+            inputs:
+              workingDirectory: '$(System.ArtifactsDirectory)/app'
+              output_location: '/paris-janitor'
+              app_location: 'petpals/browser'
+              skip_app_build: true
+              skip_api_build: true
+              verbose: true
+              azure_static_web_apps_api_token: '7cbe4eed111255e3c5ca8ae999292c047eba4c64a953879227fdc99b307f4edd5-93282712-d8f1-4015-8db5-fb7242d4f3dd003601651'
