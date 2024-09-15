@@ -24,13 +24,13 @@ stages:
               buildVersionToDownload: 'latest'
               downloadType: 'single'
               artifactName: 'paris-janitor'
-              itemPattern: 
+              itemPattern: ''
               downloadPath: '$(System.ArtifactsDirectory)/paris-janitor'
               cleanDestinationFolder: true
               checkDownloadedFiles: true
           - task: ExtractFiles@1
             inputs:
-              archiveFilePatterns: 'paris-janitor/paris-janitor.zip'
+              archiveFilePatterns: 'paris-janitor.zip'
               destinationFolder: '$(System.ArtifactsDirectory)/front'
               cleanDestinationFolder: false
               overwriteExistingFiles: true
