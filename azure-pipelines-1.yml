@@ -27,6 +27,10 @@ stages:
               downloadPath: '$(System.ArtifactsDirectory)'
               cleanDestinationFolder: true
               checkDownloadedFiles: true
+          - script: |
+              ls -l
+              cd ../
+              ls -l
           - task: ExtractFiles@1
             inputs:
               archiveFilePatterns: 'paris-janitor/paris-janitor.zip'
