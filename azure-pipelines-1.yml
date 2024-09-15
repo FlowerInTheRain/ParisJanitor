@@ -25,18 +25,22 @@ stages:
               downloadType: 'single'
               artifactName: 'paris-janitor'
               itemPattern: 'paris-janitor.zip'
-              downloadPath: '$(System.ArtifactsDirectory)'
+              downloadPath: '$(System.ArtifactsDirectory)/paris-janitor'
               checkDownloadedFiles: true
+          - script: |
+              ls -l
           - task: ExtractFiles@1
             inputs:
               archiveFilePatterns: '**/paris-janitor.zip'
               destinationFolder: '$(System.ArtifactsDirectory)/app'
               cleanDestinationFolder: false
               overwriteExistingFiles: true
+          - script: |
+              ls -l
           - task: AzureStaticWebApp@0
             displayName: Deploy to Azure Static Web App
             inputs:
-              workingDirectory: '$(System.ArtifactsDirectory)/app'
+              workingDirectory: '$(System.ArtifactsDirectory)/paris-janitor'
               output_location: '/paris-janitor'
               app_location: ''
               skip_app_build: true
