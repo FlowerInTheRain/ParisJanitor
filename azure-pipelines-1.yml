@@ -28,7 +28,7 @@ stages:
               downloadPath: '$(System.ArtifactsDirectory)/paris-janitor'
               checkDownloadedFiles: true
           - script: |
-              cd $(System.ArtifactsDirectory)
+              cd $(System.ArtifactsDirectory)/s
               ls -l
           - task: ExtractFiles@1
             inputs:
