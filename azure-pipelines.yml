@@ -28,7 +28,7 @@ stages:
               includeRootFolder: true
               archiveType: 'zip'
               archiveFile: '$(Build.ArtifactStagingDirectory)/paris-janitor.zip'
-              replaceExistingArchive: false
+              replaceExistingArchive: true
           - task: PublishBuildArtifacts@1
             displayName: Publish build artifact
             inputs:
