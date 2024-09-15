@@ -25,8 +25,7 @@ stages:
               downloadType: 'single'
               artifactName: 'paris-janitor'
               downloadPath: '$(System.ArtifactsDirectory)'
-              itemPattern: '*.zip'
-              cleanDestinationFolder: true
+              itemPattern: 'paris-janitor.zip'
               checkDownloadedFiles: true
           - script: |
               ls -l
