@@ -27,10 +27,10 @@ stages:
               rootFolderOrFile: '$(Build.SourcesDirectory)/dist'
               includeRootFolder: true
               archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/paris-janitor-front.zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/paris-janitor.zip'
               replaceExistingArchive: false
           - task: PublishBuildArtifacts@1
             displayName: Publish build artifact
             inputs:
-              PathtoPublish: '$(Build.ArtifactStagingDirectory)/paris-janitor-front.zip'
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)/paris-janitor.zip'
               ArtifactName: 'petpals-backoffice'
