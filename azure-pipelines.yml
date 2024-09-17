@@ -17,11 +17,9 @@ stages:
               versionSpec: '18.14'
             displayName: 'Install Node.js'
           - script: |
-              cd Parisjanitor
+              ls -l
+              npm install
               npm run build
-            displayName: 'npm install, buid, and test'
-          - script: |
-              cd PrisJanitor
             displayName: 'npm install, buid, and test'
           - task: ArchiveFiles@2
             displayName: Archive build artifact
@@ -29,10 +27,10 @@ stages:
               rootFolderOrFile: '$(Build.SourcesDirectory)/dist'
               includeRootFolder: true
               archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/paris-janitor-front.zip'
-              replaceExistingArchive: false
+              archiveFile: '$(Build.ArtifactStagingDirectory)/paris-janitor.zip'
+              replaceExistingArchive: true
           - task: PublishBuildArtifacts@1
             displayName: Publish build artifact
             inputs:
-              PathtoPublish: '$(Build.ArtifactStagingDirectory)/paris-janitor-front.zip'
-              ArtifactName: 'petpals-backoffice'
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)/paris-janitor.zip'
+              ArtifactName: 'paris-janitor'
