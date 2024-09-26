@@ -11,3 +11,6 @@ const getAllProperty = async () => {
         throw error;
     }
 }
+export {
+    getAllProperty
+}
