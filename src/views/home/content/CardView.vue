@@ -1,7 +1,6 @@
 <template>
   <div class="ad-card">
     <div class="ad-image">
-      <!-- Ajoute la condition v-if pour que v-else fonctionne correctement -->
       <img v-if="ad.imageUrls && ad.imageUrls.length" :src="ad.imageUrls[0]" alt="Image de la propriété" />
       <p v-else>Aucune image disponible</p>
     </div>
@@ -20,8 +19,8 @@
 export default {
   props: {
     ad: {
-      type: Object, // La prop `ad` contient une annonce complète
-      required: true, // Assure que `ad` est passé au composant
+      type: Object,
+      required: true,
     },
   },
 };

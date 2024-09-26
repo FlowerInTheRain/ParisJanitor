@@ -1,13 +1,12 @@
 <template>
   <div className="ad-list">
-    <!-- Utilisation de v-for pour afficher chaque annonce sous forme de carte -->
     <CardView v-for="ad in ads" :key="ad.id" :ad="ad"/>
   </div>
 </template>
 
 <script>
 import CardView from "./CardView.vue";
-import {getAllProperty} from "@/services/parisjanitor/endpoints/properties"; // Importation de la fonction API
+import {getAllProperty} from "@/services/parisjanitor/endpoints/properties";
 
 export default {
   name: "AnnonceView",
@@ -16,13 +15,13 @@ export default {
   },
   data() {
     return {
-      ads: [], // Stocke les annonces récupérées
+      ads: [],
     };
   },
   async mounted() {
     try {
-      const response = await getAllProperty(); // Appelle l'API pour récupérer les annonces
-      this.ads = response; // Remplit ads avec les données de l'API
+      const response = await getAllProperty();
+      this.ads = response;
     } catch (error) {
       console.error("Erreur lors de la récupération des annonces :", error);
     }
@@ -33,7 +32,7 @@ export default {
 <style scoped>
 .ad-list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Affiche les cartes en grille */
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   margin: 20px;
   padding: 20px;
