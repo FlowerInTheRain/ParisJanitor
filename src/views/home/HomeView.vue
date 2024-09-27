@@ -2,7 +2,7 @@
   <div id="background-homeview">
     <HeaderView @showLoginPopup="showLoginPopup"/>
     <NavContent class="nav-item"/>
-    <CardView />
+    <AnnonceView />
   </div>
 
   <LoginView v-if="showLogin"
@@ -17,7 +17,7 @@
 <script>
 import HeaderView from "@/views/home/content/HeaderView.vue";
 import NavContent from "@/views/home/content/NavContent.vue";
-import CardView from "@/views/home/content/CardView.vue";
+import AnnonceView from "@/views/home/content/AnnonceView.vue"; // Remplace CardView par AnnonceView
 import LoginView from "@/views/user/LoginView.vue";
 import { mapState } from 'vuex';
 
@@ -32,7 +32,7 @@ export default {
   components: {
     HeaderView,
     NavContent,
-    CardView,
+    AnnonceView, // Importe et utilise AnnonceView
     LoginView,
   },
   computed: mapState(['isAuthenticated']),

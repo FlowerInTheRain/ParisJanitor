@@ -10,7 +10,10 @@ export default class PropertyCreationRequestDto {
         imageUrls = [],
         contactSlots = [],
         privacyDeclaration = false,
-        conciergerieType
+        conciergerieType,
+        accommodationType,
+        price,
+        city
     ) {
         this.adress = adress;
         this.description = description;
@@ -23,5 +26,8 @@ export default class PropertyCreationRequestDto {
         this.contactSlots = contactSlots;
         this.privacyDeclaration = privacyDeclaration;
         this.conciergerieType = conciergerieType;
+        this.accommodationType = accommodationType;
+        this.price = price;
+        this.city = city;
     }
 }

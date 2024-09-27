@@ -1,16 +1,20 @@
 <template>
   <div class="ad-card">
-    <div class="ad-image">
-      <img v-if="ad.imageUrls && ad.imageUrls.length" :src="ad.imageUrls[0]" alt="Image de la propriété" />
-      <p v-else>Aucune image disponible</p>
-    </div>
-    <div class="ad-content">
-      <h3>{{ ad.description }}</h3>
-      <p>Type : {{ ad.propertyType }}</p>
-      <p>Capacité : {{ ad.capacity }} personnes</p>
-      <p>Taille : {{ ad.size }} m²</p>
-      <p v-if="ad.price">{{ ad.price }} € par nuit</p>
+    <!-- Vérifie si l'objet ad est défini -->
+    <div class="ad-content" v-if="ad">
+      <h3 v-if="ad.description">{{ ad.description }}</h3>
+      <p v-if="ad.adress">Adresse : {{ ad.adress }}</p>
+      <p v-if="ad.city">Ville : {{ ad.city }}</p>
+      <p v-if="ad.propertyType">Type : {{ ad.propertyType }}</p>
+      <p v-if="ad.capacity">Capacité : {{ ad.capacity }} personnes</p>
+      <p v-if="ad.size">Taille : {{ ad.size }} m²</p>
+      <p v-if="ad.pricePerNight > 0">{{ ad.pricePerNight }} € par nuit</p>
       <p v-else>Prix non disponible</p>
+    </div>
+
+    <!-- Si l'objet ad n'est pas défini -->
+    <div v-else>
+      <p>Annonce non disponible ou incomplète</p>
     </div>
   </div>
 </template>
@@ -23,6 +27,9 @@ export default {
       required: true,
     },
   },
+  mounted() {
+    console.log("Annonce reçue :", this.ad);
+  }
 };
 </script>
 
@@ -34,13 +41,6 @@ export default {
   text-align: center;
   background-color: #fff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.ad-image img {
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-  margin-bottom: 10px;
 }
 
 .ad-content h3 {

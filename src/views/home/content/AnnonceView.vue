@@ -1,8 +1,12 @@
 <template>
-  <div className="ad-list">
-    <CardView v-for="ad in ads" :key="ad.id" :ad="ad"/>
+  <div class="ad-list">
+    <div v-if="ads.length > 0">
+      <CardView v-for="ad in ads" :key="ad.id" :ad="ad" />
+    </div>
+    <p v-else>Aucune annonce disponible</p>
   </div>
 </template>
+
 
 <script>
 import CardView from "./CardView.vue";
@@ -21,11 +25,12 @@ export default {
   async mounted() {
     try {
       const response = await getAllProperty();
+      console.log("Données de l'API :", response);
       this.ads = response;
     } catch (error) {
       console.error("Erreur lors de la récupération des annonces :", error);
     }
-  },
+  }
 };
 </script>
 
