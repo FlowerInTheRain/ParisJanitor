@@ -1,11 +1,12 @@
 <template>
-  <div class="ad-list">
-    <CardView v-for="ad in ads" :key="ad.id" :ad="ad" />
+  <div className="ad-list">
+    <CardView v-for="ad in ads" :key="ad.id" :ad="ad" :userId="userId" />
   </div>
 </template>
 
 <script>
 import CardView from "./CardView.vue";
+import {getAllProperty} from "@/services/parisjanitor/endpoints/properties";
 
 export default {
   name: "AnnonceView",
@@ -14,19 +15,28 @@ export default {
   },
   data() {
     return {
-      ads: [
-        { id: 1, title: "Entraînez-vous à l'Institut Xavier", price: 35 },
-      ],
+      ads: [],
+      userId: localStorage.getItem('userId') || null, // Assurez-vous que userId est récupéré
     };
   },
+  async mounted() {
+    try {
+      const response = await getAllProperty();
+      console.log("Données de l'API :", response);
+      this.ads = response;
+    } catch (error) {
+      console.error("Erreur lors de la récupération des annonces :", error);
+    }
+  }
 };
 </script>
 
 <style scoped>
 .ad-list {
-  display: flex;
-  justify-content: space-around;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
   padding: 20px;
-  background-color: #ffffff;
+  background-color: #f9f9f9;
 }
 </style>
