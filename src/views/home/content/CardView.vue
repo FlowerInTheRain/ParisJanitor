@@ -1,17 +1,13 @@
 <template>
   <div class="ad-card">
-    <div class="ad-badge">Coup de cœur voyageurs</div>
-    <div class="ad-favorite">
-      <i class="fa fa-heart-o"></i>
+    <div class="ad-favorite" @click="toggleFavorite">
+      <img :src="isFavorite ? fullHeartImg : emptyHeartImg" alt="Favorite Icon" />
     </div>
-
     <div class="ad-image" @mouseover="showArrows = true" @mouseleave="showArrows = false">
       <img :src="ad.imageUrls[currentImageIndex]" alt="Image de la propriété" />
-
       <div v-if="showArrows" class="arrow left" @click="prevImage">‹</div>
       <div v-if="showArrows" class="arrow right" @click="nextImage">›</div>
     </div>
-
     <div class="ad-content">
       <h3>{{ ad.title }} • {{ ad.city }}</h3>
       <p>{{ ad.propertyType }} • {{ ad.capacity }} lits</p>
@@ -29,6 +25,10 @@
 </template>
 
 <script>
+import fullHeartImg from '@/assets/home/full-heart.png';
+import emptyHeartImg from '@/assets/home/empty-heart.png';
+import { addFavoriteProperty, getUserFavorites, removeFavoriteProperty } from "@/services/parisjanitor/endpoints/properties";
+
 export default {
   props: {
     ad: {
@@ -40,7 +40,18 @@ export default {
     return {
       currentImageIndex: 0,
       showArrows: false,
+      isFavorite: false,
+      fullHeartImg,
+      emptyHeartImg,
     };
+  },
+  async mounted() {
+    try {
+      const favorites = await getUserFavorites();
+      this.isFavorite = favorites.some(fav => fav.propertyId === this.ad.id);
+    } catch (error) {
+      console.error("Erreur lors du chargement des favoris :", error);
+    }
   },
   methods: {
     prevImage() {
@@ -57,10 +68,26 @@ export default {
         this.currentImageIndex = 0;
       }
     },
+    async toggleFavorite() {
+      if (this.isFavorite) {
+        try {
+          await removeFavoriteProperty(this.ad.id);
+          console.log("Propriété supprimée des favoris");
+          this.isFavorite = false;
+        } catch (error) {
+          console.error("Erreur lors de la suppression des favoris:", error);
+        }
+      } else {
+        try {
+          await addFavoriteProperty(this.ad.id);
+          console.log("Propriété ajoutée aux favoris");
+          this.isFavorite = true;
+        } catch (error) {
+          console.error("Erreur lors de l'ajout aux favoris:", error);
+        }
+      }
+    },
   },
-  mounted() {
-    console.log("Annonce reçue :", this.ad);
-  }
 };
 </script>
 
@@ -88,54 +115,20 @@ export default {
   object-fit: cover;
 }
 
-/* Flèches de navigation */
-.arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
-  font-size: 24px;
-  padding: 10px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.arrow.left {
-  left: 10px;
-}
-
-.arrow.right {
-  right: 10px;
-}
-
-.arrow:hover {
-  background-color: rgba(0, 0, 0, 0.8);
-}
-
-.ad-badge {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background-color: white;
-  color: black;
-  font-size: 12px;
-  font-weight: bold;
-  padding: 5px 10px;
-  border-radius: 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
 .ad-favorite {
   position: absolute;
   top: 10px;
-  right: 10px;
-  font-size: 18px;
-  color: #ff5a5f;
+  left: 10px;
+  width: 30px;
+  height: 30px;
   cursor: pointer;
+  z-index: 10;
+}
+
+.ad-favorite img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .ad-content {

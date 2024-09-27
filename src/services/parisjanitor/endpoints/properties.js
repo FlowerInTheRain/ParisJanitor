@@ -1,5 +1,17 @@
 import axios from '../axios';
 
+const getAllProperty = async () => {
+    const url = `/properties`;
+    try {
+        const response = await axios.get(url);
+        console.log("Appel de la route GET :", url);
+        return response.data;
+    } catch (error) {
+        console.error("Erreur lors de la récupération des propriétés :", error);
+        throw error;
+    }
+};
+
 const addFavoriteProperty = async (propertyId) => {
     const url = `http://localhost:4001/parisjanitor-api/favorites/add?propertyId=${propertyId}`;
     try {
@@ -37,6 +49,7 @@ const removeFavoriteProperty = async (propertyId) => {
 };
 
 export {
+    getAllProperty,
     addFavoriteProperty,
     getUserFavorites,
     removeFavoriteProperty

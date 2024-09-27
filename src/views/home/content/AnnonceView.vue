@@ -1,6 +1,6 @@
 <template>
   <div className="ad-list">
-    <CardView v-for="ad in ads" :key="ad.id" :ad="ad"/>
+    <CardView v-for="ad in ads" :key="ad.id" :ad="ad" :userId="userId" />
   </div>
 </template>
 
@@ -16,6 +16,7 @@ export default {
   data() {
     return {
       ads: [],
+      userId: localStorage.getItem('userId') || null, // Assurez-vous que userId est récupéré
     };
   },
   async mounted() {
@@ -37,7 +38,5 @@ export default {
   gap: 20px;
   padding: 20px;
   background-color: #f9f9f9;
-  height: 100%;
 }
 </style>
-
