@@ -17,7 +17,7 @@
 <script>
 import HeaderView from "@/views/home/content/HeaderView.vue";
 import NavContent from "@/views/home/content/NavContent.vue";
-import AnnonceView from "@/views/home/content/AnnonceView.vue"; // Remplace CardView par AnnonceView
+import AnnonceView from "@/views/home/content/AnnonceView.vue";
 import LoginView from "@/views/user/LoginView.vue";
 import { mapState } from 'vuex';
 
@@ -32,7 +32,7 @@ export default {
   components: {
     HeaderView,
     NavContent,
-    AnnonceView, // Importe et utilise AnnonceView
+    AnnonceView,
     LoginView,
   },
   computed: mapState(['isAuthenticated']),

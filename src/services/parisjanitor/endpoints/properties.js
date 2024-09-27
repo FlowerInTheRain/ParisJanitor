@@ -3,7 +3,7 @@ import axios from '../axios';
 const endpoint = "/properties"
 
 const getAllProperty = async () => {
-    console.log("Début de getAllProperty"); // Log avant l'appel API
+    console.log("Début de getAllProperty");
     try {
         const response = await axios.get(`${endpoint}`);
         console.log("Appel de la route GET :", `http://localhost:4001/parisjanitor-api${endpoint}`);

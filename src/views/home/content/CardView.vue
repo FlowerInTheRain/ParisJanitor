@@ -4,9 +4,14 @@
     <div class="ad-favorite">
       <i class="fa fa-heart-o"></i>
     </div>
-    <div class="ad-image">
-      <img :src="ad.imageUrls[0]" alt="Image de la propriété" />
+
+    <div class="ad-image" @mouseover="showArrows = true" @mouseleave="showArrows = false">
+      <img :src="ad.imageUrls[currentImageIndex]" alt="Image de la propriété" />
+
+      <div v-if="showArrows" class="arrow left" @click="prevImage">‹</div>
+      <div v-if="showArrows" class="arrow right" @click="nextImage">›</div>
     </div>
+
     <div class="ad-content">
       <h3>{{ ad.title }} • {{ ad.city }}</h3>
       <p>{{ ad.propertyType }} • {{ ad.capacity }} lits</p>
@@ -31,6 +36,28 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      currentImageIndex: 0,
+      showArrows: false,
+    };
+  },
+  methods: {
+    prevImage() {
+      if (this.currentImageIndex > 0) {
+        this.currentImageIndex--;
+      } else {
+        this.currentImageIndex = this.ad.imageUrls.length - 1;
+      }
+    },
+    nextImage() {
+      if (this.currentImageIndex < this.ad.imageUrls.length - 1) {
+        this.currentImageIndex++;
+      } else {
+        this.currentImageIndex = 0;
+      }
+    },
+  },
   mounted() {
     console.log("Annonce reçue :", this.ad);
   }
@@ -49,10 +76,44 @@ export default {
   background-color: #fff;
 }
 
-.ad-image img {
+.ad-image {
+  position: relative;
   width: 278px;
   height: 250px;
+}
+
+.ad-image img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+}
+
+/* Flèches de navigation */
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 24px;
+  padding: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.arrow.left {
+  left: 10px;
+}
+
+.arrow.right {
+  right: 10px;
+}
+
+.arrow:hover {
+  background-color: rgba(0, 0, 0, 0.8);
 }
 
 .ad-badge {
