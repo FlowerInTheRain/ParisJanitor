@@ -1,12 +1,8 @@
 <template>
-  <div class="ad-list">
-    <div v-if="ads.length > 0">
-      <CardView v-for="ad in ads" :key="ad.id" :ad="ad" />
-    </div>
-    <p v-else>Aucune annonce disponible</p>
+  <div className="ad-list">
+    <CardView v-for="ad in ads" :key="ad.id" :ad="ad"/>
   </div>
 </template>
-
 
 <script>
 import CardView from "./CardView.vue";
@@ -37,10 +33,11 @@ export default {
 <style scoped>
 .ad-list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 20px;
-  margin: 20px;
   padding: 20px;
   background-color: #f9f9f9;
+  height: 100%;
 }
 </style>
+
