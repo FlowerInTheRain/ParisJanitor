@@ -3,9 +3,20 @@
     <HeaderView @showLoginPopup="showLoginPopup" />
     <div class="property-details">
       <div class="images-section">
-        <img :src="property.imageUrls[0]" alt="Main Property Image" class="main-image" />
+        <img
+            :src="property.imageUrls[0]"
+            alt="Main Property Image"
+            class="main-image"
+            @click="goToAllImages"
+        />
         <div class="other-images">
-          <img v-for="(img, index) in property.imageUrls.slice(1)" :key="index" :src="img" alt="Property Image" />
+          <img
+              v-for="(img, index) in property.imageUrls.slice(1, 5)"
+              :key="index"
+              :src="img"
+              alt="Property Image"
+              @click="goToAllImages"
+          />
         </div>
       </div>
       <div class="property-info">
@@ -44,6 +55,11 @@ export default {
       console.error("Erreur lors de la récupération de la propriété :", error);
     }
   },
+  methods: {
+    goToAllImages() {
+      this.$router.push({ name: 'all-images', params: { id: this.$route.params.id } });
+    }
+  },
 };
 </script>
 
@@ -51,11 +67,14 @@ export default {
 #property-detail-view {
   padding: 20px;
   background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.property-details{
+.property-details {
   width: 80%;
-  position: center;
+  margin: 0 auto;
 }
 
 .images-section {
@@ -65,6 +84,12 @@ export default {
 }
 
 .main-image {
+  width: 60%;
+  height: 480px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+.main-image {
   width: 50%;
   height: 480px;
   object-fit: cover;
@@ -72,13 +97,17 @@ export default {
 }
 
 .other-images img {
-  width: 50%;
-  height: 240px;
+  width: 48%;
+  height: 235px;
+  margin: 3px;
   object-fit: cover;
   border-radius: 10px;
 }
 
 .property-info {
   margin-top: 20px;
+  text-align: center;
 }
 </style>
+
+

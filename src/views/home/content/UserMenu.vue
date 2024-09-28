@@ -52,7 +52,6 @@ export default {
 </script>
 
 <style scoped>
-/* Styles du UserMenu */
 .user-menu {
   position: relative;
   display: flex;
