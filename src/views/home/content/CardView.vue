@@ -116,7 +116,6 @@ export default {
   display: block;
 }
 
-/* Flèches de navigation */
 .arrow {
   position: absolute;
   top: 50%;
