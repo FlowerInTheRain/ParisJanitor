@@ -8,9 +8,9 @@
       <ul v-if="isAuthenticated">
         <li><a href="#">Messages</a></li>
         <li><a href="#">Voyages</a></li>
-        <li><a href="#">Favoris</a></li>
+        <li><router-link to="/mes-favoris">Favoris</router-link></li>
         <li><a href="#">Mettre mon logement en location</a></li>
-        <li><router-link to="/mon-compte">Mon compte</router-link></li> <!-- Lien vers Mon Compte -->
+        <li><router-link to="/mon-compte">Mon compte</router-link></li>
         <li><a href="#">Centre d'aide</a></li>
         <li><a @click="handleLogout">Déconnexion</a></li>
       </ul>

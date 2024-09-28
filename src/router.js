@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from './views/home/HomeView.vue';
 import ProfilView from './views/user/ProfilView.vue';
+import FavoritesView from "@/views/favorites/FavoritesView";
 
 const routes = [
   {
@@ -14,7 +15,13 @@ const routes = [
     name: 'profil',
     component: ProfilView,
     meta: { title: 'Mon Compte - Paris Janitor' }
-  }
+  },
+  {
+    path: '/mes-favoris',
+    name: 'favories',
+    component: FavoritesView,
+    meta: { title: 'Mes Favoris - Paris Janitor' }
+  },
 ];
 
 const router = createRouter({
