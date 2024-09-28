@@ -39,15 +39,14 @@
           </div>
         </div>
 
-        <!-- Section de réservation à droite -->
         <div class="reservation-section">
           <div class="price-per-night">
             <span>{{ property.pricePerNight }} €</span> par nuit
           </div>
           <div class="booking-form">
             <div class="date-selector">
-              <input type="date" placeholder="Arrivée" />
-              <input type="date" placeholder="Départ" />
+              <input type="date" v-model="checkInDate" placeholder="Arrivée" />
+              <input type="date" v-model="checkOutDate" placeholder="Départ" />
             </div>
             <div class="guest-selector">
               <select>
@@ -59,11 +58,12 @@
             </div>
             <button class="reserve-button">Réserver</button>
           </div>
+
           <div class="price-breakdown">
-            <p>{{ property.pricePerNight }} € x 8 nuits: <strong>1248 €</strong></p>
-            <p>Frais de ménage: <strong>30 €</strong></p>
-            <p>Frais de service: <strong>217 €</strong></p>
-            <p>Total: <strong>1495 €</strong></p>
+            <p>{{ property.pricePerNight }} € x {{ numberOfNights }} nuits: <strong>{{ subtotalPrice }} €</strong></p>
+            <p>Frais de ménage: <strong>{{ cleaningFee }} €</strong></p>
+            <p>Frais de service: <strong>0 €</strong></p>
+            <p>Total: <strong>{{ totalPrice }} €</strong></p>
           </div>
         </div>
       </div>
@@ -87,7 +87,29 @@ export default {
   data() {
     return {
       property: null,
+      checkInDate: null,
+      checkOutDate: null,
     };
+  },
+  computed: {
+    numberOfNights() {
+      if (this.checkInDate && this.checkOutDate) {
+        const checkIn = new Date(this.checkInDate);
+        const checkOut = new Date(this.checkOutDate);
+        const timeDifference = checkOut - checkIn;
+        return timeDifference > 0 ? Math.ceil(timeDifference / (1000 * 60 * 60 * 24)) : 1;
+      }
+      return 1; // Default to 1 night if no dates are entered
+    },
+    subtotalPrice() {
+      return this.property ? this.property.pricePerNight * this.numberOfNights : 0;
+    },
+    cleaningFee() {
+      return this.property ? Math.round(this.property.pricePerNight * 0.15) : 0;
+    },
+    totalPrice() {
+      return this.subtotalPrice + this.cleaningFee + 0; // A réfléchir pour le service fee
+    }
   },
   async mounted() {
     const propertyId = this.$route.params.id;
