@@ -16,7 +16,7 @@ export default {
   data() {
     return {
       ads: [],
-      userId: localStorage.getItem('userId') || null, // Assurez-vous que userId est récupéré
+      userId: localStorage.getItem('userId') || null,
     };
   },
   async mounted() {

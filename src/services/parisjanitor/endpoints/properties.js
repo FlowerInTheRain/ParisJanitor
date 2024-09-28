@@ -27,7 +27,11 @@ const addFavoriteProperty = async (propertyId) => {
 const getUserFavorites = async () => {
     const url = `http://localhost:4001/parisjanitor-api/favorites/user/me`;
     try {
-        const response = await axios.get(url);
+        const response = await axios.get(url, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        });
         console.log("Favoris récupérés :", response.data);
         return response.data;
     } catch (error) {
@@ -39,7 +43,11 @@ const getUserFavorites = async () => {
 const removeFavoriteProperty = async (propertyId) => {
     const url = `http://localhost:4001/parisjanitor-api/favorites/remove?propertyId=${propertyId}`;
     try {
-        const response = await axios.delete(url);
+        const response = await axios.delete(url, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        });
         console.log("Propriété supprimée des favoris :", response.data);
         return response.data;
     } catch (error) {
@@ -48,9 +56,25 @@ const removeFavoriteProperty = async (propertyId) => {
     }
 };
 
+const getPropertyById = async (propertyId) => {
+    const url = `http://localhost:4001/parisjanitor-api/properties/${propertyId}`;
+    try {
+        const response = await axios.get(url, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Erreur lors de la récupération de la propriété :", error.response ? error.response : error);
+        throw error;
+    }
+};
+
 export {
     getAllProperty,
     addFavoriteProperty,
     getUserFavorites,
-    removeFavoriteProperty
+    removeFavoriteProperty,
+    getPropertyById
 };
