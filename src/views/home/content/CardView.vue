@@ -9,12 +9,11 @@
       <div v-if="showArrows" class="arrow right" @click="nextImage">›</div>
     </div>
     <div class="ad-content">
-      <h3>{{ ad.title }} • {{ ad.city }}</h3>
-      <p>{{ ad.propertyType }} • {{ ad.capacity }} lits</p>
+      <h3 v-if="ad.propertyType === 'APARTMENT'">Appartement • {{ ad.city }} <span class="ad-rating">⭐ {{ ad.rating }} ({{ ad.reviews }})</span></h3>
+      <h3 v-else>Maison • {{ ad.city }} <span class="ad-rating">⭐ {{ ad.rating }} ({{ ad.reviews }})</span> </h3>
+      <p v-if="ad.accommodationType === COMPLETE"> Logement complet • {{ ad.capacity }} lits</p>
+      <p v-else>Chambre • {{ ad.capacity }} lits</p>
       <p>Hôte : {{ ad.host }}</p>
-      <div class="ad-rating">
-        <span>⭐ {{ ad.rating }} ({{ ad.reviews }})</span>
-      </div>
       <div class="ad-price">
         <p class="old-price" v-if="ad.oldPrice">{{ ad.oldPrice }} €</p>
         <p>{{ ad.pricePerNight }} € par nuit</p>
@@ -93,7 +92,7 @@ export default {
 
 <style scoped>
 .ad-card {
-  width: 278px;
+  width: 250px;
   height: auto;
   border-radius: 10px;
   border: 1px solid #ddd;
@@ -105,22 +104,54 @@ export default {
 
 .ad-image {
   position: relative;
-  width: 278px;
+  width: 250px;
   height: 250px;
+  overflow: hidden;
 }
 
 .ad-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
+}
+
+/* Flèches de navigation */
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  height: 40px;
+  color: white;
+  font-size: 20px;
+  padding: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+}
+
+.arrow.left {
+  left: 10px;
+}
+
+.arrow.right {
+  right: 10px;
+}
+
+.arrow:hover {
+  background-color: rgba(0, 0, 0, 0.8);
 }
 
 .ad-favorite {
   position: absolute;
   top: 10px;
   left: 10px;
-  width: 30px;
-  height: 30px;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
   z-index: 10;
 }
@@ -137,7 +168,7 @@ export default {
 
 .ad-content h3 {
   margin-bottom: 10px;
-  font-size: 1.2rem;
+  font-size: 0.8rem;
   font-weight: bold;
 }
 
@@ -155,6 +186,7 @@ export default {
 .ad-price {
   margin-top: 10px;
   font-weight: bold;
+  font-size: 10px;
 }
 
 .ad-price .old-price {
