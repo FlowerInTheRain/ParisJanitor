@@ -13,7 +13,9 @@ export default class PropertyCreationRequestDto {
         conciergerieType,
         accommodationType,
         price,
-        city
+        city,
+        numberOfBathrooms,
+        numberOfBedrooms
     ) {
         this.adress = adress;
         this.description = description;
@@ -29,5 +31,7 @@ export default class PropertyCreationRequestDto {
         this.accommodationType = accommodationType;
         this.price = price;
         this.city = city;
+        this.numberOfBathrooms = numberOfBathrooms;
+        this.numberOfBedrooms = numberOfBedrooms;
     }
 }
