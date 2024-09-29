@@ -1,5 +1,5 @@
 <template>
-  <div class="ad-card">
+  <div class="ad-card" @click="goToDetailPage">
     <div class="ad-favorite" @click="toggleFavorite">
       <img :src="isFavorite ? fullHeartImg : emptyHeartImg" alt="Favorite Icon" />
     </div>
@@ -53,6 +53,9 @@ export default {
     }
   },
   methods: {
+    goToDetailPage() {
+      this.$router.push({ name: 'property-detail', params: { id: this.ad.id } });
+    },
     prevImage() {
       if (this.currentImageIndex > 0) {
         this.currentImageIndex--;

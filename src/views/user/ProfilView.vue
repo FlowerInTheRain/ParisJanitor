@@ -177,7 +177,7 @@ export default {
       const result = await verifyPassword(this.password);
       console.log("Password verification result:", result);
 
-      if (result) { // Assurez-vous que cette condition est correcte.
+      if (result) {
         console.log("Password verified, updating profile with data:", this.editUser);
         try {
           const updatedUser = await updateUserProfile(this.editUser);
@@ -250,7 +250,6 @@ export default {
     handleFileChange(event) {
       const file = event.target.files[0];
       if (file) {
-        // TODO: Add file handling logic here
         console.log("Selected file:", file);
       }
     }

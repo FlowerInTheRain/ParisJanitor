@@ -2,7 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from './views/home/HomeView.vue';
 import ProfilView from './views/user/ProfilView.vue';
 import FavoritesView from "@/views/favorites/FavoritesView";
-
+import PropertyDetailView from "@/views/property/PropertyDetailView";
+import AllImagesView from "@/views/property/AlImagesView";
 const routes = [
   {
     path: '/',
@@ -18,9 +19,22 @@ const routes = [
   },
   {
     path: '/mes-favoris',
-    name: 'favories',
+    name: 'favorites',
     component: FavoritesView,
     meta: { title: 'Mes Favoris - Paris Janitor' }
+  },
+  {
+    path: '/property/:id',
+    name: 'property-detail',
+    component: PropertyDetailView,
+    meta: { title: 'Détail de la propriété - Paris Janitor' }
+  },
+
+  {
+    path: '/property/:id/images',
+    name: 'all-images',
+    component: AllImagesView,
+    meta: { title: 'Image - Paris Janitor' }
   },
 ];
 
