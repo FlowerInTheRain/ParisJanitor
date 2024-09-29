@@ -24,7 +24,7 @@
         <div class="property-info">
           <h1>{{ property.title }}</h1>
           <p class="property-details-info">
-            {{ property.capacity }} voyageurs • {{ property.numberOfRooms }} chambres • {{ property.numberOfBeds }} lits • {{ property.bathrooms }} salles de bain
+            {{ property.capacity }} voyageurs • {{ property.numberOfRooms }} chambres • {{ property.numberOfBedrooms }} lits • {{ property.numberOfBathrooms }} salles de bain
           </p>
           <div class="property-description">
             <h3>Informations sur l'hébergement</h3>
@@ -34,7 +34,7 @@
             <img :src="property.hostImageUrl" alt="Host Image" class="host-image" />
             <div>
               <p>Hôte : {{ property.host }}</p>
-              <p>Superhôte - Hôte depuis {{ property.hostSince }}</p>
+              <p>Superhôte - Hôte depuis {{ hostYears }}</p>
             </div>
           </div>
         </div>
@@ -45,16 +45,11 @@
           </div>
           <div class="booking-form">
             <div class="date-selector">
-              <input type="date" v-model="checkInDate" placeholder="Arrivée" />
-              <input type="date" v-model="checkOutDate" placeholder="Départ" />
+              <input type="date" v-model="checkInDate" :min="today" placeholder="Arrivée" />
+              <input type="date" v-model="checkOutDate" :min="checkInDate ? checkInDate : today" placeholder="Départ" />
             </div>
             <div class="guest-selector">
-              <select>
-                <option>1 voyageur</option>
-                <option>2 voyageurs</option>
-                <option>3 voyageurs</option>
-                <option>4 voyageurs</option>
-              </select>
+              <guest-selector :capacity="property.capacity" @updateGuests="updateGuests" />
             </div>
             <button class="reserve-button">Réserver</button>
           </div>
@@ -62,7 +57,7 @@
           <div class="price-breakdown">
             <p>{{ property.pricePerNight }} € x {{ numberOfNights }} nuits: <strong>{{ subtotalPrice }} €</strong></p>
             <p>Frais de ménage: <strong>{{ cleaningFee }} €</strong></p>
-            <p>Frais de service: <strong>0 €</strong></p>
+            <p>Frais de service: <strong>217 €</strong></p>
             <p>Total: <strong>{{ totalPrice }} €</strong></p>
           </div>
         </div>
@@ -77,21 +72,31 @@
 
 <script>
 import HeaderView from "@/views/home/content/HeaderView.vue";
+import GuestSelector from "@/views/property/GuestSelector.vue";
 import { getPropertyById } from "@/services/parisjanitor/endpoints/properties";
 
 export default {
   name: "PropertyDetailView",
   components: {
     HeaderView,
+    GuestSelector,
   },
   data() {
     return {
       property: null,
       checkInDate: null,
       checkOutDate: null,
+      selectedGuests: 1,
     };
   },
   computed: {
+    today() {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = (today.getMonth() + 1).toString().padStart(2, '0');
+      const day = today.getDate().toString().padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    },
     numberOfNights() {
       if (this.checkInDate && this.checkOutDate) {
         const checkIn = new Date(this.checkInDate);
@@ -99,7 +104,7 @@ export default {
         const timeDifference = checkOut - checkIn;
         return timeDifference > 0 ? Math.ceil(timeDifference / (1000 * 60 * 60 * 24)) : 1;
       }
-      return 1; // Default to 1 night if no dates are entered
+      return 1;
     },
     subtotalPrice() {
       return this.property ? this.property.pricePerNight * this.numberOfNights : 0;
@@ -108,8 +113,15 @@ export default {
       return this.property ? Math.round(this.property.pricePerNight * 0.15) : 0;
     },
     totalPrice() {
-      return this.subtotalPrice + this.cleaningFee + 0; // A réfléchir pour le service fee
-    }
+      return this.subtotalPrice + this.cleaningFee + 217;
+    },
+    hostYears() {
+      // Assuming you have a field "hostSince" in the property object
+      if (this.property && this.property.hostSince) {
+        return new Date().getFullYear() - new Date(this.property.hostSince).getFullYear();
+      }
+      return 'plusieurs années';
+    },
   },
   async mounted() {
     const propertyId = this.$route.params.id;
@@ -123,6 +135,9 @@ export default {
   methods: {
     goToAllImages() {
       this.$router.push({ name: 'all-images', params: { id: this.$route.params.id } });
+    },
+    updateGuests(totalGuests) {
+      this.selectedGuests = totalGuests;
     }
   },
 };
@@ -227,11 +242,8 @@ export default {
   border-radius: 5px;
 }
 
-.guest-selector select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+.guest-selector {
+  margin-bottom: 10px;
 }
 
 .reserve-button {
