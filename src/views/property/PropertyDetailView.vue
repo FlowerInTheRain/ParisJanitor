@@ -80,11 +80,12 @@
   </div>
 </template>
 
+
 <script>
 import HeaderView from "@/views/home/content/HeaderView.vue";
 import GuestSelector from "@/views/property/GuestSelector.vue";
 import { getPropertyById } from "@/services/parisjanitor/endpoints/properties";
-import { checkAvailability } from "@/services/parisjanitor/endpoints/bookings";
+import { checkAvailability, createBooking } from "@/services/parisjanitor/endpoints/bookings";
 
 export default {
   name: "PropertyDetailView",
@@ -100,6 +101,12 @@ export default {
       selectedGuests: 1,
       availabilityMessage: "",
       isAvailable: false,
+      guests: {
+        adults: 1,
+        children: 0,
+        babies: 0,
+        pets: 0,
+      },
     };
   },
   computed: {
@@ -149,8 +156,8 @@ export default {
     goToAllImages() {
       this.$router.push({ name: 'all-images', params: { id: this.$route.params.id } });
     },
-    updateGuests(totalGuests) {
-      this.selectedGuests = totalGuests;
+    updateGuests(updatedGuests) {
+      this.guests = updatedGuests;
     },
     async verifyAvailability() {
       if (this.checkInDate && this.checkOutDate) {
@@ -185,10 +192,32 @@ export default {
       const day = d.getDate().toString().padStart(2, '0');
       return `${year}-${month}-${day}`;
     },
-    makeReservation() {
-      // Logic to make a reservation if available
-      alert('Réservation effectuée!');
-    }
+    async makeReservation() {
+      if (!this.isAvailable) {
+        alert("Le logement n'est pas disponible pour les dates sélectionnées.");
+        return;
+      }
+
+      const bookingData = {
+        propertyId: this.property.id,
+        startDate: this.formatDate(this.checkInDate),
+        endDate: this.formatDate(this.checkOutDate),
+        status: "PENDING",
+        numberOfAdults: this.guests.adults,
+        numberOfChildren: this.guests.children,
+        numberOfBabies: this.guests.babies,
+        numberOfPets: this.guests.pets,
+      };
+
+      try {
+        const response = await createBooking(bookingData);
+        console.log("Réservation effectuée :", response);
+        alert("Réservation effectuée avec succès!");
+      } catch (error) {
+        console.error("Erreur lors de la création de la réservation :", error);
+        alert("Erreur lors de la création de la réservation. Veuillez réessayer.");
+      }
+    },
   }
 };
 </script>

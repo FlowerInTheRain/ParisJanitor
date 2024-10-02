@@ -13,6 +13,18 @@ const checkAvailability = async (propertyId, startDate, endDate) => {
     }
 };
 
+const createBooking = async (bookingDetails) => {
+    try {
+        const response = await axios.post(endpoint, bookingDetails);
+        console.log("Réservation effectuée avec succès :", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Erreur lors de la création de la réservation :", error.response ? error.response : error);
+        throw error;
+    }
+};
+
 export {
-    checkAvailability
+    checkAvailability,
+    createBooking
 };
