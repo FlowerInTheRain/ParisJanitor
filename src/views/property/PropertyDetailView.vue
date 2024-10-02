@@ -51,14 +51,24 @@
             <div class="guest-selector">
               <guest-selector :capacity="property.capacity" @updateGuests="updateGuests" />
             </div>
-            <button class="reserve-button">Réserver</button>
+            <button
+                class="availability-button"
+                :disabled="!isAvailable"
+                @click="makeReservation"
+            >
+              {{ isAvailable ? 'Réserver' : 'Vérifier la disponibilité' }}
+            </button>
           </div>
 
-          <div class="price-breakdown">
+          <div class="price-breakdown" v-if="checkInDate && checkOutDate">
             <p>{{ property.pricePerNight }} € x {{ numberOfNights }} nuits: <strong>{{ subtotalPrice }} €</strong></p>
             <p>Frais de ménage: <strong>{{ cleaningFee }} €</strong></p>
             <p>Frais de service: <strong>217 €</strong></p>
             <p>Total: <strong>{{ totalPrice }} €</strong></p>
+          </div>
+
+          <div class="availability-message" v-if="availabilityMessage">
+            <p>{{ availabilityMessage }}</p>
           </div>
         </div>
       </div>
@@ -70,10 +80,12 @@
   </div>
 </template>
 
+
 <script>
 import HeaderView from "@/views/home/content/HeaderView.vue";
 import GuestSelector from "@/views/property/GuestSelector.vue";
 import { getPropertyById } from "@/services/parisjanitor/endpoints/properties";
+import { checkAvailability, createBooking } from "@/services/parisjanitor/endpoints/bookings";
 
 export default {
   name: "PropertyDetailView",
@@ -87,15 +99,20 @@ export default {
       checkInDate: null,
       checkOutDate: null,
       selectedGuests: 1,
+      availabilityMessage: "",
+      isAvailable: false,
+      guests: {
+        adults: 1,
+        children: 0,
+        babies: 0,
+        pets: 0,
+      },
     };
   },
   computed: {
     today() {
       const today = new Date();
-      const year = today.getFullYear();
-      const month = (today.getMonth() + 1).toString().padStart(2, '0');
-      const day = today.getDate().toString().padStart(2, '0');
-      return `${year}-${month}-${day}`;
+      return today.toISOString().split("T")[0];
     },
     numberOfNights() {
       if (this.checkInDate && this.checkOutDate) {
@@ -116,12 +133,15 @@ export default {
       return this.subtotalPrice + this.cleaningFee + 217;
     },
     hostYears() {
-      // Assuming you have a field "hostSince" in the property object
       if (this.property && this.property.hostSince) {
         return new Date().getFullYear() - new Date(this.property.hostSince).getFullYear();
       }
       return 'plusieurs années';
     },
+  },
+  watch: {
+    checkInDate: 'verifyAvailability',
+    checkOutDate: 'verifyAvailability'
   },
   async mounted() {
     const propertyId = this.$route.params.id;
@@ -136,140 +156,232 @@ export default {
     goToAllImages() {
       this.$router.push({ name: 'all-images', params: { id: this.$route.params.id } });
     },
-    updateGuests(totalGuests) {
-      this.selectedGuests = totalGuests;
-    }
-  },
+    updateGuests(updatedGuests) {
+      this.guests = updatedGuests;
+    },
+    async verifyAvailability() {
+      if (this.checkInDate && this.checkOutDate) {
+        const formattedCheckInDate = this.formatDate(this.checkInDate);
+        const formattedCheckOutDate = this.formatDate(this.checkOutDate);
+        const propertyId = this.property.id;
+
+        try {
+          const isAvailable = await checkAvailability(propertyId, formattedCheckInDate, formattedCheckOutDate);
+          console.log("Résultat de la disponibilité :", isAvailable);
+
+          if (isAvailable) {
+            this.isAvailable = true;
+            this.availabilityMessage = "Le logement est disponible pour les dates sélectionnées.";
+          } else {
+            this.isAvailable = false;
+            this.availabilityMessage = "Le logement n'est pas disponible pour les dates sélectionnées.";
+          }
+        } catch (error) {
+          this.isAvailable = false;
+          this.availabilityMessage = "Erreur lors de la vérification de la disponibilité.";
+        }
+      } else {
+        this.isAvailable = false;
+        this.availabilityMessage = "";
+      }
+    },
+    formatDate(date) {
+      const d = new Date(date);
+      const year = d.getFullYear();
+      const month = (d.getMonth() + 1).toString().padStart(2, '0');
+      const day = d.getDate().toString().padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    },
+    async makeReservation() {
+      if (!this.isAvailable) {
+        alert("Le logement n'est pas disponible pour les dates sélectionnées.");
+        return;
+      }
+
+      const bookingData = {
+        propertyId: this.property.id,
+        startDate: this.formatDate(this.checkInDate),
+        endDate: this.formatDate(this.checkOutDate),
+        status: "PENDING",
+        numberOfAdults: this.guests.adults,
+        numberOfChildren: this.guests.children,
+        numberOfBabies: this.guests.babies,
+        numberOfPets: this.guests.pets,
+      };
+
+      try {
+        const response = await createBooking(bookingData);
+        console.log("Réservation effectuée :", response);
+        alert("Réservation effectuée avec succès!");
+      } catch (error) {
+        console.error("Erreur lors de la création de la réservation :", error);
+        alert("Erreur lors de la création de la réservation. Veuillez réessayer.");
+      }
+    },
+  }
 };
 </script>
 
 <style scoped>
-#property-detail-view {
-  padding: 20px;
-  background-color: #f9f9f9;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
 
-.property-details {
-  width: 80%;
-  margin: 0 auto;
-}
-
-.images-section {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
-}
-
-.main-image {
-  width: 50%;
-  height: 480px;
-  object-fit: cover;
-  border-radius: 10px;
-}
-
-.other-images img {
-  width: 48%;
-  height: 235px;
-  margin: 3px;
-  object-fit: cover;
-  border-radius: 10px;
-}
-
-.info-reservation-container {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-  gap: 20px;
-}
-
-.property-info {
-  flex: 2;
-  text-align: left;
-}
-
-.property-details-info {
-  font-size: 16px;
-  color: #555;
-  margin-bottom: 20px;
-}
-
-.property-description {
-  margin-bottom: 20px;
-}
-
-.host-info {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  margin-top: 20px;
-}
-
-.host-image {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.reservation-section {
-  flex: 1;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  text-align: left;
-}
-
-.price-per-night {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.booking-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.date-selector input {
-  width: 48%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
-
-.guest-selector {
-  margin-bottom: 10px;
-}
-
-.reserve-button {
-  background-color: #ff5a5f;
+.availability-button {
+  background-color: #ccc;
   color: white;
   padding: 15px;
   border: none;
   border-radius: 8px;
-  cursor: pointer;
+  cursor: not-allowed;
   font-size: 16px;
   text-align: center;
 }
 
-.reserve-button:hover {
+.availability-button:enabled {
+  background-color: #ff5a5f;
+  cursor: pointer;
+}
+
+.availability-button:enabled:hover {
   background-color: #e04e50;
 }
 
-.price-breakdown {
+.availability-message {
   margin-top: 20px;
   font-size: 14px;
-  color: #777;
+  color: #ff5a5f;
+}
+
+#property-detail-view {
+padding: 20px;
+background-color: #f9f9f9;
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+.property-details {
+width: 80%;
+margin: 0 auto;
+}
+
+.images-section {
+display: flex;
+gap: 20px;
+margin-bottom: 20px;
+}
+
+.main-image {
+width: 50%;
+height: 480px;
+object-fit: cover;
+border-radius: 10px;
+}
+
+.other-images img {
+width: 48%;
+height: 235px;
+margin: 3px;
+object-fit: cover;
+border-radius: 10px;
+}
+
+.info-reservation-container {
+display: flex;
+justify-content: space-between;
+margin-top: 20px;
+gap: 20px;
+}
+
+.property-info {
+flex: 2;
+text-align: left;
+}
+
+.property-details-info {
+font-size: 16px;
+color: #555;
+margin-bottom: 20px;
+}
+
+.property-description {
+margin-bottom: 20px;
+}
+
+.host-info {
+display: flex;
+align-items: center;
+gap: 20px;
+margin-top: 20px;
+}
+
+.host-image {
+width: 60px;
+height: 60px;
+border-radius: 50%;
+object-fit: cover;
+}
+
+.reservation-section {
+flex: 1;
+background-color: #fff;
+border-radius: 10px;
+box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+padding: 20px;
+text-align: left;
+}
+
+.price-per-night {
+font-size: 24px;
+font-weight: bold;
+margin-bottom: 10px;
+}
+
+.booking-form {
+display: flex;
+flex-direction: column;
+gap: 10px;
+}
+
+.date-selector input {
+width: 48%;
+padding: 10px;
+border: 1px solid #ddd;
+border-radius: 5px;
+}
+
+.guest-selector {
+margin-bottom: 10px;
+}
+
+.availability-button {
+background-color: #ccc;
+color: white;
+padding: 15px;
+border: none;
+border-radius: 8px;
+cursor: not-allowed;
+font-size: 16px;
+text-align: center;
+}
+
+.availability-button:enabled {
+background-color: #ff5a5f;
+cursor: pointer;
+}
+
+.availability-button:enabled:hover {
+background-color: #e04e50;
+}
+
+.price-breakdown {
+margin-top: 20px;
+font-size: 14px;
+color: #777;
 }
 
 .price-breakdown p {
-  display: flex;
-  justify-content: space-between;
-  margin: 5px 0;
+display: flex;
+justify-content: space-between;
+margin: 5px 0;
 }
+
 </style>
