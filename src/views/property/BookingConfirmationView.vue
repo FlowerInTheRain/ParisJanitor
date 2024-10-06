@@ -44,11 +44,31 @@
       <div class="price-details">
         <img :src="property.imageUrls[0]" alt="Property Image" class="property-image">
         <h3>{{ property.title }}</h3>
-        <p>{{ property.pricePerNight }} € x {{ numberOfNights }} nuits</p>
-        <p>Frais de service: {{ serviceFee }} €</p>
-        <p><strong>Total: {{ totalPrice }} €</strong></p>
-        <button @click="confirmBooking">Réserver</button>
+        <p class="property-type">{{ accommodationDescription }}</p>
+        <p class="rating">
+          <span>★ {{ property.rating }} ({{ property.numberOfReviews }} commentaires)</span> • Superhôte
+        </p>
+        <div class="price-breakdown">
+          <div class="price-item">
+            <span>{{ property.pricePerNight }} € x {{ numberOfNights }} nuits</span>
+            <span>{{ subtotalPrice }} €</span>
+          </div>
+          <div class="price-item">
+            <span>Frais de ménage</span>
+            <span>{{ cleaningFee }} €</span>
+          </div>
+          <div class="price-item">
+            <span>Frais de service Airbnb</span>
+            <span>{{ serviceFee }} €</span>
+          </div>
+          <div class="total-price">
+            <span>Total (EUR)</span>
+            <strong>{{ totalPrice }} €</strong>
+          </div>
+        </div>
+        <button @click="confirmBooking" class="reserve-button">Réserver</button>
       </div>
+
     </div>
   </div>
   <div v-else>
@@ -81,22 +101,16 @@ export default {
       if (!contactSlot || contactSlot.length === 0) {
         return 'Aucun créneau disponible';
       }
-
-      // Mapper les choix possibles à des messages
       const slotMessages = {
         BEFORE_12H: 'avant midi',
         BETWEEN_12H_AND_14H: 'de midi à 14h',
         BETWEEN_14H_AND_18H: 'de 14h à 18h',
         AFTER_18H: 'après 18h'
       };
-
-      // Vérifier le nombre et les combinaisons de slots
       const hasAllSlots = ['BEFORE_12H', 'BETWEEN_12H_AND_14H', 'BETWEEN_14H_AND_18H', 'AFTER_18H'].every(slot => contactSlot.includes(slot));
       if (hasAllSlots) {
         return "n'importe quand";
       }
-
-      // Identifier les combinaisons spécifiques
       if (contactSlot.includes('BEFORE_12H') && contactSlot.includes('BETWEEN_12H_AND_14H') && contactSlot.includes('BETWEEN_14H_AND_18H') && !contactSlot.includes('AFTER_18H')) {
         return 'jusqu\'à 18h';
       }
@@ -113,7 +127,6 @@ export default {
         return 'de 12h à 18h';
       }
 
-      // Pour les cas de combinaisons non contiguës
       let descriptions = [];
       contactSlot.forEach(slot => {
         if (slotMessages[slot]) {
@@ -142,11 +155,24 @@ export default {
           parseInt(this.$route.query.numberOfPets)
       );
     },
-    totalPrice() {
-      return parseFloat(this.$route.query.totalPrice);
+    subtotalPrice() {
+      return this.property ? this.property.pricePerNight * this.numberOfNights : 0;
+    },
+    cleaningFee() {
+      return 10;
     },
     serviceFee() {
-      return Math.round(this.totalPrice * 0.15);
+      return Math.round(this.subtotalPrice * 0.15);
+    },
+    totalPrice() {
+      return this.subtotalPrice + this.cleaningFee + this.serviceFee;
+    },
+    accommodationDescription() {
+      if (this.property.accommodationType === 'COMPLET') {
+        return `Logement entier : ${this.property.propertyType === 'APARTMENT' ? 'appartement' : 'maison'}`;
+      } else {
+        return `Chambre dans un(e) ${this.property.propertyType === 'APARTMENT' ? 'appartement' : 'maison'}`;
+      }
     }
   },
   methods: {
@@ -217,11 +243,72 @@ export default {
   background-color: #f9f9f9;
   border: 1px solid #ddd;
   border-radius: 8px;
-  text-align: center;
+  text-align: left;
 }
 
 .property-image {
   width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.price-details h3 {
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.property-type {
+  color: #757575;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.rating {
+  color: #757575;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.price-breakdown {
+  margin-top: 20px;
+}
+
+.price-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.total-price {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.reserve-button {
+  display: block;
+  width: 100%;
+  background-color: #ff5a5f;
+  color: white;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.reserve-button:hover {
+  background-color: #e04e50;
+}
+
+.property-image {
+  width:25%;
   height: auto;
   border-radius: 8px;
   margin-bottom: 15px;
