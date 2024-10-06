@@ -42,12 +42,16 @@
       </div>
 
       <div class="price-details">
-        <img :src="property.imageUrls[0]" alt="Property Image" class="property-image">
-        <h3>{{ property.title }}</h3>
-        <p class="property-type">{{ accommodationDescription }}</p>
-        <p class="rating">
-          <span>★ {{ property.rating }} ({{ property.numberOfReviews }} commentaires)</span> • Superhôte
-        </p>
+        <div class="image-and-info">
+          <img :src="property.imageUrls[0]" alt="Property Image" class="property-image">
+          <div class="property-info">
+            <h3>{{ property.title }}</h3>
+            <p class="property-type">{{ accommodationDescription }}</p>
+            <p class="rating">
+              <span>★ {{ property.rating }} ({{ property.numberOfReviews }} commentaires)</span> • Superhôte
+            </p>
+          </div>
+        </div>
         <div class="price-breakdown">
           <div class="price-item">
             <span>{{ property.pricePerNight }} € x {{ numberOfNights }} nuits</span>
@@ -77,7 +81,7 @@
 </template>
 
 <script>
-import { createBooking } from "@/services/parisjanitor/endpoints/bookings"; // Importez la fonction createBooking
+import { createBooking } from "@/services/parisjanitor/endpoints/bookings";
 
 export default {
   name: "BookingConfirmationView",
@@ -88,12 +92,12 @@ export default {
         title: this.$route.query.title,
         pricePerNight: parseFloat(this.$route.query.pricePerNight),
         imageUrls: JSON.parse(this.$route.query.imageUrls),
-        contactSlots: JSON.parse(this.$route.query.contactSlots), // Assuming it's passed as JSON string
+        contactSlots: JSON.parse(this.$route.query.contactSlots),
         accommodationType: this.$route.query.accommodationType,
         propertyType: this.$route.query.propertyType,
         numberOfBathrooms: this.$route.query.numberOfBathrooms,
         numberOfBedrooms: this.$route.query.numberOfBedrooms,
-        location: this.$route.query.location // Assuming location is passed as a query parameter
+        location: this.$route.query.location
       };
     },
     contactSlotDescription() {
@@ -203,8 +207,10 @@ export default {
 
 <style scoped>
 #booking-confirmation-view {
+  width: 80%;
   padding: 40px;
   font-family: Arial, sans-serif;
+  margin: 0 auto;
 }
 
 .confirmation-details {
@@ -238,19 +244,29 @@ export default {
 }
 
 .price-details {
-  flex: 1;
-  padding: 20px;
+  padding: 15px;
   background-color: #f9f9f9;
   border: 1px solid #ddd;
   border-radius: 8px;
   text-align: left;
+  height: auto;
+  align-self: flex-start;
+}
+
+.image-and-info {
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
 }
 
 .property-image {
-  width: 100%;
+  width: 80px;
   height: auto;
   border-radius: 8px;
-  margin-bottom: 15px;
+}
+
+.property-info {
+  flex: none;
 }
 
 .price-details h3 {
@@ -268,17 +284,18 @@ export default {
 .rating {
   color: #757575;
   font-size: 14px;
-  margin-bottom: 20px;
 }
 
 .price-breakdown {
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .price-item {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
+  font-weight: bold;
+  font-size: 16px;
+  margin-top: 15px;
 }
 
 .total-price {
@@ -307,23 +324,4 @@ export default {
   background-color: #e04e50;
 }
 
-.property-image {
-  width:25%;
-  height: auto;
-  border-radius: 8px;
-  margin-bottom: 15px;
-}
-
-.price-details h3 {
-  margin-bottom: 10px;
-}
-
-.price-details p {
-  margin: 5px 0;
-}
-
-.price-details strong {
-  font-size: 18px;
-  color: #333;
-}
 </style>
