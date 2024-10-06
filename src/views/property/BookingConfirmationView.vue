@@ -1,6 +1,15 @@
 <template>
   <div id="booking-confirmation-view" v-if="property">
-    <h1>Récapitulatif</h1>
+    <div class="back-button-container">
+      <button @click="goToPropertyDetail" class="back-button">
+        <span class="arrow-icon">&#8249;</span>
+      </button>
+      <h1>Récapitulatif</h1>
+    </div>
+
+    <div v-if="successMessage" class="success-message">
+      {{ successMessage }}
+    </div>
 
     <div class="confirmation-details">
       <div class="reservation-info">
@@ -28,17 +37,6 @@
           <p>Nombre de chambres : {{ property.numberOfBedrooms }}</p>
         </div>
 
-        <h2>Choisissez comment vous souhaitez payer</h2>
-        <div class="payment-options">
-          <div>
-            <input type="radio" id="pay-now" name="payment" value="pay-now" checked>
-            <label for="pay-now">Payer {{ totalPrice }} € maintenant</label>
-          </div>
-          <div>
-            <input type="radio" id="pay-later" name="payment" value="pay-later">
-            <label for="pay-later">Payer une partie maintenant et l'autre plus tard</label>
-          </div>
-        </div>
       </div>
 
       <div class="price-details">
@@ -56,10 +54,6 @@
           <div class="price-item">
             <span>{{ property.pricePerNight }} € x {{ numberOfNights }} nuits</span>
             <span>{{ subtotalPrice }} €</span>
-          </div>
-          <div class="price-item">
-            <span>Frais de ménage</span>
-            <span>{{ cleaningFee }} €</span>
           </div>
           <div class="price-item">
             <span>Frais de service Airbnb</span>
@@ -162,14 +156,11 @@ export default {
     subtotalPrice() {
       return this.property ? this.property.pricePerNight * this.numberOfNights : 0;
     },
-    cleaningFee() {
-      return 10;
-    },
     serviceFee() {
       return Math.round(this.subtotalPrice * 0.15);
     },
     totalPrice() {
-      return this.subtotalPrice + this.cleaningFee + this.serviceFee;
+      return this.subtotalPrice + this.serviceFee;
     },
     accommodationDescription() {
       if (this.property.accommodationType === 'COMPLET') {
@@ -194,14 +185,17 @@ export default {
 
       try {
         await createBooking(bookingData);
-        console.log("Réservation confirmée avec succès !");
-        this.$router.push({ name: 'home', query: { success: true } });
+        this.successMessage = "La demande de réservation a été faite. En attente de réponse du propriétaire.";
+        setTimeout(() => {
+          this.$router.push({ name: 'my-bookings' });
+        }, 3000);
       } catch (error) {
         console.error("Erreur lors de la création de la réservation :", error);
         alert("Erreur lors de la création de la réservation. Veuillez réessayer.");
       }
     }
   }
+
 };
 </script>
 
@@ -322,6 +316,24 @@ export default {
 
 .reserve-button:hover {
   background-color: #e04e50;
+}
+
+.back-button-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  font-size: 24px;
+}
+
+.arrow-icon {
+  font-weight: bold;
 }
 
 </style>

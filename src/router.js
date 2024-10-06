@@ -5,6 +5,7 @@ import FavoritesView from "@/views/favorites/FavoritesView";
 import PropertyDetailView from "@/views/property/PropertyDetailView";
 import AllImagesView from "@/views/property/AlImagesView";
 import BookingConfirmationView from "@/views/property/BookingConfirmationView";
+import MyBookingsView from "@/views/booking/MyBookingsView";
 
 const routes = [
   {
@@ -43,6 +44,12 @@ const routes = [
     name: 'BookingConfirmation',
     component: BookingConfirmationView,
     props: route => ({ bookingDetails: route.params.bookingDetails }),
+  },
+  {
+    path: '/mes-reservations',
+    name: 'my-bookings',
+    component: MyBookingsView,
+    meta: { title: 'Mes Réservations - Paris Janitor' }
   },
 ];
 
