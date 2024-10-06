@@ -1,20 +1,31 @@
 <template>
-  <div id="booking-confirmation-view">
-    <h1>Confirmer et payer</h1>
+  <div id="booking-confirmation-view" v-if="property">
+    <h1>Récapitulatif</h1>
 
     <div class="confirmation-details">
       <div class="reservation-info">
         <h2>Votre voyage</h2>
         <div class="travel-details">
-          <p><strong>Dates:</strong> {{ startDate }} - {{ endDate }}</p>
-          <p><strong>Voyageurs:</strong> {{ totalGuests }} voyageurs</p>
+          <p><strong>Dates:</strong> <br>
+            {{ startDate }} - {{ endDate }}</p>
+          <p><strong>Voyageurs:</strong> <br>
+            {{ totalGuests }} voyageurs</p>
         </div>
 
-        <h2>Assurance réservation</h2>
+        <h2>Récapitulatif du logement</h2>
         <div class="insurance">
-          <p>Ajouter une assurance réservation pour 64,24 €</p>
-          <p>Obtenez un remboursement si vous devez annuler en raison d'une maladie, d'un retard de vol, etc.</p>
-          <button>Ajouter</button>
+          <p>Ville : {{ property.location }}</p>
+          <p v-if="property.propertyType === 'APARTMENT'">Type de propriété : Appartement</p>
+          <p v-else-if="property.propertyType === 'HOUSE'">Type de propriété : Maison</p>
+          <p v-else>Type de propriété : Non spécifié</p>
+
+          <p v-if="property.accommodationType === 'COMPLET'">Type d'hébergement : Logement entier</p>
+          <p v-else-if="property.accommodationType === 'ROOM'">Type d'hébergement : Chambre</p>
+          <p v-else>Type d'hébergement : Non spécifié</p>
+
+          <p>Arrivée disponible : {{ contactSlotDescription }}</p>
+          <p>Nombre de salles de bain : {{ property.numberOfBathrooms }}</p>
+          <p>Nombre de chambres : {{ property.numberOfBedrooms }}</p>
         </div>
 
         <h2>Choisissez comment vous souhaitez payer</h2>
@@ -36,8 +47,12 @@
         <p>{{ property.pricePerNight }} € x {{ numberOfNights }} nuits</p>
         <p>Frais de service: {{ serviceFee }} €</p>
         <p><strong>Total: {{ totalPrice }} €</strong></p>
+        <button @click="confirmBooking">Réserver</button>
       </div>
     </div>
+  </div>
+  <div v-else>
+    <p>Chargement des données...</p>
   </div>
 </template>
 
@@ -52,8 +67,61 @@ export default {
         id: this.$route.query.propertyId,
         title: this.$route.query.title,
         pricePerNight: parseFloat(this.$route.query.pricePerNight),
-        imageUrls: JSON.parse(this.$route.query.imageUrls)
+        imageUrls: JSON.parse(this.$route.query.imageUrls),
+        contactSlots: JSON.parse(this.$route.query.contactSlots), // Assuming it's passed as JSON string
+        accommodationType: this.$route.query.accommodationType,
+        propertyType: this.$route.query.propertyType,
+        numberOfBathrooms: this.$route.query.numberOfBathrooms,
+        numberOfBedrooms: this.$route.query.numberOfBedrooms,
+        location: this.$route.query.location // Assuming location is passed as a query parameter
       };
+    },
+    contactSlotDescription() {
+      const contactSlot = this.property.contactSlots;
+      if (!contactSlot || contactSlot.length === 0) {
+        return 'Aucun créneau disponible';
+      }
+
+      // Mapper les choix possibles à des messages
+      const slotMessages = {
+        BEFORE_12H: 'avant midi',
+        BETWEEN_12H_AND_14H: 'de midi à 14h',
+        BETWEEN_14H_AND_18H: 'de 14h à 18h',
+        AFTER_18H: 'après 18h'
+      };
+
+      // Vérifier le nombre et les combinaisons de slots
+      const hasAllSlots = ['BEFORE_12H', 'BETWEEN_12H_AND_14H', 'BETWEEN_14H_AND_18H', 'AFTER_18H'].every(slot => contactSlot.includes(slot));
+      if (hasAllSlots) {
+        return "n'importe quand";
+      }
+
+      // Identifier les combinaisons spécifiques
+      if (contactSlot.includes('BEFORE_12H') && contactSlot.includes('BETWEEN_12H_AND_14H') && contactSlot.includes('BETWEEN_14H_AND_18H') && !contactSlot.includes('AFTER_18H')) {
+        return 'jusqu\'à 18h';
+      }
+
+      if (contactSlot.includes('BEFORE_12H') && contactSlot.includes('BETWEEN_12H_AND_14H') && !contactSlot.includes('BETWEEN_14H_AND_18H') && !contactSlot.includes('AFTER_18H')) {
+        return 'jusqu\'à 14h';
+      }
+
+      if (contactSlot.includes('BETWEEN_12H_AND_14H') && contactSlot.includes('BETWEEN_14H_AND_18H') && contactSlot.includes('AFTER_18H') && !contactSlot.includes('BEFORE_12H')) {
+        return 'à partir de 12h';
+      }
+
+      if (contactSlot.includes('BETWEEN_14H_AND_18H') && contactSlot.includes('BETWEEN_12H_AND_14H') && !contactSlot.includes('BEFORE_12H') && !contactSlot.includes('AFTER_18H')) {
+        return 'de 12h à 18h';
+      }
+
+      // Pour les cas de combinaisons non contiguës
+      let descriptions = [];
+      contactSlot.forEach(slot => {
+        if (slotMessages[slot]) {
+          descriptions.push(slotMessages[slot]);
+        }
+      });
+
+      return descriptions.join(' et ');
     },
     startDate() {
       return this.$route.query.startDate;
@@ -83,7 +151,6 @@ export default {
   },
   methods: {
     async confirmBooking() {
-      // Correction de l'utilisation de bookingDetails en utilisant les computed properties de la vue
       const bookingData = {
         propertyId: this.property.id,
         startDate: this.startDate,

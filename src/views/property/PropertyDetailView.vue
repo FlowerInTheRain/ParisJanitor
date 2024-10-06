@@ -228,6 +228,11 @@ export default {
             numberOfBabies: this.guests.babies,
             numberOfPets: this.guests.pets,
             totalPrice: this.totalPrice,
+            propertyType: this.property.propertyType,
+            accommodationType: this.property.accommodationType,
+            contactSlots: JSON.stringify(this.property.contactSlots),
+            numberOfBathrooms: this.property.numberOfBathrooms,
+            numberOfBedrooms: this.property.numberOfBedrooms
           }
         });
       } catch (error) {
