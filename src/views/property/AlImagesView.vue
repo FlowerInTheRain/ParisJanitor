@@ -2,7 +2,7 @@
   <div id="all-images-view" v-if="property && property.imageUrls && property.imageUrls.length">
     <HeaderView @showLoginPopup="showLoginPopup" />
     <div class="back-button-section">
-      <button @click="goBackToFavorites" class="back-button">Retour aux Favoris</button>
+      <button @click="goBackToDetail" class="back-button">Retour</button>
     </div>
     <h1>{{ property.title }} - Toutes les photos</h1>
     <div class="all-images">
@@ -39,8 +39,8 @@ export default {
     }
   },
   methods: {
-    goBackToFavorites() {
-      this.$router.push({ name: 'favorites' });
+    goBackToDetail() {
+      this.$router.push({ name: 'property-detail' });
     }
   }
 };

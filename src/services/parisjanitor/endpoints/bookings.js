@@ -24,7 +24,19 @@ const createBooking = async (bookingDetails) => {
     }
 };
 
+const hasBooking = async (startDate, endDate) => {
+    try {
+        const response = await axios.get(`${endpoint}/has-booking?startDate=${startDate}&endDate=${endDate}`);
+        console.log("Réponse de vérification des réservations existantes :", response);
+        return response.data;
+    } catch (error) {
+        console.error("Erreur lors de la vérification des réservations existantes :", error.response ? error.response : error);
+        throw error;
+    }
+};
+
 export {
     checkAvailability,
+    hasBooking,
     createBooking
 };

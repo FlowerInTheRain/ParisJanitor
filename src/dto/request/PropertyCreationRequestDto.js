@@ -1,6 +1,7 @@
 export default class PropertyCreationRequestDto {
     constructor(
         adress,
+        propertyName,
         description,
         numberOfRooms,
         capacity,
@@ -18,6 +19,7 @@ export default class PropertyCreationRequestDto {
         numberOfBedrooms
     ) {
         this.adress = adress;
+        this.propertyName = propertyName;
         this.description = description;
         this.numberOfRooms = numberOfRooms;
         this.capacity = capacity;

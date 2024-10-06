@@ -20,6 +20,9 @@
         </div>
       </div>
 
+      <div v-if="successMessage" class="success-message">
+        <p>{{ successMessage }}</p>
+      </div>
       <div class="info-reservation-container">
         <div class="property-info">
           <h1>{{ property.title }}</h1>
@@ -80,12 +83,11 @@
   </div>
 </template>
 
-
 <script>
 import HeaderView from "@/views/home/content/HeaderView.vue";
 import GuestSelector from "@/views/property/GuestSelector.vue";
 import { getPropertyById } from "@/services/parisjanitor/endpoints/properties";
-import { checkAvailability, createBooking } from "@/services/parisjanitor/endpoints/bookings";
+import { checkAvailability, hasBooking } from "@/services/parisjanitor/endpoints/bookings";
 
 export default {
   name: "PropertyDetailView",
@@ -101,6 +103,7 @@ export default {
       selectedGuests: 1,
       availabilityMessage: "",
       isAvailable: false,
+      successMessage: "",
       guests: {
         adults: 1,
         children: 0,
@@ -148,6 +151,10 @@ export default {
     try {
       const property = await getPropertyById(propertyId);
       this.property = property;
+
+      if (this.$route.query.success) {
+        this.successMessage = "La demande de réservation a été effectuée.";
+      }
     } catch (error) {
       console.error("Erreur lors de la récupération de la propriété :", error);
     }
@@ -171,7 +178,6 @@ export default {
 
           if (isAvailable) {
             this.isAvailable = true;
-            this.availabilityMessage = "Le logement est disponible pour les dates sélectionnées.";
           } else {
             this.isAvailable = false;
             this.availabilityMessage = "Le logement n'est pas disponible pour les dates sélectionnées.";
@@ -198,26 +204,42 @@ export default {
         return;
       }
 
-      const bookingData = {
-        propertyId: this.property.id,
-        startDate: this.formatDate(this.checkInDate),
-        endDate: this.formatDate(this.checkOutDate),
-        status: "PENDING",
-        numberOfAdults: this.guests.adults,
-        numberOfChildren: this.guests.children,
-        numberOfBabies: this.guests.babies,
-        numberOfPets: this.guests.pets,
-      };
+      const formattedCheckInDate = this.formatDate(this.checkInDate);
+      const formattedCheckOutDate = this.formatDate(this.checkOutDate);
 
       try {
-        const response = await createBooking(bookingData);
-        console.log("Réservation effectuée :", response);
-        alert("Réservation effectuée avec succès!");
+        const hasExistingBooking = await hasBooking(formattedCheckInDate, formattedCheckOutDate);
+        if (hasExistingBooking) {
+          alert("Vous avez déjà une réservation de prévue entre les dates sélectionnées. Veuillez modifier les dates, ou annuler d'abord la réservation déjà faite.");
+          return;
+        }
+
+        this.$router.push({
+          name: 'BookingConfirmation',
+          query: {
+            propertyId: this.property.id,
+            title: this.property.title,
+            pricePerNight: this.property.pricePerNight,
+            imageUrls: JSON.stringify(this.property.imageUrls),
+            startDate: formattedCheckInDate,
+            endDate: formattedCheckOutDate,
+            numberOfAdults: this.guests.adults,
+            numberOfChildren: this.guests.children,
+            numberOfBabies: this.guests.babies,
+            numberOfPets: this.guests.pets,
+            totalPrice: this.totalPrice,
+            propertyType: this.property.propertyType,
+            accommodationType: this.property.accommodationType,
+            contactSlots: JSON.stringify(this.property.contactSlots),
+            numberOfBathrooms: this.property.numberOfBathrooms,
+            numberOfBedrooms: this.property.numberOfBedrooms
+          }
+        });
       } catch (error) {
-        console.error("Erreur lors de la création de la réservation :", error);
-        alert("Erreur lors de la création de la réservation. Veuillez réessayer.");
+        console.error("Erreur lors de la vérification des réservations existantes :", error);
+        alert("Erreur lors de la vérification des réservations existantes. Veuillez réessayer.");
       }
-    },
+    }
   }
 };
 </script>
@@ -382,6 +404,15 @@ color: #777;
 display: flex;
 justify-content: space-between;
 margin: 5px 0;
+}
+
+.success-message {
+  margin: 20px 0;
+  padding: 10px;
+  background-color: #dff0d8;
+  color: #3c763d;
+  border-radius: 5px;
+  text-align: center;
 }
 
 </style>
