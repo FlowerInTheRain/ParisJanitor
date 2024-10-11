@@ -1,19 +1,20 @@
 <template>
-  <div id="property-detail-view" v-if="property && property.imageUrls && property.imageUrls.length">
+  <div id="property-detail-view" v-if="property">
     <HeaderView @showLoginPopup="showLoginPopup" />
     <div class="property-details">
       <div class="images-section">
+        <!-- Affichage de l'image principale avec fallback -->
         <img
-            :src="property.imageUrls[0]"
+            :src="mainImageSource"
             alt="Main Property Image"
             class="main-image"
             @click="goToAllImages"
         />
-        <div class="other-images">
+        <div class="other-images" v-if="property.imageUrls && property.imageUrls.length > 1">
           <img
               v-for="(img, index) in property.imageUrls.slice(1, 5)"
               :key="index"
-              :src="img"
+              :src="img ? img : defaultImage"
               alt="Property Image"
               @click="goToAllImages"
           />
@@ -34,7 +35,7 @@
             <p>{{ property.description }}</p>
           </div>
           <div class="host-info">
-            <img :src="property.hostImageUrl" alt="Host Image" class="host-image" />
+            <img :src="property.hostImageUrl ? property.hostImageUrl : defaultImage" alt="Host Image" class="host-image" />
             <div>
               <p>Hôte : {{ property.host }}</p>
               <p>Superhôte - Hôte depuis {{ hostYears }}</p>
@@ -88,6 +89,7 @@ import HeaderView from "@/views/home/content/HeaderView.vue";
 import GuestSelector from "@/views/property/GuestSelector.vue";
 import { getPropertyById } from "@/services/parisjanitor/endpoints/properties";
 import { checkAvailability, hasBooking } from "@/services/parisjanitor/endpoints/bookings";
+import defaultImage from "@/assets/Jesus.jpeg"; // Importer l'image par défaut
 
 export default {
   name: "PropertyDetailView",
@@ -110,6 +112,7 @@ export default {
         babies: 0,
         pets: 0,
       },
+      defaultImage,
     };
   },
   computed: {
@@ -141,10 +144,11 @@ export default {
       }
       return 'plusieurs années';
     },
-  },
-  watch: {
-    checkInDate: 'verifyAvailability',
-    checkOutDate: 'verifyAvailability'
+    mainImageSource() {
+      return this.property.imageUrls && this.property.imageUrls.length > 0
+          ? this.property.imageUrls[0]
+          : this.defaultImage;
+    }
   },
   async mounted() {
     const propertyId = this.$route.params.id;
