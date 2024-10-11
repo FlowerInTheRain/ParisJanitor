@@ -1,17 +1,17 @@
 <template>
   <div class="ad-card" @click="goToDetailPage">
-    <div class="ad-favorite" @click="toggleFavorite">
+    <div class="ad-favorite" @click.stop="toggleFavorite">
       <img :src="isFavorite ? fullHeartImg : emptyHeartImg" alt="Favorite Icon" />
     </div>
     <div class="ad-image" @mouseover="showArrows = true" @mouseleave="showArrows = false">
-      <img :src="ad.imageUrls[currentImageIndex]" alt="Image de la propriété" />
-      <div v-if="showArrows" class="arrow left" @click="prevImage">‹</div>
-      <div v-if="showArrows" class="arrow right" @click="nextImage">›</div>
+      <img :src="imageSource" alt="Image de la propriété" />
+      <div v-if="showArrows" class="arrow left" @click.stop="prevImage">‹</div>
+      <div v-if="showArrows" class="arrow right" @click.stop="nextImage">›</div>
     </div>
     <div class="ad-content">
       <h3 v-if="ad.propertyType === 'APARTMENT'">Appartement • {{ ad.city }} <span class="ad-rating">⭐ {{ ad.rating }} ({{ ad.reviews }})</span></h3>
-      <h3 v-else>Maison • {{ ad.city }} <span class="ad-rating">⭐ {{ ad.rating }} ({{ ad.reviews }})</span> </h3>
-      <p v-if="ad.accommodationType === COMPLETE"> Logement complet • {{ ad.capacity }} lits</p>
+      <h3 v-else>Maison • {{ ad.city }} <span class="ad-rating">⭐ {{ ad.rating }} ({{ ad.reviews }})</span></h3>
+      <p v-if="ad.accommodationType === 'COMPLETE'"> Logement complet • {{ ad.capacity }} lits</p>
       <p v-else>Chambre • {{ ad.capacity }} lits</p>
       <p>Hôte : {{ ad.host }}</p>
       <div class="ad-price">
@@ -51,6 +51,16 @@ export default {
     } catch (error) {
       console.error("Erreur lors du chargement des favoris :", error);
     }
+  },
+  computed: {
+    imageSource() {
+      // Utiliser une image de remplacement si aucune URL d'image n'est disponible
+      if (this.ad.imageUrls && this.ad.imageUrls.length > 0) {
+        return this.ad.imageUrls[this.currentImageIndex];
+      } else {
+        return "https://via.placeholder.com/250"; // Placeholder image
+      }
+    },
   },
   methods: {
     goToDetailPage() {

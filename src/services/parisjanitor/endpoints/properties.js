@@ -1,7 +1,7 @@
 import axios from '../axios';
 
 const getAllProperty = async () => {
-    const url = `/properties`;
+    const url = `/properties/validated`;
     try {
         const response = await axios.get(url);
         console.log("Appel de la route GET :", url);
