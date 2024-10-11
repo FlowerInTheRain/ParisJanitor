@@ -7,7 +7,7 @@
     <div v-if="isMenuOpen" class="menu-dropdown">
       <ul v-if="isAuthenticated">
         <li><a href="#">Messages</a></li>
-        <li><a href="#">Voyages</a></li>
+        <li><router-link to="/mes-reservations">Voyages</router-link></li>
         <li><router-link to="/mes-favoris">Favoris</router-link></li>
         <li><a href="#">Mettre mon logement en location</a></li>
         <li><router-link to="/mon-compte">Mon compte</router-link></li>

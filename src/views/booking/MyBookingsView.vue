@@ -1,4 +1,5 @@
 <template>
+  <HeaderView />
   <div id="my-bookings-view">
     <h1>Mes Réservations</h1>
 
@@ -55,11 +56,13 @@
 <script>
 import LittleCardView from "@/views/booking/LittleCardView.vue";
 import axios from "@/services/parisjanitor/axios";
+import HeaderView from "@/views/home/content/HeaderView.vue";
 
 export default {
   name: "MyBookingsView",
   components: {
     LittleCardView,
+    HeaderView
   },
   data() {
     return {
@@ -85,29 +88,41 @@ export default {
   methods: {
     async fetchBookings(endpoint) {
       try {
+        // Obtenir les réservations
         const response = await axios.get(endpoint);
-        return response.data.map(booking => ({
-          ...booking,
-          property: {
-            imageUrls: booking.property.imageUrls,
-            location: booking.property.location,
-            host: booking.property.host,
-            ...booking.property // Assurez-vous que tous les détails nécessaires de la propriété sont inclus
-          }
-        }));
+        const bookings = response.data;
+
+        // Pour chaque réservation, obtenir les détails de la propriété
+        const bookingsWithProperties = await Promise.all(
+            bookings.map(async (booking) => {
+              const property = await this.fetchPropertyById(booking.propertyId);
+              return { ...booking, property };
+            })
+        );
+
+        return bookingsWithProperties;
       } catch (error) {
         console.error(`Erreur lors de la récupération des données de ${endpoint}:`, error);
         return [];
       }
-    }
-  }
+    },
+    async fetchPropertyById(propertyId) {
+      try {
+        const response = await axios.get(`/properties/${propertyId}`);
+        return response.data;
+      } catch (error) {
+        console.error(`Erreur lors de la récupération de la propriété ${propertyId}:`, error);
+        return null;
+      }
+    },
+  },
 };
 </script>
 
 <style scoped>
 #my-bookings-view {
-  padding: 40px;
   font-family: Arial, sans-serif;
+  padding: 40px;
 }
 
 h1 {

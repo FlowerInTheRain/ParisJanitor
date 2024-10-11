@@ -1,8 +1,8 @@
 <template>
-  <div class="little-card">
+  <div className="little-card">
     <img :src="imageSource" alt="Property Image" class="property-image"/>
-    <div class="property-details">
-      <p><strong>Ville:</strong> {{ property.location }}</p>
+    <div className="property-details">
+      <p><strong>Ville:</strong> {{ property.city }}</p>
       <p><strong>Hôte:</strong> {{ property.host }}</p>
       <p><strong>Dates:</strong> {{ formattedDates }}</p>
     </div>
@@ -29,10 +29,11 @@ export default {
       return `${startDate} - ${endDate}`;
     },
     imageSource() {
+      // Affiche la première image de la liste ou un placeholder si aucune image n'est disponible
       if (this.property.imageUrls && this.property.imageUrls.length > 0) {
-        return "@/assets/Jesus.jpeg";
+        return this.property.imageUrls[0]; // Prend la première image
       } else {
-        return "https://via.placeholder.com/25";
+        return "https://via.placeholder.com/150"; // Placeholder image si aucune image n'est disponible
       }
     }
   }
@@ -48,11 +49,12 @@ export default {
   border-radius: 8px;
   background-color: #f9f9f9;
   margin-bottom: 10px;
+  width: 30%;
 }
 
 .property-image {
-  width: 25px;
-  height: 25px;
+  width: 50px;
+  height: 50px;
   border-radius: 4px;
   margin-right: 10px;
   object-fit: cover;
