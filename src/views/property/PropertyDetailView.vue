@@ -3,7 +3,6 @@
     <HeaderView @showLoginPopup="showLoginPopup" />
     <div class="property-details">
       <div class="images-section">
-        <!-- Affichage de l'image principale avec fallback -->
         <img
             :src="mainImageSource"
             alt="Main Property Image"
@@ -24,16 +23,31 @@
       <div v-if="successMessage" class="success-message">
         <p>{{ successMessage }}</p>
       </div>
+
       <div class="info-reservation-container">
         <div class="property-info">
           <h1>{{ property.title }}</h1>
           <p class="property-details-info">
             {{ property.capacity }} voyageurs • {{ property.numberOfRooms }} chambres • {{ property.numberOfBedrooms }} lits • {{ property.numberOfBathrooms }} salles de bain
           </p>
+
+          <!-- Description de la propriété -->
           <div class="property-description">
             <h3>Informations sur l'hébergement</h3>
             <p>{{ property.description }}</p>
           </div>
+
+          <!-- Animaux -->
+          <div class="pet-info">
+            <img :src="property.acceptsPets ? petIcon : noPetIcon" alt="Pets icon" class="pet-icon" />
+            <span>{{ property.acceptsPets ? 'Les animaux sont acceptés' : 'Animaux non acceptés' }}</span>
+          </div>
+
+          <!-- Bébés (sans icône) -->
+          <div class="baby-info">
+            <span>{{ property.acceptsBabies ? "L'appartement est approprié pour les bébés (-2 ans)" : "L'appartement n'est pas approprié pour des bébés (-2 ans)" }}</span>
+          </div>
+
           <div class="host-info">
             <img :src="property.hostImageUrl ? property.hostImageUrl : defaultImage" alt="Host Image" class="host-image" />
             <div>
@@ -49,17 +63,13 @@
           </div>
           <div class="booking-form">
             <div class="date-selector">
-              <input type="date" v-model="checkInDate" :min="today" placeholder="Arrivée" @change="verifyAvailability"/>
-              <input type="date" v-model="checkOutDate" :min="checkInDate ? checkInDate : today" placeholder="Départ" @change="verifyAvailability"/>
+              <input type="date" v-model="checkInDate" :min="today" placeholder="Arrivée" @change="verifyAvailability" />
+              <input type="date" v-model="checkOutDate" :min="checkInDate ? checkInDate : today" placeholder="Départ" @change="verifyAvailability" />
             </div>
             <div class="guest-selector">
               <guest-selector :capacity="property.capacity" @updateGuests="updateGuests" />
             </div>
-            <button
-                class="availability-button"
-                :disabled="!isAvailable"
-                @click="makeReservation"
-            >
+            <button class="availability-button" :disabled="!isAvailable" @click="makeReservation">
               {{ isAvailable ? 'Réserver' : 'Vérifier la disponibilité' }}
             </button>
           </div>
@@ -84,12 +94,15 @@
   </div>
 </template>
 
+
 <script>
 import HeaderView from "@/views/home/content/HeaderView.vue";
 import GuestSelector from "@/views/property/GuestSelector.vue";
 import { getPropertyById } from "@/services/parisjanitor/endpoints/properties";
 import { checkAvailability, hasBooking } from "@/services/parisjanitor/endpoints/bookings";
 import defaultImage from "@/assets/Jesus.jpeg";
+import petIcon from "@/assets/pet.png";
+import noPetIcon from "@/assets/no-pet.png";
 
 export default {
   name: "PropertyDetailView",
@@ -113,6 +126,8 @@ export default {
         pets: 0,
       },
       defaultImage,
+      petIcon,
+      noPetIcon
     };
   },
   computed: {
@@ -420,4 +435,28 @@ margin: 5px 0;
   text-align: center;
 }
 
+.pet-policy {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.pet-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
+
+.pet-icon, .baby-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
+
+.pet-info, .baby-info {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  font-size: 14px;
+}
 </style>
