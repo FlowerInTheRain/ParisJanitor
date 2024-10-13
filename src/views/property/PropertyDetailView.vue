@@ -49,8 +49,8 @@
           </div>
           <div class="booking-form">
             <div class="date-selector">
-              <input type="date" v-model="checkInDate" :min="today" placeholder="Arrivée" />
-              <input type="date" v-model="checkOutDate" :min="checkInDate ? checkInDate : today" placeholder="Départ" />
+              <input type="date" v-model="checkInDate" :min="today" placeholder="Arrivée" @change="verifyAvailability"/>
+              <input type="date" v-model="checkOutDate" :min="checkInDate ? checkInDate : today" placeholder="Départ" @change="verifyAvailability"/>
             </div>
             <div class="guest-selector">
               <guest-selector :capacity="property.capacity" @updateGuests="updateGuests" />
@@ -89,7 +89,7 @@ import HeaderView from "@/views/home/content/HeaderView.vue";
 import GuestSelector from "@/views/property/GuestSelector.vue";
 import { getPropertyById } from "@/services/parisjanitor/endpoints/properties";
 import { checkAvailability, hasBooking } from "@/services/parisjanitor/endpoints/bookings";
-import defaultImage from "@/assets/Jesus.jpeg"; // Importer l'image par défaut
+import defaultImage from "@/assets/Jesus.jpeg";
 
 export default {
   name: "PropertyDetailView",
@@ -182,6 +182,7 @@ export default {
 
           if (isAvailable) {
             this.isAvailable = true;
+            this.availabilityMessage = '';
           } else {
             this.isAvailable = false;
             this.availabilityMessage = "Le logement n'est pas disponible pour les dates sélectionnées.";
