@@ -6,6 +6,7 @@ import PropertyDetailView from "@/views/property/PropertyDetailView";
 import AllImagesView from "@/views/property/AlImagesView";
 import BookingConfirmationView from "@/views/property/BookingConfirmationView";
 import MyBookingsView from "@/views/booking/MyBookingsView";
+import CreatePropertyView from "@/views/property/CreatePropertyView";
 
 const routes = [
   {
@@ -50,6 +51,12 @@ const routes = [
     name: 'my-bookings',
     component: MyBookingsView,
     meta: { title: 'Mes Réservations - Paris Janitor' }
+  },
+  {
+    path: '/creer-propriete',
+    name: 'create-property',
+    component: CreatePropertyView,
+    meta: { title: 'Créer une propriété' }
   },
 ];
 
