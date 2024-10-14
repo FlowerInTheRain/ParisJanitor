@@ -31,19 +31,16 @@
             {{ property.capacity }} voyageurs • {{ property.numberOfRooms }} chambres • {{ property.numberOfBedrooms }} lits • {{ property.numberOfBathrooms }} salles de bain
           </p>
 
-          <!-- Description de la propriété -->
           <div class="property-description">
             <h3>Informations sur l'hébergement</h3>
             <p>{{ property.description }}</p>
           </div>
 
-          <!-- Animaux -->
           <div class="pet-info">
             <img :src="property.acceptsPets ? petIcon : noPetIcon" alt="Pets icon" class="pet-icon" />
             <span>{{ property.acceptsPets ? 'Les animaux sont acceptés' : 'Animaux non acceptés' }}</span>
           </div>
 
-          <!-- Bébés (sans icône) -->
           <div class="baby-info">
             <span>{{ property.acceptsBabies ? "L'appartement est approprié pour les bébés (-2 ans)" : "L'appartement n'est pas approprié pour des bébés (-2 ans)" }}</span>
           </div>
@@ -192,10 +189,18 @@ export default {
     },
     async verifyAvailability() {
       if (this.checkInDate && this.checkOutDate) {
+        const checkIn = new Date(this.checkInDate);
+        const checkOut = new Date(this.checkOutDate);
+
+        if (checkOut <= checkIn) {
+          this.isAvailable = false;
+          this.availabilityMessage = "Les dates ne sont pas correctes. Veuillez vérifier les dates choisies.";
+          return;
+        }
+
         const formattedCheckInDate = this.formatDate(this.checkInDate);
         const formattedCheckOutDate = this.formatDate(this.checkOutDate);
         const propertyId = this.property.id;
-
         try {
           const isAvailable = await checkAvailability(propertyId, formattedCheckInDate, formattedCheckOutDate);
           console.log("Résultat de la disponibilité :", isAvailable);
