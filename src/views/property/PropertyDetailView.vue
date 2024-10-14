@@ -67,7 +67,12 @@
               <input type="date" v-model="checkOutDate" :min="checkInDate ? checkInDate : today" placeholder="Départ" @change="verifyAvailability" />
             </div>
             <div class="guest-selector">
-              <guest-selector :capacity="property.capacity" @updateGuests="updateGuests" />
+              <guest-selector
+                  :capacity="property.capacity"
+                  :acceptsPets="property.acceptsPets"
+                  :acceptsBabies="property.acceptsBabies"
+                  @updateGuests="updateGuests"
+              />
             </div>
             <button class="availability-button" :disabled="!isAvailable" @click="makeReservation">
               {{ isAvailable ? 'Réserver' : 'Vérifier la disponibilité' }}

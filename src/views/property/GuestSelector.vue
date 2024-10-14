@@ -8,21 +8,21 @@
         <span>Adultes (13 ans et plus)</span>
         <button @click="decreaseGuests('adults')" class="decrement">-</button>
         <span>{{ guests.adults }}</span>
-        <button @click="increaseGuests('adults')" class="increment">+</button>
+        <button @click="increaseGuests('adults')" class="increment" :disabled="!canAddGuest">+</button>
       </div>
       <div class="guest-option">
         <span>Enfants (2 à 12 ans)</span>
         <button @click="decreaseGuests('children')" class="decrement">-</button>
-        <span class="guest-number">{{ guests.children }}</span>
-        <button @click="increaseGuests('children')" class="increment">+</button>
+        <span>{{ guests.children }}</span>
+        <button @click="increaseGuests('children')" class="increment" :disabled="!canAddGuest">+</button>
       </div>
-      <div class="guest-option">
+      <div class="guest-option" v-if="acceptsBabies">
         <span>Bébés (- de 2 ans)</span>
         <button @click="decreaseGuests('babies')" class="decrement">-</button>
         <span>{{ guests.babies }}</span>
-        <button @click="increaseGuests('babies')" class="increment">+</button>
+        <button @click="increaseGuests('babies')" class="increment" :disabled="!canAddGuest">+</button>
       </div>
-      <div class="guest-option">
+      <div class="guest-option" v-if="acceptsPets">
         <span>Animaux de compagnie</span>
         <button @click="decreaseGuests('pets')" class="decrement">-</button>
         <span>{{ guests.pets }}</span>
@@ -40,12 +40,17 @@ export default {
       type: Number,
       required: true,
     },
+    acceptsPets: {
+      type: Boolean,
+      required: true,
+    },
+    acceptsBabies: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
-      property: null,
-      checkInDate: null,
-      checkOutDate: null,
       showGuestDropdown: false,
       guests: {
         adults: 1,
@@ -57,20 +62,22 @@ export default {
   },
   computed: {
     totalGuests() {
-      return (
-          this.guests.adults +
-          this.guests.children +
-          this.guests.babies +
-          this.guests.pets
-      );
+      return this.guests.adults + this.guests.children + this.guests.babies;
     },
+    canAddGuest() {
+      return this.totalGuests < this.capacity;
+    }
   },
   methods: {
     toggleGuestDropdown() {
       this.showGuestDropdown = !this.showGuestDropdown;
     },
     increaseGuests(type) {
-      this.guests[type]++;
+      if (type === 'pets') {
+        this.guests.pets++;
+      } else if (this.canAddGuest) {
+        this.guests[type]++;
+      }
     },
     decreaseGuests(type) {
       if (this.guests[type] > 0) {
@@ -136,8 +143,9 @@ export default {
   padding: 0;
 }
 
-.guest-option button:hover {
+.guest-option button:disabled {
   background-color: #ddd;
+  cursor: not-allowed;
 }
 
 .close-dropdown {
@@ -155,5 +163,4 @@ export default {
 .close-dropdown:hover {
   background-color: #e04e50;
 }
-
 </style>
