@@ -5,7 +5,7 @@
     <form @submit.prevent="submitForm">
       <div class="form-container">
         <div class="form-left">
-
+          <!-- Colonne gauche -->
           <div class="form-group">
             <label for="propertyName">Nom de la propriété</label>
             <input v-model="property.propertyName" type="text" id="propertyName" required />
@@ -68,7 +68,7 @@
             <input v-model="property.capacity" type="number" id="capacity" required />
           </div>
 
-          <div class="form-group">
+          <div class="form-group checkbox-group">
             <label for="privacyDeclaration">Déclaration de confidentialité</label>
             <input v-model="property.privacyDeclaration" type="checkbox" id="privacyDeclaration" required />
           </div>
@@ -117,12 +117,12 @@
           </div>
 
           <div class="flex-group">
-            <div class="form-group">
+            <div class="form-group checkbox-group">
               <label for="acceptsPets">Accepter les animaux</label>
               <input v-model="property.acceptsPets" type="checkbox" id="acceptsPets" />
             </div>
 
-            <div class="form-group">
+            <div class="form-group checkbox-group">
               <label for="acceptsBabies">Accepter les bébés</label>
               <input v-model="property.acceptsBabies" type="checkbox" id="acceptsBabies" />
             </div>
@@ -249,4 +249,18 @@ export default {
 .submit-button:hover {
   background-color: #e04e50;
 }
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-group label {
+  flex: 7;
+}
+
+.checkbox-group input {
+  flex: 3;
+}
+
 </style>
