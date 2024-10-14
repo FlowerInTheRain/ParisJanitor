@@ -56,6 +56,7 @@
                   v-model="property.contactSlots"
                   :options="availableContactSlots"
                   :multiple="true"
+                  :aria-label="''"
                   placeholder="Sélectionnez les créneaux de contact"
                   label="name"
                   track-by="value"
