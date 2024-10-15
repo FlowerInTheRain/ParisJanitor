@@ -7,6 +7,7 @@ import AllImagesView from "@/views/property/AlImagesView";
 import BookingConfirmationView from "@/views/property/BookingConfirmationView";
 import MyBookingsView from "@/views/booking/MyBookingsView";
 import CreatePropertyView from "@/views/property/CreatePropertyView";
+import AdminHomeView from "@/views/backoffice/home/AdminHomeView";
 
 const routes = [
   {
@@ -57,6 +58,12 @@ const routes = [
     name: 'create-property',
     component: CreatePropertyView,
     meta: { title: 'Créer une propriété' }
+  },
+  {
+    path: '/admin',
+    name: 'home',
+    component: AdminHomeView,
+    meta: { title: 'Paris Janitor' }
   },
 ];
 
