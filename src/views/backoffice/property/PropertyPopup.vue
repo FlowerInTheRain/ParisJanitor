@@ -10,10 +10,27 @@
       </div>
       <div class="property-details">
         <h2>{{ property.propertyName || 'No name' }}</h2>
-        <p><strong>Description:</strong> {{ property.description || 'No description available' }}</p>
-        <p><strong>Address:</strong> {{ property.adress }}</p>
-        <p><strong>Rooms:</strong> {{ property.numberOfRooms }}</p>
-        <p><strong>Price per night:</strong> €{{ property.pricePerNight }}</p>
+        <p><strong>Description :</strong> {{ property.description || 'Pas de description' }}</p>
+        <p>{{ property.adress }}, {{ property.city }}, {{ property.country }}</p>
+        <p>
+          <span v-if="property.propertyType == 'APARTMENT'"> Appartement </span>
+          <span v-else> Maison</span> -
+          <span v-if="property.accommodationType == 'ROOM'"> Chambre </span>
+          <span v-else> Logement entier</span>
+        </p>
+        <p><strong>Nombre de pièces :</strong> {{ property.numberOfRooms }}</p>
+        <p><strong>Nombre de Chambre :</strong> {{ property.numberOfBedrooms }}</p>
+        <p><strong>Nombre de salle de bain :</strong> {{ property.numberOfBathrooms }}</p>
+        <p v-if="property.acceptsBabies"> Logement adapté aux bébés </p>
+        <p v-else> Logement non adapté aux bébés </p>
+        <p v-if="property.acceptsPets"> Le Logement accueil les animaux </p>
+        <p v-else> Le Logement n'accueil pas les animaux </p>
+        <p><strong>Prix par nuit :</strong> €{{ property.pricePerNight }}</p>
+      </div>
+
+      <div class="action-buttons">
+        <button class="accept-button" @click="validateProperty">Accepter</button>
+        <button class="reject-button" @click="refuseProperty">Refuser</button>
       </div>
     </div>
   </div>
@@ -24,6 +41,7 @@ export default {
   name: 'PropertyPopup',
   props: {
     property: Object,
+    token: String,
   },
   data() {
     return {
@@ -46,6 +64,44 @@ export default {
         this.currentImageIndex = 0;
       }
     },
+    async validateProperty() {
+      try {
+        const response = await fetch(`http://localhost:4001/parisjanitor-api/properties/${this.property.id}/validate`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${this.token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        if (response.ok) {
+          alert('Propriété acceptée');
+          window.location.reload();
+        } else {
+          alert('Échec de la validation de la propriété');
+        }
+      } catch (error) {
+        alert('Erreur lors de la validation : ' + error);
+      }
+    },
+    async refuseProperty() {
+      try {
+        const response = await fetch(`http://localhost:4001/parisjanitor-api/properties/${this.property.id}/refuse`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${this.token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        if (response.ok) {
+          alert('Propriété refusée');
+          window.location.reload(); // Recharger la page après refus
+        } else {
+          alert('Échec du refus de la propriété');
+        }
+      } catch (error) {
+        alert('Erreur lors du refus : ' + error);
+      }
+    }
   },
 };
 </script>
@@ -111,5 +167,25 @@ export default {
 }
 .property-details {
   text-align: left;
+}
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+.accept-button,
+.reject-button {
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+.accept-button {
+  background-color: #4caf50;
+  color: white;
+}
+.reject-button {
+  background-color: #f44336;
+  color: white;
 }
 </style>

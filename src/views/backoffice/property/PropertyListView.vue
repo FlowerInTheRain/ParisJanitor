@@ -3,7 +3,13 @@
     <div v-for="property in properties" :key="property.id" class="property-item">
       <PropertyCard :property="property" @open-popup="showPopup" />
     </div>
-    <PropertyPopup v-if="selectedProperty" :property="selectedProperty" @close="closePopup" />
+    <PropertyPopup
+        v-if="selectedProperty"
+        :property="selectedProperty"
+        @close="closePopup"
+        @updateList="fetchProperties"
+    />
+
   </div>
 </template>
 
@@ -48,6 +54,20 @@ export default {
       this.loading = false;
     }
   },
+  async fetchProperties() {
+    console.log('Fetching properties...');
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get('http://localhost:4001/parisjanitor-api/properties/awaited', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      this.properties = response.data;
+    } catch (error) {
+      console.error("Erreur lors de la récupération des propriétés", error);
+    }
+  }
 };
 </script>
 
