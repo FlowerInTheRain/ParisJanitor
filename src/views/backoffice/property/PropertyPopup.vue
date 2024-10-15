@@ -3,9 +3,9 @@
     <div class="popup-content">
       <button class="close-button" @click="$emit('close')">X</button>
       <div class="image-carousel">
-        <button @click="previousImage" :disabled="currentImageIndex === 0">‹</button>
+        <button @click="previousImage">‹</button>
         <img :src="property.picturesUrl[currentImageIndex] || defaultImage" alt="Property Image" />
-        <button @click="nextImage" :disabled="currentImageIndex === property.picturesUrl.length - 1">›</button>
+        <button @click="nextImage">›</button>
         <div class="image-counter">{{ currentImageIndex + 1 }}/{{ property.picturesUrl.length }}</div>
       </div>
       <div class="property-details">
@@ -14,7 +14,6 @@
         <p><strong>Address:</strong> {{ property.adress }}</p>
         <p><strong>Rooms:</strong> {{ property.numberOfRooms }}</p>
         <p><strong>Price per night:</strong> €{{ property.pricePerNight }}</p>
-        <!-- Add more details as necessary -->
       </div>
     </div>
   </div>
@@ -29,18 +28,22 @@ export default {
   data() {
     return {
       currentImageIndex: 0,
-      defaultImage: 'https://via.placeholder.com/600x400?text=No+Image', // Default image if no images
+      defaultImage: 'https://via.placeholder.com/600x400?text=No+Image',
     };
   },
   methods: {
     previousImage() {
       if (this.currentImageIndex > 0) {
         this.currentImageIndex--;
+      } else {
+        this.currentImageIndex = this.property.picturesUrl.length - 1;
       }
     },
     nextImage() {
       if (this.currentImageIndex < this.property.picturesUrl.length - 1) {
         this.currentImageIndex++;
+      } else {
+        this.currentImageIndex = 0;
       }
     },
   },

@@ -2,10 +2,9 @@
   <div class="admin-home">
     <AdminHeaderView />
     <div class="admin-body">
-      <AdminSidebar />
+      <AdminSidebar @menu-selected="handleMenuSelected" />
       <div class="content-area">
-        <h1>Welcome to the Admin Dashboard</h1>
-        <p>This is the back-office for administrators.</p>
+        <PropertyListView v-if="activeMenu === 'Propriété'" />
       </div>
     </div>
   </div>
@@ -14,12 +13,24 @@
 <script>
 import AdminHeaderView from "@/views/backoffice/home/AdminHeaderView.vue";
 import AdminSidebar from "@/views/backoffice/home/AdminSidebar.vue";
+import PropertyListView from "@/views/backoffice/property/PropertyListView.vue";
 
 export default {
   name: "AdminHomeView",
   components: {
     AdminHeaderView,
     AdminSidebar,
+    PropertyListView,
+  },
+  data() {
+    return {
+      activeMenu: "Propriété",
+    };
+  },
+  methods: {
+    handleMenuSelected(menu) {
+      this.activeMenu = menu;
+    },
   },
 };
 </script>

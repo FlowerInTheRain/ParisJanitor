@@ -29,11 +29,10 @@ export default {
       return `${startDate} - ${endDate}`;
     },
     imageSource() {
-      // Affiche la première image de la liste ou un placeholder si aucune image n'est disponible
       if (this.property.imageUrls && this.property.imageUrls.length > 0) {
-        return this.property.imageUrls[0]; // Prend la première image
+        return this.property.imageUrls[0];
       } else {
-        return "https://via.placeholder.com/150"; // Placeholder image si aucune image n'est disponible
+        return "https://via.placeholder.com/150";
       }
     }
   }

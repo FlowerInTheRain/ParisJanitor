@@ -88,11 +88,8 @@ export default {
   methods: {
     async fetchBookings(endpoint) {
       try {
-        // Obtenir les réservations
         const response = await axios.get(endpoint);
         const bookings = response.data;
-
-        // Pour chaque réservation, obtenir les détails de la propriété
         const bookingsWithProperties = await Promise.all(
             bookings.map(async (booking) => {
               const property = await this.fetchPropertyById(booking.propertyId);

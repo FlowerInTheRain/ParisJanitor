@@ -51,6 +51,7 @@ export default {
     setActive(item) {
       this.menuItems.forEach((menuItem) => (menuItem.active = false));
       item.active = true;
+      this.$emit('menu-selected', item.label);
     },
   },
 };
