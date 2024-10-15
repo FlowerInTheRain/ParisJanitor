@@ -61,7 +61,7 @@ const routes = [
   },
   {
     path: '/admin',
-    name: 'home',
+    name: 'Adminhome',
     component: AdminHomeView,
     meta: { title: 'Paris Janitor' }
   },
