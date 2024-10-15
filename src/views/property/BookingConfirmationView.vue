@@ -1,5 +1,9 @@
 <template>
   <div id="booking-confirmation-view" v-if="property">
+    <div v-if="notificationMessage" :class="['notification', notificationType]">
+      {{ notificationMessage }}
+    </div>
+
     <div class="back-button-container">
       <button @click="goToPropertyDetail" class="back-button">
         <span class="arrow-icon">&#8249;</span>
@@ -79,6 +83,12 @@ import { createBooking } from "@/services/parisjanitor/endpoints/bookings";
 
 export default {
   name: "BookingConfirmationView",
+  data() {
+    return {
+      notificationMessage: null,
+      notificationType: null,
+    };
+  },
   computed: {
     property() {
       return {
@@ -185,14 +195,22 @@ export default {
 
       try {
         await createBooking(bookingData);
-        this.successMessage = "La demande de réservation a été faite. En attente de réponse du propriétaire.";
+        this.showNotification("Ok pour la résa", "success");
         setTimeout(() => {
           this.$router.push({ name: 'my-bookings' });
-        }, 3000);
+        }, 2000);
       } catch (error) {
         console.error("Erreur lors de la création de la réservation :", error);
-        alert("Erreur lors de la création de la réservation. Veuillez réessayer.");
+        this.showNotification("Oups, pas bon", "error");
       }
+    },
+    showNotification(message, type) {
+      this.notificationMessage = message;
+      this.notificationType = type;
+      setTimeout(() => {
+        this.notificationMessage = null;
+        this.notificationType = null;
+      }, 2500);
     }
   }
 
@@ -334,6 +352,42 @@ export default {
 
 .arrow-icon {
   font-weight: bold;
+}
+.notification {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  z-index: 1000;
+}
+
+.notification.success {
+  background-color: #28a745;
+}
+
+.notification.error {
+  background-color: #dc3545;
+}
+
+.reserve-button {
+  display: block;
+  width: 100%;
+  background-color: #ff5a5f;
+  color: white;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.reserve-button:hover {
+  background-color: #e04e50;
 }
 
 </style>

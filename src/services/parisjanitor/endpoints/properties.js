@@ -1,7 +1,7 @@
 import axios from '../axios';
 
 const getAllProperty = async () => {
-    const url = `/properties`;
+    const url = `/properties/validated`;
     try {
         const response = await axios.get(url);
         console.log("Appel de la route GET :", url);
@@ -11,6 +11,19 @@ const getAllProperty = async () => {
         throw error;
     }
 };
+
+const addProperty = async (propertyData) => {
+    const url = 'http://localhost:4001/parisjanitor-api/properties';
+    try {
+        const response = await axios.post(url, propertyData);
+        console.log("Propriété ajoutée avec succès :", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Erreur lors de la création de la propriété :", error.response ? error.response.data : error);
+        throw error;
+    }
+};
+
 
 const addFavoriteProperty = async (propertyId) => {
     const url = `http://localhost:4001/parisjanitor-api/favorites/add?propertyId=${propertyId}`;
@@ -73,6 +86,7 @@ const getPropertyById = async (propertyId) => {
 
 export {
     getAllProperty,
+    addProperty,
     addFavoriteProperty,
     getUserFavorites,
     removeFavoriteProperty,

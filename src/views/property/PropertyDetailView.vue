@@ -1,19 +1,19 @@
 <template>
-  <div id="property-detail-view" v-if="property && property.imageUrls && property.imageUrls.length">
+  <div id="property-detail-view" v-if="property">
     <HeaderView @showLoginPopup="showLoginPopup" />
     <div class="property-details">
       <div class="images-section">
         <img
-            :src="property.imageUrls[0]"
+            :src="mainImageSource"
             alt="Main Property Image"
             class="main-image"
             @click="goToAllImages"
         />
-        <div class="other-images">
+        <div class="other-images" v-if="property.imageUrls && property.imageUrls.length > 1">
           <img
               v-for="(img, index) in property.imageUrls.slice(1, 5)"
               :key="index"
-              :src="img"
+              :src="img ? img : defaultImage"
               alt="Property Image"
               @click="goToAllImages"
           />
@@ -23,18 +23,30 @@
       <div v-if="successMessage" class="success-message">
         <p>{{ successMessage }}</p>
       </div>
+
       <div class="info-reservation-container">
         <div class="property-info">
           <h1>{{ property.title }}</h1>
           <p class="property-details-info">
             {{ property.capacity }} voyageurs • {{ property.numberOfRooms }} chambres • {{ property.numberOfBedrooms }} lits • {{ property.numberOfBathrooms }} salles de bain
           </p>
+
           <div class="property-description">
             <h3>Informations sur l'hébergement</h3>
             <p>{{ property.description }}</p>
           </div>
+
+          <div class="pet-info">
+            <img :src="property.acceptsPets ? petIcon : noPetIcon" alt="Pets icon" class="pet-icon" />
+            <span>{{ property.acceptsPets ? 'Les animaux sont acceptés' : 'Animaux non acceptés' }}</span>
+          </div>
+
+          <div class="baby-info">
+            <span>{{ property.acceptsBabies ? "L'appartement est approprié pour les bébés (-2 ans)" : "L'appartement n'est pas approprié pour des bébés (-2 ans)" }}</span>
+          </div>
+
           <div class="host-info">
-            <img :src="property.hostImageUrl" alt="Host Image" class="host-image" />
+            <img :src="property.hostImageUrl ? property.hostImageUrl : defaultImage" alt="Host Image" class="host-image" />
             <div>
               <p>Hôte : {{ property.host }}</p>
               <p>Superhôte - Hôte depuis {{ hostYears }}</p>
@@ -48,17 +60,18 @@
           </div>
           <div class="booking-form">
             <div class="date-selector">
-              <input type="date" v-model="checkInDate" :min="today" placeholder="Arrivée" />
-              <input type="date" v-model="checkOutDate" :min="checkInDate ? checkInDate : today" placeholder="Départ" />
+              <input type="date" v-model="checkInDate" :min="today" placeholder="Arrivée" @change="verifyAvailability" />
+              <input type="date" v-model="checkOutDate" :min="checkInDate ? checkInDate : today" placeholder="Départ" @change="verifyAvailability" />
             </div>
             <div class="guest-selector">
-              <guest-selector :capacity="property.capacity" @updateGuests="updateGuests" />
+              <guest-selector
+                  :capacity="property.capacity"
+                  :acceptsPets="property.acceptsPets"
+                  :acceptsBabies="property.acceptsBabies"
+                  @updateGuests="updateGuests"
+              />
             </div>
-            <button
-                class="availability-button"
-                :disabled="!isAvailable"
-                @click="makeReservation"
-            >
+            <button class="availability-button" :disabled="!isAvailable" @click="makeReservation">
               {{ isAvailable ? 'Réserver' : 'Vérifier la disponibilité' }}
             </button>
           </div>
@@ -83,11 +96,15 @@
   </div>
 </template>
 
+
 <script>
 import HeaderView from "@/views/home/content/HeaderView.vue";
 import GuestSelector from "@/views/property/GuestSelector.vue";
 import { getPropertyById } from "@/services/parisjanitor/endpoints/properties";
 import { checkAvailability, hasBooking } from "@/services/parisjanitor/endpoints/bookings";
+import defaultImage from "@/assets/Jesus.jpeg";
+import petIcon from "@/assets/pet.png";
+import noPetIcon from "@/assets/no-pet.png";
 
 export default {
   name: "PropertyDetailView",
@@ -110,6 +127,9 @@ export default {
         babies: 0,
         pets: 0,
       },
+      defaultImage,
+      petIcon,
+      noPetIcon
     };
   },
   computed: {
@@ -141,10 +161,11 @@ export default {
       }
       return 'plusieurs années';
     },
-  },
-  watch: {
-    checkInDate: 'verifyAvailability',
-    checkOutDate: 'verifyAvailability'
+    mainImageSource() {
+      return this.property.imageUrls && this.property.imageUrls.length > 0
+          ? this.property.imageUrls[0]
+          : this.defaultImage;
+    }
   },
   async mounted() {
     const propertyId = this.$route.params.id;
@@ -168,16 +189,25 @@ export default {
     },
     async verifyAvailability() {
       if (this.checkInDate && this.checkOutDate) {
+        const checkIn = new Date(this.checkInDate);
+        const checkOut = new Date(this.checkOutDate);
+
+        if (checkOut <= checkIn) {
+          this.isAvailable = false;
+          this.availabilityMessage = "Les dates ne sont pas correctes. Veuillez vérifier les dates choisies.";
+          return;
+        }
+
         const formattedCheckInDate = this.formatDate(this.checkInDate);
         const formattedCheckOutDate = this.formatDate(this.checkOutDate);
         const propertyId = this.property.id;
-
         try {
           const isAvailable = await checkAvailability(propertyId, formattedCheckInDate, formattedCheckOutDate);
           console.log("Résultat de la disponibilité :", isAvailable);
 
           if (isAvailable) {
             this.isAvailable = true;
+            this.availabilityMessage = '';
           } else {
             this.isAvailable = false;
             this.availabilityMessage = "Le logement n'est pas disponible pour les dates sélectionnées.";
@@ -415,4 +445,28 @@ margin: 5px 0;
   text-align: center;
 }
 
+.pet-policy {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.pet-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
+
+.pet-icon, .baby-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
+
+.pet-info, .baby-info {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  font-size: 14px;
+}
 </style>
