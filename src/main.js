@@ -8,10 +8,12 @@ import 'vue-multiselect/dist/vue-multiselect.min.css';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faBars, faMagnifyingGlass, faArrowLeft, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { faUser } from '@fortawesome/free-regular-svg-icons';
 
-library.add(faBars, faUser, faMagnifyingGlass, faArrowLeft, faXmark);
+import { faHouse, faCog, faFileAlt, faBox, faBars, faMagnifyingGlass, faArrowLeft, faXmark, faUser, faBuildingUser, faFileInvoice, faBellConcierge, faComments } from '@fortawesome/free-solid-svg-icons';
+
+import { faUser as faUserRegular } from '@fortawesome/free-regular-svg-icons';
+
+library.add(faHouse, faCog, faFileAlt, faBox, faBars, faUserRegular, faUser, faMagnifyingGlass, faArrowLeft, faXmark, faBuildingUser, faFileInvoice, faBellConcierge, faComments);
 
 window.process = process;
 
