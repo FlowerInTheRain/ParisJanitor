@@ -32,11 +32,10 @@ export default {
     return {
       hover: false,
       menuItems: [
-        { label: "Dashboard", icon: ["fas", "house"], active: true },
-        { label: "Search", icon: ["fas", "magnifying-glass"], active: false },
-        { label: "Insights", icon: ["fas", "chart-bar"], active: false },
-        { label: "Docs", icon: ["fas", "file-alt"], active: false },
-        { label: "Products", icon: ["fas", "shopping-cart"], active: false },
+        { label: "Propriété", icon: ["fas", "building-user"], active: true },
+        { label: "Utilisateurs", icon: ["fas", "user"], active: false },
+        { label: "Facturations", icon: ["fas", "file-invoice"], active: false },
+        { label: "Services", icon: ["fas", "bell-concierge"], active: false },
         { label: "Settings", icon: ["fas", "cog"], active: false },
         { label: "Messages", icon: ["fas", "comments"], active: false },
       ],
