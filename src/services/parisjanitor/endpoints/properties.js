@@ -13,7 +13,7 @@ const getAllProperty = async () => {
 };
 
 const addProperty = async (propertyData) => {
-    const url = 'http://localhost:4001/parisjanitor-api/properties';
+    const url = 'properties';
     try {
         const response = await axiosInstance.post(url, propertyData);
         console.log("Propriété ajoutée avec succès :", response.data);
@@ -38,7 +38,7 @@ const addFavoriteProperty = async (propertyId) => {
 };
 
 const getUserFavorites = async () => {
-    const url = `http://localhost:4001/parisjanitor-api/favorites/user/me`;
+    const url = `favorites/user/me`;
     try {
         const response = await axiosInstance.get(url, {
             headers: {
@@ -54,7 +54,7 @@ const getUserFavorites = async () => {
 };
 
 const removeFavoriteProperty = async (propertyId) => {
-    const url = `http://localhost:4001/parisjanitor-api/favorites/remove?propertyId=${propertyId}`;
+    const url = `favorites/remove?propertyId=${propertyId}`;
     try {
         const response = await axiosInstance.delete(url, {
             headers: {
@@ -70,7 +70,7 @@ const removeFavoriteProperty = async (propertyId) => {
 };
 
 const getPropertyById = async (propertyId) => {
-    const url = `http://localhost:4001/parisjanitor-api/properties/${propertyId}`;
+    const url = `properties/${propertyId}`;
     try {
         const response = await axiosInstance.get(url, {
             headers: {
