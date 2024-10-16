@@ -10,6 +10,7 @@ const signUp = async (requestBody) => {
         const response = await axiosInstance.post(`${endpoint}`, requestBody);
         return response.data;
     } catch (error) {
+        /** tesst */
         console.error('Error while creating user account: ', error)
         throw error;
     }
