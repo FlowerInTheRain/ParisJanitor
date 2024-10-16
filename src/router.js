@@ -8,6 +8,7 @@ import BookingConfirmationView from "@/views/property/BookingConfirmationView";
 import MyBookingsView from "@/views/booking/MyBookingsView";
 import CreatePropertyView from "@/views/property/CreatePropertyView";
 import AdminHomeView from "@/views/backoffice/home/AdminHomeView";
+import PaymentForm from "@/componentss/PaymentForm.vue";
 
 const routes = [
   {
@@ -15,6 +16,12 @@ const routes = [
     name: 'home',
     component: HomeView,
     meta: { title: 'Paris Janitor' }
+  },
+  {
+    path: '/pay',
+    name: 'pay',
+    component: PaymentForm,
+    meta: { title: 'Paris Janitor Payment' }
   },
   {
     path: '/mon-compte',
