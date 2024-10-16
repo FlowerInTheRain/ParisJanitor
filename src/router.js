@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import {createRouter, createWebHistory} from 'vue-router';
 import HomeView from './views/home/HomeView.vue';
 import ProfilView from './views/user/ProfilView.vue';
 import FavoritesView from "@/views/favorites/FavoritesView";
@@ -8,7 +8,8 @@ import BookingConfirmationView from "@/views/property/BookingConfirmationView";
 import MyBookingsView from "@/views/booking/MyBookingsView";
 import CreatePropertyView from "@/views/property/CreatePropertyView";
 import AdminHomeView from "@/views/backoffice/home/AdminHomeView";
-import PaymentForm from "@/componentss/PaymentForm.vue";
+import PaymentForm from "@/components/PaymentForm.vue";
+import ProvidersHome from "@/views/providers/ProvidersHome.vue";
 
 const routes = [
   {
@@ -22,6 +23,12 @@ const routes = [
     name: 'pay',
     component: PaymentForm,
     meta: { title: 'Paris Janitor Payment' }
+  },
+  {
+    path: '/espace-prestataire/home',
+    name: 'providers-login',
+    component: ProvidersHome,
+    meta: { title: 'Paris Janitor Providers login' }
   },
   {
     path: '/mon-compte',

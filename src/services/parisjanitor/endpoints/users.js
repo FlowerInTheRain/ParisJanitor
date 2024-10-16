@@ -28,6 +28,16 @@ const signIn = async (requestBody) => {
     }
 }
 
+const providerSignIn = async (requestBody) => {
+    try {
+        const response = await axiosInstance.post(`${endpoint}/providers-login`, requestBody);
+        return response.data;
+    } catch (error) {
+        console.error('Error while logging user account: ', error)
+        throw error;
+    }
+}
+
 const getMyProfile = async () => {
     try {
         const response = await axiosInstance.get(`${endpoint}/me`);
@@ -50,10 +60,19 @@ const getUserById = async (id) => {
 
 const getUserByEmail = async (email) => {
     try {
-        const response = await axiosInstance.get(`${endpoint}/email/${email}`);
-        return response.data;
+        return await axiosInstance.get(`${endpoint}/email/${email}`);
     } catch (error) {
         console.error('Error while getting user account: ', error);
+        throw error;
+    }
+};
+
+const findProviderByEmail = async (email) => {
+    try {
+        const response = await axiosInstance.get(`${endpoint}/provides-finder/find-by-mail/${email}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error while getting Provider account: ', error);
         throw error;
     }
 };
@@ -160,4 +179,6 @@ export {
     requestSecurityModification,
     verifyPasswordCode,
     updatePassword,
+    findProviderByEmail,
+    providerSignIn,
     verifyPassword}

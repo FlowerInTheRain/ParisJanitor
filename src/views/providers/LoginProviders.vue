@@ -24,11 +24,14 @@
         </div>
 
         <div v-if="showSignUp">
-          <input class="log-input" type="text" v-model="firstName" placeholder="Prénom sur la pièce d'identité" required>
-          <input class="log-input" type="text" v-model="lastName" placeholder="Nom sur la pièce d'identité" required>
-          <input class="log-input" type="date" v-model="birthDate" placeholder="Date de naissance" required>
           <input class="log-input" type="email" v-model="email" placeholder="E-mail" required>
           <input class="log-input" type="password" v-model="password" placeholder="Mot de passe" required>
+          <input class="log-input" type="text" v-model="firstName" placeholder="Prénom" required>
+          <input class="log-input" type="text" v-model="lastName" placeholder="Nom" required>
+          <input class="log-input" type="text" v-model="city" placeholder="Ville" required>
+          <input class="log-input" type="text" v-model="activity" placeholder="Activité" required>
+          <input class="log-input" type="text" v-model="phoneNumber" placeholder="Activité" required>
+          <textarea class="log-input" v-model="joinRequestMessage" placeholder="Message de candidature"></textarea>
         </div>
 
         <p class="info-text" v-if="!showSignUp">
@@ -52,8 +55,7 @@
 </template>
 
 <script>
-import { getUserByEmail, signIn, signUp } from "@/services/parisjanitor/endpoints/users";
-import UserCreationRequestDto from "@/dto/request/UserCreationRequestDto";
+import {findProviderByEmail, providerSignIn, signUp} from "@/services/parisjanitor/endpoints/users";
 
 export default {
   data() {
@@ -64,12 +66,11 @@ export default {
       popupTitle: 'Connexion ou inscription',
       firstName: '',
       lastName: '',
-      birthDate: '',
       password: '',
       phoneNumber: '',
-      region: '',
-      adresse1: '',
-      adresse2: ''
+      city: '',
+      activity: '',
+      joinRequestMessage: ''
     };
   },
   methods: {
@@ -90,7 +91,7 @@ export default {
           password: this.password
         };
         try {
-          const response = await signIn(loginData);
+          const response = await providerSignIn(loginData);
           console.log("Login Successful:", response);
 
           localStorage.setItem('token', response.token);
@@ -101,29 +102,23 @@ export default {
           console.error("Login Failed:", error);
         }
       } else if (this.showSignUp) {
-        const dto = new UserCreationRequestDto(
-            this.email,
-            this.password,
-            this.lastName,
-            this.firstName,
-            this.birthDate,
-            this.phoneNumber,
-            this.region,
-            this.adresse1,
-            this.adresse2
-        );
+        const dto = {
+          fulllName: `${this.firstName} ${this.lastName}`,
+          email: this.email,
+          password: this.password,
+          phoneNumber: this.phoneNumber,
+          city: this.city,
+          activity: this.activity,
+          joinRequestMessage: this.joinRequestMessage
+        }
         try {
+          const signUpResponse = await signUp(dto);
 
-          let signUpResponse;
-          try {
-            signUpResponse = await signUp(dto);
-          } catch (error) {
-            console.error(signUpResponse);
-          }
+
           console.log("Registration Successful:", signUpResponse);
           console.log( this.email, this.password);
           const loginData = { email: this.email, password: this.password };
-          const loginResponse = await signIn(loginData);
+          const loginResponse = await providerSignIn(loginData);
           console.log("Login Successful after registration:", loginResponse);
 
           localStorage.setItem('token', loginResponse.token);
@@ -135,21 +130,22 @@ export default {
           console.error("Registration or Login Failed:", error);
         }
       } else {
-          try {
-            const response = await getUserByEmail(this.email);
-            if(response.data) {
-              this.popupTitle = 'Veuillez saisir votre mot de passe';
-              this.showSignIn = true;
-              this.showSignUp = false;
-            }
-          } catch(error){
-            this.popupTitle = 'Terminer mon inscription';
-            this.showSignUp = true;
-            this.showSignIn = false;
-          }
+        const res = await findProviderByEmail(this.email);
+        console.log(res);
+
+        /**if (user) {
+          this.popupTitle = 'Veuillez saisir votre mot de passe';
+          this.showSignIn = true;
+          this.showSignUp = false;
+        }*/
+        if (res.statusCode === 404) {
+          this.popupTitle = 'Terminer mon inscription';
+          this.showSignUp = true;
+          this.showSignIn = false;
         }
       }
     }
+  }
 };
 </script>
 
