@@ -53,7 +53,6 @@ export default {
       try {
         await approveCertificate(id);
         alert("Certificat accepté avec succès !");
-        // Rafraîchir la liste après l'action
         this.certificates = await getPendingCertificates();
       } catch (error) {
         console.error("Erreur lors de l'acceptation du certificat :", error);
@@ -80,22 +79,20 @@ export default {
 }
 
 .certificates-list {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Each certificate is 200px wide */
   gap: 20px;
 }
 
 .certificate-card {
-  display: flex;
-  flex-direction: column;
   border: 1px solid #ddd;
   border-radius: 5px;
   padding: 15px;
-  width: 200px;
   background-color: white;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+/* Keeps service name and download icon aligned horizontally */
 .certificate-info {
   display: flex;
   justify-content: space-between;
@@ -106,7 +103,6 @@ export default {
   margin: 0;
   font-size: 16px;
   color: #333;
-  flex: 1;
 }
 
 .certificate-actions {

@@ -48,8 +48,28 @@ export default {
 }
 
 .provider-list {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
+}
+
+.provider-card {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 15px;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.provider-card h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.provider-card p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #555;
 }
 </style>
