@@ -39,10 +39,12 @@ export default {
 .admin-home {
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .admin-body {
   display: flex;
+  height: 100%;
 }
 
 .content-area {
@@ -51,6 +53,7 @@ export default {
   background-color: #f5f6fa;
   margin-left: 60px;
   transition: margin-left 0.3s ease;
+  height: 100%;
 }
 
 .sidebar:hover + .content-area {

@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar" @mouseover="hoverSidebar" @mouseleave="unhoverSidebar">
+  <div class="sidebar">
     <div class="sidebar-logo">
       <font-awesome-icon :icon="['fas', 'box']" />
     </div>
@@ -13,8 +13,21 @@
             @click="setActive(item)"
         >
           <font-awesome-icon :icon="item.icon" class="icon" />
-          <span v-if="hover" class="label">{{ item.label }}</span>
+          <span class="label">{{ item.label }}</span>
         </li>
+
+        <!-- Sous-menus pour Prestataires, seulement affiché si Prestataires est actif -->
+        <ul v-if="menuItems.find(item => item.label === 'Prestataires').active" class="submenu">
+          <li
+              v-for="submenu in submenuItems"
+              :key="submenu.label"
+              class="menu-item submenu-item"
+              @click="setActiveSubmenu(submenu)"
+          >
+            <font-awesome-icon :icon="submenu.icon" class="icon" />
+            <span class="label">{{ submenu.label }}</span>
+          </li>
+        </ul>
       </ul>
     </div>
     <div class="sidebar-footer">
@@ -30,28 +43,43 @@ export default {
   name: "AdminSidebar",
   data() {
     return {
-      hover: false,
       menuItems: [
         { label: "Propriété", icon: ["fas", "building-user"], active: true },
         { label: "Utilisateurs", icon: ["fas", "user"], active: false },
         { label: "Facturations", icon: ["fas", "file-invoice"], active: false },
-        { label: "Prestataires", icon: ["fas", "bell-concierge"], active: false },
+        {
+          label: "Prestataires",
+          icon: ["fas", "bell-concierge"],
+          active: false,
+          hasSubmenu: true,
+        },
         { label: "Settings", icon: ["fas", "cog"], active: false },
         { label: "Messages", icon: ["fas", "comments"], active: false },
+      ],
+      submenuItems: [
+        {
+          label: "Prestataires en attente",
+          icon: ["fas", "clock"],
+          active: false,
+        },
+        {
+          label: "Certificats en attente",
+          icon: ["fas", "file-certificate"],
+          active: false,
+        },
       ],
     };
   },
   methods: {
-    hoverSidebar() {
-      this.hover = true;
-    },
-    unhoverSidebar() {
-      this.hover = false;
-    },
     setActive(item) {
       this.menuItems.forEach((menuItem) => (menuItem.active = false));
       item.active = true;
       this.$emit('menu-selected', item.label);
+    },
+    setActiveSubmenu(submenu) {
+      this.submenuItems.forEach((submenuItem) => (submenuItem.active = false));
+      submenu.active = true;
+      this.$emit('menu-selected', submenu.label);
     },
   },
 };
@@ -61,17 +89,12 @@ export default {
 .sidebar {
   background-color: #2e3440;
   color: white;
-  width: 100px;
+  width: 200px;
   height: 100vh;
   position: fixed;
-  transition: width 0.3s ease;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-}
-
-.sidebar:hover {
-  width: 200px;
 }
 
 .sidebar-logo {
@@ -108,17 +131,26 @@ export default {
 }
 
 .label {
-  display: none;
   font-size: 16px;
-}
-
-.sidebar:hover .label {
-  display: inline;
 }
 
 .menu-item:hover {
   background-color: #434c5e;
   border-radius: 10px;
+}
+
+.submenu {
+  padding-left: 20px;
+}
+
+.submenu-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.submenu-item .label {
+  font-size: 14px;
 }
 
 .sidebar-footer {
