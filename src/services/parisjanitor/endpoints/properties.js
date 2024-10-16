@@ -1,9 +1,9 @@
-import axios from '../axios';
+import axiosInstance from '../axios';
 
 const getAllProperty = async () => {
     const url = `/properties/validated`;
     try {
-        const response = await axios.get(url);
+        const response = await axiosInstance.get(url);
         console.log("Appel de la route GET :", url);
         return response.data;
     } catch (error) {
@@ -15,7 +15,7 @@ const getAllProperty = async () => {
 const addProperty = async (propertyData) => {
     const url = 'http://localhost:4001/parisjanitor-api/properties';
     try {
-        const response = await axios.post(url, propertyData);
+        const response = await axiosInstance.post(url, propertyData);
         console.log("Propriété ajoutée avec succès :", response.data);
         return response.data;
     } catch (error) {
@@ -28,7 +28,7 @@ const addProperty = async (propertyData) => {
 const addFavoriteProperty = async (propertyId) => {
     const url = `http://localhost:4001/parisjanitor-api/favorites/add?propertyId=${propertyId}`;
     try {
-        const response = await axios.post(url);
+        const response = await axiosInstance.post(url);
         console.log("Propriété ajoutée aux favoris :", response.data);
         return response.data;
     } catch (error) {
@@ -40,7 +40,7 @@ const addFavoriteProperty = async (propertyId) => {
 const getUserFavorites = async () => {
     const url = `http://localhost:4001/parisjanitor-api/favorites/user/me`;
     try {
-        const response = await axios.get(url, {
+        const response = await axiosInstance.get(url, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
@@ -56,7 +56,7 @@ const getUserFavorites = async () => {
 const removeFavoriteProperty = async (propertyId) => {
     const url = `http://localhost:4001/parisjanitor-api/favorites/remove?propertyId=${propertyId}`;
     try {
-        const response = await axios.delete(url, {
+        const response = await axiosInstance.delete(url, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
@@ -72,7 +72,7 @@ const removeFavoriteProperty = async (propertyId) => {
 const getPropertyById = async (propertyId) => {
     const url = `http://localhost:4001/parisjanitor-api/properties/${propertyId}`;
     try {
-        const response = await axios.get(url, {
+        const response = await axiosInstance.get(url, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }

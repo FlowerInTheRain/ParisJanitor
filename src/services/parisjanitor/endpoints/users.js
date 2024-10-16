@@ -1,4 +1,4 @@
-import axios from '../axios';
+import axiosInstance from '../axios';
 
 const endpoint = "/users"
 
@@ -7,7 +7,7 @@ const endpoint = "/users"
  */
 const signUp = async (requestBody) => {
     try {
-        const response = await axios.post(`${endpoint}`, requestBody);
+        const response = await axiosInstance.post(`${endpoint}`, requestBody);
         return response.data;
     } catch (error) {
         console.error('Error while creating user account: ', error)
@@ -20,7 +20,7 @@ const signUp = async (requestBody) => {
  */
 const signIn = async (requestBody) => {
     try {
-        const response = await axios.post(`${endpoint}/log`, requestBody);
+        const response = await axiosInstance.post(`${endpoint}/log`, requestBody);
         return response.data;
     } catch (error) {
         console.error('Error while logging user account: ', error)
@@ -30,7 +30,7 @@ const signIn = async (requestBody) => {
 
 const getMyProfile = async () => {
     try {
-        const response = await axios.get(`${endpoint}/me`);
+        const response = await axiosInstance.get(`${endpoint}/me`);
         return response.data;
     } catch (error) {
         console.error('Error while getting user account: ', error)
@@ -40,7 +40,7 @@ const getMyProfile = async () => {
 
 const getUserById = async (id) => {
     try {
-        const response = await axios.get(`${endpoint}/id/${id}`);
+        const response = await axiosInstance.get(`${endpoint}/id/${id}`);
         return response.data;
     } catch (error) {
         console.error('Error while getting user account: ', error)
@@ -50,7 +50,7 @@ const getUserById = async (id) => {
 
 const getUserByEmail = async (email) => {
     try {
-        const response = await axios.get(`http://localhost:4000/parisjanitor-api/users/email/${email}`);
+        const response = await axiosInstance.get(`${endpoint}/email/${email}`);
         return response.data;
     } catch (error) {
         console.error('Error while getting user account: ', error);
@@ -60,7 +60,7 @@ const getUserByEmail = async (email) => {
 
 const getAllUser = async () => {
     try {
-        const response = await axios.get(`${endpoint}`);
+        const response = await axiosInstance.get(`${endpoint}`);
         return response.data;
     } catch (error) {
         console.error('Error while getting user account: ', error)
@@ -71,7 +71,7 @@ const getAllUser = async () => {
 const updateUserProfile = async (userProfile) => {
     try {
         const token = localStorage.getItem('token');
-        const response = await axios.put('http://localhost:4000/parisjanitor-api/users/update', userProfile, {
+        const response = await axiosInstance.put('http://localhost:4000/parisjanitor-api/users/update', userProfile, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json',
@@ -87,7 +87,7 @@ const updateUserProfile = async (userProfile) => {
 const requestSecurityModification = async () => {
     try {
         const token = localStorage.getItem('token');
-        const response = await axios.post(`${endpoint}/securityModifier`, {}, {
+        const response = await axiosInstance.post(`${endpoint}/securityModifier`, {}, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -102,7 +102,7 @@ const requestSecurityModification = async () => {
 const verifyPasswordCode = async (code) => {
     try {
         const token = localStorage.getItem('token');
-        const response = await axios.get(`${endpoint}/verifyPasswordCode/${code}`, {
+        const response = await axiosInstance.get(`${endpoint}/verifyPasswordCode/${code}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -118,7 +118,7 @@ const verifyPasswordCode = async (code) => {
 const updatePassword = async (newPassword) => {
     try {
         const token = localStorage.getItem('token');
-        const response = await axios.patch(`${endpoint}/updatePassword`, { password: newPassword }, {
+        const response = await axiosInstance.patch(`${endpoint}/updatePassword`, { password: newPassword }, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -135,7 +135,7 @@ const verifyPassword = async (password) => {
     const data = { password };
     console.log("Sending password for verification:", data);
     try {
-        const response = await axios.post('http://localhost:4000/parisjanitor-api/users/verifyPassword', data, {
+        const response = await axiosInstance.post(`${endpoint}/verifyPassword`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json',
