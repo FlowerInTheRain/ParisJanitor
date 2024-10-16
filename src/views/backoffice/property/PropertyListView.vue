@@ -3,6 +3,7 @@
     <div v-for="property in properties" :key="property.id" class="property-item">
       <PropertyCard :property="property" @open-popup="showPopup" />
     </div>
+    <h1>Propriété en attente</h1>
     <PropertyPopup
         v-if="selectedProperty"
         :property="selectedProperty"

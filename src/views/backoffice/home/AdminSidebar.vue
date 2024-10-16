@@ -6,34 +6,28 @@
     <div class="sidebar-menu">
       <ul>
         <li
-            class="menu-item"
-            v-for="item in menuItems"
-            :key="item.label"
+            v-for="(item, index) in menuItems"
+            :key="index"
             :class="{ active: item.active }"
-            @click="setActive(item)"
+            class="menu-item"
+            @click="$emit('menu-selected', item.label)"
         >
-          <font-awesome-icon :icon="item.icon" class="icon" />
-          <span class="label">{{ item.label }}</span>
-        </li>
+        <font-awesome-icon :icon="item.icon" class="icon" />
+        <span class="label">{{ item.label }}</span>
 
-        <!-- Sous-menus pour Prestataires, seulement affiché si Prestataires est actif -->
-        <ul v-if="menuItems.find(item => item.label === 'Prestataires').active" class="submenu">
+        <ul v-if="item.label === 'Prestataires'" class="submenu">
           <li
-              v-for="submenu in submenuItems"
-              :key="submenu.label"
+              v-for="(submenu, subIndex) in item.submenuItems"
+              :key="subIndex"
               class="menu-item submenu-item"
-              @click="setActiveSubmenu(submenu)"
+              @click.stop="$emit('menu-selected', submenu.label)"
           >
-            <font-awesome-icon :icon="submenu.icon" class="icon" />
-            <span class="label">{{ submenu.label }}</span>
+          <font-awesome-icon :icon="submenu.icon" class="icon" />
+          <span class="label">{{ submenu.label }}</span>
           </li>
         </ul>
+        </li>
       </ul>
-    </div>
-    <div class="sidebar-footer">
-      <li class="menu-item">
-        <font-awesome-icon :icon="['fas', 'user']" class="icon" />
-      </li>
     </div>
   </div>
 </template>
@@ -44,43 +38,22 @@ export default {
   data() {
     return {
       menuItems: [
-        { label: "Propriété", icon: ["fas", "building-user"], active: true },
+        { label: "Propriété", icon: ["fas", "building-user"], active: false },
         { label: "Utilisateurs", icon: ["fas", "user"], active: false },
         { label: "Facturations", icon: ["fas", "file-invoice"], active: false },
         {
           label: "Prestataires",
           icon: ["fas", "bell-concierge"],
           active: false,
-          hasSubmenu: true,
+          submenuItems: [
+            { label: "Prestataires en attente", icon: ["fas", "clock"], active: false },
+            { label: "Certificats en attente", icon: ["fas", "file-certificate"], active: false },
+          ],
         },
         { label: "Settings", icon: ["fas", "cog"], active: false },
         { label: "Messages", icon: ["fas", "comments"], active: false },
       ],
-      submenuItems: [
-        {
-          label: "Prestataires en attente",
-          icon: ["fas", "clock"],
-          active: false,
-        },
-        {
-          label: "Certificats en attente",
-          icon: ["fas", "file-certificate"],
-          active: false,
-        },
-      ],
     };
-  },
-  methods: {
-    setActive(item) {
-      this.menuItems.forEach((menuItem) => (menuItem.active = false));
-      item.active = true;
-      this.$emit('menu-selected', item.label);
-    },
-    setActiveSubmenu(submenu) {
-      this.submenuItems.forEach((submenuItem) => (submenuItem.active = false));
-      submenu.active = true;
-      this.$emit('menu-selected', submenu.label);
-    },
   },
 };
 </script>
@@ -89,12 +62,17 @@ export default {
 .sidebar {
   background-color: #2e3440;
   color: white;
-  width: 200px;
+  width: 100px;
   height: 100vh;
   position: fixed;
+  transition: width 0.3s ease;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.sidebar:hover {
+  width: 200px;
 }
 
 .sidebar-logo {
@@ -131,7 +109,12 @@ export default {
 }
 
 .label {
+  display: none;
   font-size: 16px;
+}
+
+.sidebar:hover .label {
+  display: inline;
 }
 
 .menu-item:hover {
@@ -140,17 +123,14 @@ export default {
 }
 
 .submenu {
-  padding-left: 20px;
+  list-style-type: none;
+  padding-left: 0;
+  margin: 0;
 }
 
 .submenu-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.submenu-item .label {
-  font-size: 14px;
+  padding-left: 30px;
+  margin-bottom: 5px;
 }
 
 .sidebar-footer {
