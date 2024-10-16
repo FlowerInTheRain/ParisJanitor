@@ -1,11 +1,12 @@
 <template>
-  <div className="pending-providers-view">
+  <div class="pending-providers-view">
     <h1>Prestataires en attente</h1>
-    <div className="provider-list">
+    <div class="provider-list">
       <PendingProviderCard
           v-for="provider in pendingProviders"
           :key="provider.id"
           :provider="provider"
+          @provider-updated="fetchPendingProviders"
       />
     </div>
   </div>
@@ -25,13 +26,18 @@ export default {
       pendingProviders: [],
     };
   },
-  async created() {
-    try {
-      const response = await getPendingProviders;
-      this.pendingProviders = response.data;
-    } catch (error) {
-      console.error("Erreur lors de la récupération des prestataires en attente", error);
+  methods: {
+    async fetchPendingProviders() {
+      try {
+        const response = await getPendingProviders();
+        this.pendingProviders = response;
+      } catch (error) {
+        console.error("Erreur lors de la récupération des prestataires en attente", error);
+      }
     }
+  },
+  async created() {
+    this.fetchPendingProviders();
   },
 };
 </script>
