@@ -15,6 +15,16 @@ const signUp = async (requestBody) => {
     }
 }
 
+const providersSignUp = async (requestBody) => {
+    try {
+        const response = await axiosInstance.post(`/providers-creation/candidate`, requestBody);
+        return response.data;
+    } catch (error) {
+        console.error('Error while creating user account: ', error)
+        throw error;
+    }
+}
+
 /**
  * @param {UserLogRequestDto} requestBody
  */
@@ -30,8 +40,8 @@ const signIn = async (requestBody) => {
 
 const providerSignIn = async (requestBody) => {
     try {
-        const response = await axiosInstance.post(`${endpoint}/providers-login`, requestBody);
-        return response.data;
+        const response = await axiosInstance.post(`/providers-login`, requestBody);
+        return response;
     } catch (error) {
         console.error('Error while logging user account: ', error)
         throw error;
@@ -69,7 +79,7 @@ const getUserByEmail = async (email) => {
 
 const findProviderByEmail = async (email) => {
     try {
-        const response = await axiosInstance.get(`${endpoint}/provides-finder/find-by-mail/${email}`);
+        const response = await axiosInstance.get(`/providers-finder/email-exist/${email}`);
         return response.data;
     } catch (error) {
         console.error('Error while getting Provider account: ', error);
@@ -149,6 +159,17 @@ const updatePassword = async (newPassword) => {
     }
 };
 
+
+const findMyPrestations = async (providerId) => {
+    try {
+        const response = await axiosInstance.get(`/providers-referenced-prestations/list-providers-prestations/${providerId}`);
+        return response;
+    } catch (error) {
+        console.error('Error while updating password: ', error);
+        throw error;
+    }
+};
+
 const verifyPassword = async (password) => {
     const token = localStorage.getItem('token');
     const data = { password };
@@ -181,4 +202,6 @@ export {
     updatePassword,
     findProviderByEmail,
     providerSignIn,
+    providersSignUp,
+    findMyPrestations,
     verifyPassword}

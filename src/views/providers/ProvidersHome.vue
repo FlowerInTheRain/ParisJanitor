@@ -1,31 +1,35 @@
 <template>
   <div id="background-homeview">
-    <HeaderView @showLoginPopup="showLoginPopup"/>
+    <ProvidersHeaderView @showLoginPopup="showLoginPopup"/>
   </div>
 
   <Login v-if="showLogin"
              @close-popup="closeLoginPopup"
-             @userCreateAccountEvent="handleUserCreateAccountEvent"
              @userConnectedEvent="handleUserConnectedEvent">
   </Login>
 
   <div v-if="showNotification" class="notification">{{ notificationMessage }}</div>
+
+  <ProviderReferencedPrestations/>
 </template>
 
 <script>
-import HeaderView from "@/views/home/content/HeaderView.vue";
+import ProvidersHeaderView from "@/views/providers/ProvidersHeaderView.vue";
 import { mapState } from 'vuex';
 import Login from "@/views/providers/LoginProviders.vue";
+import ProviderReferencedPrestations from "@/views/providers/ProviderReferencedPrestations.vue";
 export default {
   data() {
     return {
       showLogin: false,
       showNotification: false,
+      showPrestations:false,
       notificationMessage: ''
     };
   },
   components: {
-    HeaderView,
+    ProvidersHeaderView,
+    ProviderReferencedPrestations,
     Login,
   },
   computed: mapState(['isAuthenticated']),
@@ -40,6 +44,8 @@ export default {
       this.closeLoginPopup();
       this.notificationMessage = "Vous êtes bien connecté";
       this.showNotification = true;
+      console.log(localStorage.getItem("provider"))
+    this.showPrestations = true;
       setTimeout(() => {
         this.showNotification = false;
       }, 2500);

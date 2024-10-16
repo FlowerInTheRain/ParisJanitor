@@ -2,15 +2,15 @@
   <div class="popup-overlay">
     <div id="login-popup">
       <button v-if="showSignUp" @click="goBack" class="back-button">
-        <font-awesome-icon :icon="['fas', 'arrow-left']" />
+        <font-awesome-icon :icon="['fas', 'arrow-left']"/>
       </button>
       <button v-else-if="showSignIn" @click="goBack" class="back-button">
-        <font-awesome-icon :icon="['fas', 'arrow-left']" />
+        <font-awesome-icon :icon="['fas', 'arrow-left']"/>
       </button>
 
       <h2 class="popup-title">{{ popupTitle }}</h2>
       <button @click="closePopup" class="close-button">
-        <font-awesome-icon :icon="['fas', 'xmark']" />
+        <font-awesome-icon :icon="['fas', 'xmark']"/>
       </button>
       <div class="separator-line"></div>
 
@@ -30,7 +30,8 @@
           <input class="log-input" type="text" v-model="lastName" placeholder="Nom" required>
           <input class="log-input" type="text" v-model="city" placeholder="Ville" required>
           <input class="log-input" type="text" v-model="activity" placeholder="Activité" required>
-          <input class="log-input" type="text" v-model="phoneNumber" placeholder="Activité" required>
+          <input class="log-input" type="text" v-model="phoneNumber" placeholder="Numéro de mobile (10 chiffres)"
+                 required>
           <textarea class="log-input" v-model="joinRequestMessage" placeholder="Message de candidature"></textarea>
         </div>
 
@@ -55,7 +56,7 @@
 </template>
 
 <script>
-import {findProviderByEmail, providerSignIn, signUp} from "@/services/parisjanitor/endpoints/users";
+import {findProviderByEmail, providerSignIn, providersSignUp} from "@/services/parisjanitor/endpoints/users";
 
 export default {
   data() {
@@ -92,18 +93,19 @@ export default {
         };
         try {
           const response = await providerSignIn(loginData);
-          console.log("Login Successful:", response);
+          console.log(response)
+          localStorage.setItem('providerId', response.data.id);
+          localStorage.setItem('providerPhone', response.data.phoneNumber);
+          localStorage.setItem('email', response.data.email);
 
-          localStorage.setItem('token', response.token);
           this.$store.dispatch('updateAuthentication', true);
-
           this.closePopup();
         } catch (error) {
           console.error("Login Failed:", error);
         }
       } else if (this.showSignUp) {
         const dto = {
-          fulllName: `${this.firstName} ${this.lastName}`,
+          fullName: `${this.firstName} ${this.lastName}`,
           email: this.email,
           password: this.password,
           phoneNumber: this.phoneNumber,
@@ -112,16 +114,16 @@ export default {
           joinRequestMessage: this.joinRequestMessage
         }
         try {
-          const signUpResponse = await signUp(dto);
+          const signUpResponse = await providersSignUp(dto);
 
 
           console.log("Registration Successful:", signUpResponse);
-          console.log( this.email, this.password);
-          const loginData = { email: this.email, password: this.password };
+          console.log(this.email, this.password);
+          const loginData = {email: this.email, password: this.password};
           const loginResponse = await providerSignIn(loginData);
           console.log("Login Successful after registration:", loginResponse);
 
-          localStorage.setItem('token', loginResponse.token);
+          localStorage.setItem('provider', loginResponse.data);
           this.$store.dispatch('updateAuthentication', true);
 
           this.closePopup();
@@ -133,12 +135,11 @@ export default {
         const res = await findProviderByEmail(this.email);
         console.log(res);
 
-        /**if (user) {
+        if (res) {
           this.popupTitle = 'Veuillez saisir votre mot de passe';
           this.showSignIn = true;
           this.showSignUp = false;
-        }*/
-        if (res.statusCode === 404) {
+        } else {
           this.popupTitle = 'Terminer mon inscription';
           this.showSignUp = true;
           this.showSignIn = false;

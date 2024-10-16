@@ -5,26 +5,24 @@
     </router-link>
     <nav class="navigation">
       <ul>
-        <li><a href="#">Logements</a></li>
-        <li><a href="#">Expériences</a></li>
-        <li><a href="#">Mettre mon logement sur Paris Janitor</a></li>
-        <li><router-link to="/espace-prestataire/home">Espace Prestataires</router-link></li>
+        <li><a href="#">Mon catalogue</a></li>
+        <li><a href="#">Prestations</a></li>
+        <li><router-link to="/">Espace Locataires</router-link></li>
 
       </ul>
     </nav>
     <div class="user-profile">
-      <UserMenu @login="emitShowLoginPopup" />
+      <ProvidersMenu @login="emitShowLoginPopup" />
     </div>
   </div>
 </template>
 
 <script>
-import UserMenu from "@/views/home/content/UserMenu.vue";
-
+import ProvidersMenu from "@/views/providers/ProvidersMenu.vue";
 export default {
   name: "HeaderComponent",
   components: {
-    UserMenu,
+    ProvidersMenu,
   },
   methods: {
     emitShowLoginPopup() {
