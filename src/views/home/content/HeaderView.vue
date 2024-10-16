@@ -1,6 +1,8 @@
 <template>
   <div class="header">
-    <img src="@/assets/home/main-logo.png" alt="Paris Janitor" class="logo">
+    <router-link to="/" class="logo-link">
+      <img src="@/assets/home/main-logo.png" alt="Paris Janitor" class="logo">
+    </router-link>
     <nav class="navigation">
       <ul>
         <li><a href="#">Logements</a></li>

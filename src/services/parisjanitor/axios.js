@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-    baseURL: 'http://localhost:4000/parisjanitor-api',
+    baseURL: process.env.PARISJANITOR_API_URL,
     headers: {
         'Content-Type': 'application/json',
     },
