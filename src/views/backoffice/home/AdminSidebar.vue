@@ -35,7 +35,7 @@ export default {
         { label: "Propriété", icon: ["fas", "building-user"], active: true },
         { label: "Utilisateurs", icon: ["fas", "user"], active: false },
         { label: "Facturations", icon: ["fas", "file-invoice"], active: false },
-        { label: "Services", icon: ["fas", "bell-concierge"], active: false },
+        { label: "Prestataires", icon: ["fas", "bell-concierge"], active: false },
         { label: "Settings", icon: ["fas", "cog"], active: false },
         { label: "Messages", icon: ["fas", "comments"], active: false },
       ],
