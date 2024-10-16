@@ -2,16 +2,15 @@
   <div class="admin-user-view">
     <h1>Gestion des utilisateurs</h1>
 
-    <!-- Barre de recherche -->
     <input
         v-model="searchQuery"
+        @input="fetchUsers"
         type="text"
         placeholder="Rechercher un utilisateur"
         class="search-bar"
     />
 
-    <!-- Tableau des utilisateurs -->
-    <table class="user-table">
+    <table class="user-table" v-if="users.length > 0">
       <thead>
       <tr>
         <th>Nom</th>
@@ -21,11 +20,12 @@
         <th>Rôle</th>
         <th>Utilisateur</th>
         <th>Admin</th>
+        <th>Statut</th>
       </tr>
       </thead>
       <tbody>
       <tr
-          v-for="user in filteredUsers"
+          v-for="user in users"
           :key="user.id"
       >
         <td>{{ user.lastName }}</td>
@@ -35,39 +35,49 @@
         <td>{{ user.role }}</td>
         <td><input type="checkbox" :checked="user.role === 'USER'" disabled /></td>
         <td><input type="checkbox" :checked="user.role === 'ADMIN'" disabled /></td>
+        <!-- Ajout de classes conditionnelles pour le statut -->
+        <td :class="user.statut === 'ACTIVE' ? 'status-active' : 'status-inactive'">
+          <em>{{ user.statut || 'Non renseigné' }}</em>
+        </td>
       </tr>
       </tbody>
     </table>
+
+    <p v-if="users.length === 0 && searchQuery !== ''">Aucun utilisateur trouvé.</p>
   </div>
 </template>
 
 <script>
-import { getAllUser } from '@/services/parisjanitor/endpoints/users'; // Assurez-vous que le chemin est correct
+import { getAllUser, searchUsers } from '@/services/parisjanitor/endpoints/users';
 
 export default {
   name: 'AdminUserView',
   data() {
     return {
       users: [],
-      searchQuery: '', // Requête de recherche
+      searchQuery: '',
     };
   },
-  computed: {
-    filteredUsers() {
-      // Filtrer les utilisateurs selon la barre de recherche
-      return this.users.filter(user =>
-          user.lastName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-          user.firstName.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-          user.email.toLowerCase().includes(this.searchQuery.toLowerCase())
-      );
+  methods: {
+    async fetchUsers() {
+      try {
+        if (this.searchQuery === '') {
+          const response = await getAllUser();
+          console.log("response");
+          console.log(response);
+          this.users = response;
+        } else {
+          const response = await searchUsers(this.searchQuery);
+          this.users = response;
+        }
+      } catch (error) {
+        console.error('Erreur lors de la récupération des utilisateurs :', error);
+        this.users = [];
+      }
     },
   },
-  async created() {
-    try {
-      this.users = await getAllUser(); // Récupération des utilisateurs
-    } catch (error) {
-      console.error('Erreur lors de la récupération des utilisateurs:', error);
-    }
+  async mounted() {
+    await this.fetchUsers();
   },
 };
 </script>
@@ -105,4 +115,5 @@ export default {
 .user-table tr:hover {
   background-color: #f1f1f1;
 }
+
 </style>

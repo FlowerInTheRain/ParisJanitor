@@ -149,6 +149,24 @@ const verifyPassword = async (password) => {
     }
 };
 
+/**
+ * Rechercher les utilisateurs en fonction de la requête donnée.
+ * @param {string} query - La requête de recherche.
+ */
+const searchUsers = async (query) => {
+    try {
+        const response = await axios.get(`${endpoint}/search`, {
+            params: {
+                query: query,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Erreur lors de la recherche des utilisateurs :', error);
+        throw error;
+    }
+};
+
 export {
     signUp,
     signIn,
@@ -160,5 +178,6 @@ export {
     requestSecurityModification,
     verifyPasswordCode,
     updatePassword,
-    verifyPassword
+    verifyPassword,
+    searchUsers
 }
