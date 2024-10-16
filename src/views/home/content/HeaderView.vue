@@ -5,8 +5,7 @@
     </router-link>
     <nav class="navigation">
       <ul>
-        <li><a href="#">Logements</a></li>
-        <li><a href="#">Expériences</a></li>
+        <li><a href="/">Logements</a></li>
         <li><a href="#">Mettre mon logement sur Paris Janitor</a></li>
       </ul>
     </nav>
