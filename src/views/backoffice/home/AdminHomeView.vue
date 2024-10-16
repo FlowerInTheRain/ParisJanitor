@@ -1,10 +1,12 @@
 <template>
-  <div class="admin-home">
+  <div className="admin-home">
     <AdminHeaderView />
-    <div class="admin-body">
+    <div className="admin-body">
       <AdminSidebar @menu-selected="handleMenuSelected" />
-      <div class="content-area">
+      <div className="content-area">
         <PropertyListView v-if="activeMenu === 'Propriété'" />
+        <PendingProvidersView v-if="activeMenu === 'Prestataires en attente'" />
+        <PendingCertificatesView v-if="activeMenu === 'Certificats en attente'" />
       </div>
     </div>
   </div>
@@ -14,6 +16,8 @@
 import AdminHeaderView from "@/views/backoffice/home/AdminHeaderView.vue";
 import AdminSidebar from "@/views/backoffice/home/AdminSidebar.vue";
 import PropertyListView from "@/views/backoffice/property/PropertyListView.vue";
+import PendingProvidersView from "@/views/backoffice/providers/PendingProvidersView.vue";
+import PendingCertificatesView from "@/views/backoffice/providers/PendingCertificatesView.vue";
 
 export default {
   name: "AdminHomeView",
@@ -21,6 +25,8 @@ export default {
     AdminHeaderView,
     AdminSidebar,
     PropertyListView,
+    PendingProvidersView,
+    PendingCertificatesView,
   },
   data() {
     return {

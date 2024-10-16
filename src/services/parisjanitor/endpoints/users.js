@@ -50,7 +50,7 @@ const getUserById = async (id) => {
 
 const getUserByEmail = async (email) => {
     try {
-        const response = await axios.get(`http://localhost:4000/parisjanitor-api/users/email/${email}`);
+        const response = await axios.get(`${endpoint}/email/${email}`);
         return response.data;
     } catch (error) {
         console.error('Error while getting user account: ', error);
@@ -71,7 +71,7 @@ const getAllUser = async () => {
 const updateUserProfile = async (userProfile) => {
     try {
         const token = localStorage.getItem('token');
-        const response = await axios.put('http://localhost:4000/parisjanitor-api/users/update', userProfile, {
+        const response = await axios.put(`${endpoint}/update`, userProfile, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json',
@@ -135,7 +135,7 @@ const verifyPassword = async (password) => {
     const data = { password };
     console.log("Sending password for verification:", data);
     try {
-        const response = await axios.post('http://localhost:4000/parisjanitor-api/users/verifyPassword', data, {
+        const response = await axios.post(`${endpoint}/verifyPassword`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json',
@@ -160,4 +160,5 @@ export {
     requestSecurityModification,
     verifyPasswordCode,
     updatePassword,
-    verifyPassword}
+    verifyPassword
+}
