@@ -6,7 +6,7 @@ export default class PropertyCreationRequestDto {
         numberOfRooms,
         capacity,
         propertyType,
-        country,
+        departement,
         size,
         imageUrls = [],
         contactSlots = [],
@@ -24,7 +24,7 @@ export default class PropertyCreationRequestDto {
         this.numberOfRooms = numberOfRooms;
         this.capacity = capacity;
         this.propertyType = propertyType;
-        this.country = country;
+        this.departement = departement;
         this.size = size;
         this.imageUrls = imageUrls;
         this.contactSlots = contactSlots;

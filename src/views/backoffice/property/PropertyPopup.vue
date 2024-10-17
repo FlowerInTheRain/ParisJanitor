@@ -11,7 +11,7 @@
       <div class="property-details">
         <h2>{{ property.propertyName || 'No name' }}</h2>
         <p><strong>Description :</strong> {{ property.description || 'Pas de description' }}</p>
-        <p>{{ property.adress }}, {{ property.city }}, {{ property.country }}</p>
+        <p>{{ property.adress }}, {{ property.city }}, {{ property.departement }}</p>
         <p>
           <span v-if="property.propertyType == 'APARTMENT'"> Appartement </span>
           <span v-else> Maison</span> -

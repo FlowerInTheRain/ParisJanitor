@@ -23,8 +23,8 @@
 
           <div class="flex-group">
             <div class="form-group">
-              <label for="country">Pays</label>
-              <input v-model="property.country" type="text" id="country" required />
+              <label for="departement">Departement</label>
+              <input v-model="property.departement" type="text" id="departement" required />
             </div>
 
             <div class="form-group">
@@ -174,7 +174,7 @@ export default {
         numberOfRooms: 1,
         capacity: 1,
         propertyType: "APARTMENT",
-        country: "",
+        departement: "",
         size: 5,
         contactSlots: [],
         privacyDeclaration: false,
@@ -223,7 +223,7 @@ export default {
           numberOfRooms: Number(this.property.numberOfRooms),
           capacity: Number(this.property.capacity),
           propertyType: this.property.propertyType,
-          country: this.property.country,
+          departement: this.property.departement,
           city: this.property.city,
           size: Number(this.property.size),
           contactSlots: this.property.contactSlots.map(slot => slot.value),
