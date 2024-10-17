@@ -106,6 +106,17 @@ const refuseProperty = async (propertyId) => {
     }
 };
 
+const searchPropertiesByDates = async (startDate, endDate) => {
+    const url = `/properties/available/between-dates?startDate=${startDate}&endDate=${endDate}`;
+    try {
+        const response = await axios.get(url);
+        return response.data;
+    } catch (error) {
+        console.error('Erreur lors de la récupération des propriétés entre les dates:', error);
+        throw error;
+    }
+};
+
 export {
     getAllProperty,
     addProperty,
@@ -115,5 +126,6 @@ export {
     getPropertyById,
     validateProperty,
     refuseProperty,
-    getAwaitedProperties
+    getAwaitedProperties,
+    searchPropertiesByDates
 };

@@ -46,8 +46,8 @@ export default {
           icon: ["fas", "bell-concierge"],
           active: false,
           submenuItems: [
-            { label: "Prestataires en attente", icon: ["fas", "clock"], active: false },
-            { label: "Certificats en attente", icon: ["fas", "file-certificate"], active: false },
+            { label: "Prestataires en attente", active: false },
+            { label: "Certificats en attente", active: false },
           ],
         },
         { label: "Settings", icon: ["fas", "cog"], active: false },
