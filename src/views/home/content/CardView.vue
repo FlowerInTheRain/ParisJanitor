@@ -54,11 +54,10 @@ export default {
   },
   computed: {
     imageSource() {
-      // Utiliser une image de remplacement si aucune URL d'image n'est disponible
       if (this.ad.imageUrls && this.ad.imageUrls.length > 0) {
         return this.ad.imageUrls[this.currentImageIndex];
       } else {
-        return "https://via.placeholder.com/250"; // Placeholder image
+        return "https://via.placeholder.com/250";
       }
     },
   },

@@ -10,7 +10,6 @@
     <form @submit.prevent="submitForm">
       <div class="form-container">
         <div class="form-left">
-          <!-- Colonne gauche -->
           <div class="form-group">
             <label for="propertyName">Nom de la propriété</label>
             <input v-model="property.propertyName" type="text" id="propertyName" required />
@@ -79,7 +78,6 @@
           </div>
         </div>
 
-        <!-- Colonne droite -->
         <div class="form-right">
           <div class="form-group">
             <label for="description">Description</label>
@@ -188,7 +186,7 @@ export default {
         acceptsBabies: false,
       },
       files: [],
-      isLoading: false, // Pour la pop-up de chargement
+      isLoading: false,
       availableContactSlots: [
         { name: "Avant 12h", value: "BEFORE_12H" },
         { name: "Entre 12h et 14h", value: "BETWEEN_12H_AND_14H" },
@@ -199,7 +197,6 @@ export default {
   },
   methods: {
     async submitForm() {
-      // Validation
       if (this.property.size < 5) {
         alert("La taille doit être d'au moins 5 m².");
         return;
@@ -214,7 +211,7 @@ export default {
       }
 
       try {
-        this.isLoading = true; // Activer la pop-up de chargement
+        this.isLoading = true;
 
         const propertyData = {
           adress: this.property.adress,
@@ -245,21 +242,20 @@ export default {
           throw new Error("L'ID de la propriété n'a pas été retourné par l'API.");
         }
 
-        // Si des fichiers sont sélectionnés, attente de 3 secondes
         if (this.files.length > 0) {
           setTimeout(async () => {
             await this.uploadFiles(propertyId);
-            this.isLoading = false; // Désactiver la pop-up après l'envoi
+            this.isLoading = false;
           }, 3000);
         } else {
-          this.isLoading = false; // Désactiver la pop-up si pas d'images à envoyer
+          this.isLoading = false;
         }
 
         alert("Votre logement a été ajouté avec succès !");
         this.$router.push("/");
       } catch (error) {
         console.error("Erreur lors de la création de la propriété :", error.response ? error.response.data : error);
-        this.isLoading = false; // Désactiver la pop-up en cas d'erreur
+        this.isLoading = false;
       }
     },
 

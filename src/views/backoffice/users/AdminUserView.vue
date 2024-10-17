@@ -34,7 +34,6 @@
         <td>{{ user.phoneNumber || 'Non renseigné' }}</td>
         <td>{{ user.role }}</td>
 
-        <!-- Checkbox User -->
         <td>
           <input
               type="checkbox"
@@ -43,7 +42,6 @@
           />
         </td>
 
-        <!-- Checkbox Admin -->
         <td>
           <input
               type="checkbox"
@@ -52,7 +50,6 @@
           />
         </td>
 
-        <!-- Statut avec styles conditionnels -->
         <td :class="user.statut === 'ACTIVE' ? 'status-active' : 'status-inactive'">
           <em>{{ user.statut || 'Non renseigné' }}</em>
         </td>
@@ -144,7 +141,6 @@ export default {
   background-color: #f1f1f1;
 }
 
-/* Styles pour les statuts */
 .status-active {
   color: green;
   font-style: italic;

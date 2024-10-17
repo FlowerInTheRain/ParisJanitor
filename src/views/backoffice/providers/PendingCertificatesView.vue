@@ -80,7 +80,7 @@ export default {
 
 .certificates-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Each certificate is 200px wide */
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 20px;
 }
 
@@ -92,7 +92,6 @@ export default {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Keeps service name and download icon aligned horizontally */
 .certificate-info {
   display: flex;
   justify-content: space-between;
