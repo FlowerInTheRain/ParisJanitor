@@ -116,6 +116,25 @@ const searchPropertiesByDates = async (startDate, endDate) => {
         throw error;
     }
 };
+const uploadFiles = async (propertyId, files) => {
+    const url = `/files/pictures/property/add/${propertyId}`;
+    const formData = new FormData();
+    files.forEach(file => {
+        formData.append("file", file);
+    });
+
+    try {
+        const response = await axios.post(url, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error(`Erreur lors du téléchargement des fichiers pour la propriété ${propertyId} :`, error);
+        throw error;
+    }
+};
 
 export {
     getAllProperty,
@@ -127,5 +146,6 @@ export {
     validateProperty,
     refuseProperty,
     getAwaitedProperties,
-    searchPropertiesByDates
+    searchPropertiesByDates,
+    uploadFiles
 };

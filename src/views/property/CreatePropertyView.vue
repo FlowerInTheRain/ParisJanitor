@@ -151,11 +151,10 @@
 </template>
 
 <script>
-import axios from "axios";
 import HeaderView from "@/views/home/content/HeaderView.vue";
 import Multiselect from 'vue-multiselect';
 import 'vue-multiselect/dist/vue-multiselect.min.css';
-import { addProperty } from "@/services/parisjanitor/endpoints/properties";
+import { addProperty, uploadFiles } from "@/services/parisjanitor/endpoints/properties";
 
 export default {
   name: "NewProperty",
@@ -243,14 +242,10 @@ export default {
         }
 
         if (this.files.length > 0) {
-          setTimeout(async () => {
-            await this.uploadFiles(propertyId);
-            this.isLoading = false;
-          }, 3000);
-        } else {
-          this.isLoading = false;
+          await uploadFiles(propertyId, this.files);
         }
 
+        this.isLoading = false;
         alert("Votre logement a été ajouté avec succès !");
         this.$router.push("/");
       } catch (error) {
@@ -259,28 +254,8 @@ export default {
       }
     },
 
-    async uploadFiles(propertyId) {
-      const formData = new FormData();
-      this.files.forEach(file => {
-        formData.append("file", file);
-      });
-
-      try {
-        const uploadUrl = `http://localhost:4000/parisjanitor-api/files/pictures/property/add/${propertyId}`;
-        const uploadResponse = await axios.post(uploadUrl, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        });
-        console.log("Fichiers téléchargés avec succès :", uploadResponse.data);
-      } catch (error) {
-        console.error("Erreur lors du téléchargement des fichiers :", error.response ? error.response.data : error);
-      }
-    },
-
     handleFileUpload(event) {
       this.files = Array.from(event.target.files);
-      console.log("Fichiers sélectionnés :", this.files);
     }
   },
 };
