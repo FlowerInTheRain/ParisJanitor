@@ -1,5 +1,8 @@
 <template>
   <div>
+    <div v-if="notificationMessage" :class="['notification', notificationType]">
+      {{ notificationMessage }}
+    </div>
     <div id="background-homeview">
       <ProvidersHeaderView @showLoginPopup="showLoginPopup"/>
       <div v-if="refPrestationDetails" class="form-container">
@@ -104,6 +107,8 @@ import ProvidersHeaderView from "@/views/providers/ProvidersHeaderView.vue";
 export default {
   data() {
     return {
+      notificationMessage: null,
+      notificationType: null,
       isModalVisible: false,
       selectedFile: null,
       errorMessage: '',
@@ -135,7 +140,6 @@ export default {
   },
   async mounted() {
     // Access the query parameters
-    console.log(this.$route.params.refPrestId);
     const res = await findRefPrestationDetails(this.refPrestId);
     this.mapDataToForm(res.data)
     this.refPrestationDetails = res.data
@@ -160,15 +164,13 @@ export default {
         const formData = new FormData();
         formData.append('file', this.selectedFile);
         const res = await addOrUpdateCertificateForRefPrestation(this.refPrestId, formData);
-        console.log(res);
-
         this.form.certificateUrl = res.data;
         // Remplacer par l'URL de votre API d'envoi de fichiers
-        //closeModal();
+        this.showNotification("Certificat ajouté / remplacé", "success");
+        this.closeModal();
       }
     },
     async submitForm() {
-      console.log('Form data:', this.form);
       const res = await
           updateRefPrestationDetails(
               this.form
@@ -197,7 +199,14 @@ export default {
     },
     closeModal() {
       this.isModalVisible = false;
-    },
+    },showNotification(message, type) {
+      this.notificationMessage = message;
+      this.notificationType = type;
+      setTimeout(() => {
+        this.notificationMessage = null;
+        this.notificationType = null;
+      }, 2500);
+    }
   }
 };
 </script>
@@ -224,7 +233,15 @@ export default {
   border-radius: 5px;
   border: 1px solid #ccc;
 }
-
+.notification {
+  position: absolute;
+  top: 200px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  z-index: 1000;
+}
 /* Form styling */
 .service-form {
   background-color: #fff;

@@ -78,6 +78,14 @@ const getUserByEmail = async (email) => {
 	}
 };
 
+const doUserExist = async (email) => {
+	try {
+		await axiosInstance.get(`${endpoint}/email/${email}`);
+		return true;
+	} catch (error) {
+		return false;
+	}
+};
 const findProviderByEmail = async (email) => {
 	try {
 		const response = await axiosInstance.get(`/providers-finder/email-exist/${email}`);
@@ -268,6 +276,8 @@ export {
 	verifyPasswordCode,
 	updatePassword,
 	findProviderByEmail,
+	
+	doUserExist,
 	providerSignIn,
 	providersSignUp,
 	findMyPrestations,

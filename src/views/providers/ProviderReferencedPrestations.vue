@@ -39,7 +39,7 @@ export default {
     return {
       items: [],
       isAuthenticated: this.$store.state.isAuthenticated,
-      providerId: this.$store.state.provider.id,
+      providerId: this.$store.state.provider ? this.$store.state.provider.id : null,
     };
   },
   async mounted() {

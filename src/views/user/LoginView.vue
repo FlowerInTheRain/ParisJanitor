@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { getUserByEmail, signIn, signUp } from "@/services/parisjanitor/endpoints/users";
+import {doUserExist, signIn, signUp } from "@/services/parisjanitor/endpoints/users";
 import UserCreationRequestDto from "@/dto/request/UserCreationRequestDto";
 
 export default {
@@ -135,18 +135,15 @@ export default {
           console.error("Registration or Login Failed:", error);
         }
       } else {
-          try {
-            const response = await getUserByEmail(this.email);
-            if(response.data) {
+            if(await doUserExist(this.email)) {
               this.popupTitle = 'Veuillez saisir votre mot de passe';
               this.showSignIn = true;
               this.showSignUp = false;
+            } else {
+              this.popupTitle = 'Terminer mon inscription';
+              this.showSignUp = true;
+              this.showSignIn = false;
             }
-          } catch(error){
-            this.popupTitle = 'Terminer mon inscription';
-            this.showSignUp = true;
-            this.showSignIn = false;
-          }
         }
       }
     }

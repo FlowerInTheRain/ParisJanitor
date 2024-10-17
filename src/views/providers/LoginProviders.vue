@@ -95,7 +95,6 @@ export default {
           const response = await providerSignIn(loginData);
           this.$store.dispatch('updateAuthentication', true);
           this.$store.dispatch('updateProvider', response.data);
-          console.log(this.$store.state.provider.id);
           this.closePopup();
         } catch (error) {
           console.error("Login Failed:", error);
