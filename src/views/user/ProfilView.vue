@@ -3,7 +3,6 @@
     <HeaderView />
 
     <div class="container profile" v-if="user">
-      <!-- Password Popup -->
       <div v-if="showPasswordPopup" class="password-popup-overlay">
         <div class="password-popup">
           <h3>Entrer votre mot de passe</h3>
@@ -13,7 +12,6 @@
         </div>
       </div>
 
-      <!-- Verification Code Popup -->
       <div v-if="showCodePopup" class="password-popup-overlay">
         <div class="password-popup">
           <h3>Enter the verification code</h3>
@@ -23,7 +21,7 @@
         </div>
       </div>
 
-      <!-- New Password Popup -->
+
       <div v-if="showNewPasswordPopup" class="password-popup-overlay">
         <div class="password-popup">
           <h3>Enter new password</h3>

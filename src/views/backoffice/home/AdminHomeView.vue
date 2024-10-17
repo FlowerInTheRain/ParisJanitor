@@ -5,6 +5,9 @@
       <AdminSidebar @menu-selected="handleMenuSelected" />
       <div class="content-area">
         <PropertyListView v-if="activeMenu === 'Propriété'" />
+        <PendingProvidersView v-if="activeMenu === 'Prestataires en attente'" />
+        <PendingCertificatesView v-if="activeMenu === 'Certificats en attente'" />
+        <AdminUserView v-if="activeMenu === 'Utilisateurs'" />
       </div>
     </div>
   </div>
@@ -14,6 +17,9 @@
 import AdminHeaderView from "@/views/backoffice/home/AdminHeaderView.vue";
 import AdminSidebar from "@/views/backoffice/home/AdminSidebar.vue";
 import PropertyListView from "@/views/backoffice/property/PropertyListView.vue";
+import PendingProvidersView from "@/views/backoffice/providers/PendingProvidersView.vue";
+import PendingCertificatesView from "@/views/backoffice/providers/PendingCertificatesView.vue";
+import AdminUserView from "@/views/backoffice/users/AdminUserView.vue";
 
 export default {
   name: "AdminHomeView",
@@ -21,6 +27,9 @@ export default {
     AdminHeaderView,
     AdminSidebar,
     PropertyListView,
+    PendingProvidersView,
+    PendingCertificatesView,
+    AdminUserView,
   },
   data() {
     return {
@@ -39,10 +48,12 @@ export default {
 .admin-home {
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .admin-body {
   display: flex;
+  height: 100%;
 }
 
 .content-area {
@@ -51,6 +62,7 @@ export default {
   background-color: #f5f6fa;
   margin-left: 60px;
   transition: margin-left 0.3s ease;
+  height: 100%;
 }
 
 .sidebar:hover + .content-area {

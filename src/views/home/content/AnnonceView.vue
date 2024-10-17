@@ -6,7 +6,7 @@
 
 <script>
 import CardView from "./CardView.vue";
-import {getAllProperty} from "@/services/parisjanitor/endpoints/properties";
+import { getAllProperty } from "@/services/parisjanitor/endpoints/properties";
 
 export default {
   name: "AnnonceView",
@@ -22,11 +22,15 @@ export default {
   async mounted() {
     try {
       const response = await getAllProperty();
-      console.log("Données de l'API :", response);
       this.ads = response;
     } catch (error) {
       console.error("Erreur lors de la récupération des annonces :", error);
     }
+  },
+  methods: {
+    updateAds(newAds) {
+      this.ads = newAds;
+    },
   }
 };
 </script>

@@ -7,7 +7,7 @@
 
     <div v-else>
       <h2>Réservations en attente de réponse</h2>
-      <div v-if="pendingBookings.length">
+      <div v-if="pendingBookings.length" class="cards-grid">
         <LittleCardView
             v-for="booking in pendingBookings"
             :key="booking.id"
@@ -18,7 +18,7 @@
       <div v-else>Aucune réservation en attente de réponse.</div>
 
       <h2>Réservations à venir</h2>
-      <div v-if="upcomingBookings.length">
+      <div v-if="upcomingBookings.length" class="cards-grid">
         <LittleCardView
             v-for="booking in upcomingBookings"
             :key="booking.id"
@@ -29,7 +29,7 @@
       <div v-else>Aucune réservation à venir.</div>
 
       <h2>Réservations précédentes</h2>
-      <div v-if="previousBookings.length">
+      <div v-if="previousBookings.length" class="cards-grid">
         <LittleCardView
             v-for="booking in previousBookings"
             :key="booking.id"
@@ -40,7 +40,7 @@
       <div v-else>Aucune réservation précédente.</div>
 
       <h2>Réservations annulées</h2>
-      <div v-if="cancelledBookings.length">
+      <div v-if="cancelledBookings.length" class="cards-grid">
         <LittleCardView
             v-for="booking in cancelledBookings"
             :key="booking.id"
@@ -136,5 +136,30 @@ h2 {
   font-size: 18px;
   text-align: center;
   margin-top: 20px;
+}
+
+.cards-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: flex-start;
+}
+
+.cards-grid > * {
+  flex: 1 1 calc(33.33% - 20px);
+  box-sizing: border-box;
+  max-width: calc(33.33% - 20px);
+}
+
+@media (max-width: 768px) {
+  .cards-grid > * {
+    flex: 1 1 calc(50% - 20px);
+  }
+}
+
+@media (max-width: 480px) {
+  .cards-grid > * {
+    flex: 1 1 100%;
+  }
 }
 </style>

@@ -11,7 +11,7 @@
       <div class="property-details">
         <h2>{{ property.propertyName || 'No name' }}</h2>
         <p><strong>Description :</strong> {{ property.description || 'Pas de description' }}</p>
-        <p>{{ property.adress }}, {{ property.city }}, {{ property.country }}</p>
+        <p>{{ property.adress }}, {{ property.city }}, {{ property.departement }}</p>
         <p>
           <span v-if="property.propertyType == 'APARTMENT'"> Appartement </span>
           <span v-else> Maison</span> -
@@ -29,19 +29,20 @@
       </div>
 
       <div class="action-buttons">
-        <button class="accept-button" @click="validateProperty">Accepter</button>
-        <button class="reject-button" @click="refuseProperty">Refuser</button>
+        <button class="accept-button" @click="handleValidateProperty">Accepter</button>
+        <button class="reject-button" @click="handleRefuseProperty">Refuser</button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { validateProperty, refuseProperty } from "@/services/parisjanitor/endpoints/properties";
+
 export default {
   name: 'PropertyPopup',
   props: {
     property: Object,
-    token: String,
   },
   data() {
     return {
@@ -64,45 +65,27 @@ export default {
         this.currentImageIndex = 0;
       }
     },
-    async validateProperty() {
+    async handleValidateProperty() {
       try {
-        const response = await fetch(`http://localhost:4001/parisjanitor-api/properties/${this.property.id}/validate`, {
-          method: 'PUT',
-          headers: {
-            'Authorization': `Bearer ${this.token}`,
-            'Content-Type': 'application/json',
-          },
-        });
-        if (response.ok) {
-          alert('Propriété acceptée');
-          window.location.reload();
-        } else {
-          alert('Échec de la validation de la propriété');
-        }
+        await validateProperty(this.property.id);
+        alert('Propriété acceptée');
+        this.$emit('close');
+        window.location.reload();
       } catch (error) {
-        alert('Erreur lors de la validation : ' + error);
+        alert('Échec de la validation de la propriété');
       }
     },
-    async refuseProperty() {
+    async handleRefuseProperty() {
       try {
-        const response = await fetch(`http://localhost:4001/parisjanitor-api/properties/${this.property.id}/refuse`, {
-          method: 'PUT',
-          headers: {
-            'Authorization': `Bearer ${this.token}`,
-            'Content-Type': 'application/json',
-          },
-        });
-        if (response.ok) {
-          alert('Propriété refusée');
-          window.location.reload(); // Recharger la page après refus
-        } else {
-          alert('Échec du refus de la propriété');
-        }
+        await refuseProperty(this.property.id);
+        alert('Propriété refusée');
+        this.$emit('close');
+        window.location.reload();
       } catch (error) {
-        alert('Erreur lors du refus : ' + error);
+        alert('Échec du refus de la propriété');
       }
     }
-  },
+  }
 };
 </script>
 

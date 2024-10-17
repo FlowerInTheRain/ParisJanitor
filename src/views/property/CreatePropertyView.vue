@@ -3,7 +3,6 @@
   <div id="create-property">
     <h1>Mettre mon logement en location</h1>
 
-    <!-- Pop-up de chargement -->
     <div v-if="isLoading" class="loading-popup">
       <p>Chargement en cours, veuillez patienter...</p>
     </div>
@@ -11,7 +10,6 @@
     <form @submit.prevent="submitForm">
       <div class="form-container">
         <div class="form-left">
-          <!-- Colonne gauche -->
           <div class="form-group">
             <label for="propertyName">Nom de la propriété</label>
             <input v-model="property.propertyName" type="text" id="propertyName" required />
@@ -24,8 +22,8 @@
 
           <div class="flex-group">
             <div class="form-group">
-              <label for="country">Pays</label>
-              <input v-model="property.country" type="text" id="country" required />
+              <label for="departement">Departement</label>
+              <input v-model="property.departement" type="text" id="departement" required />
             </div>
 
             <div class="form-group">
@@ -80,7 +78,6 @@
           </div>
         </div>
 
-        <!-- Colonne droite -->
         <div class="form-right">
           <div class="form-group">
             <label for="description">Description</label>
@@ -154,11 +151,10 @@
 </template>
 
 <script>
-import axios from "axios";
 import HeaderView from "@/views/home/content/HeaderView.vue";
 import Multiselect from 'vue-multiselect';
 import 'vue-multiselect/dist/vue-multiselect.min.css';
-import { addProperty } from "@/services/parisjanitor/endpoints/properties";
+import { addProperty, uploadFiles } from "@/services/parisjanitor/endpoints/properties";
 
 export default {
   name: "NewProperty",
@@ -175,7 +171,7 @@ export default {
         numberOfRooms: 1,
         capacity: 1,
         propertyType: "APARTMENT",
-        country: "",
+        departement: "",
         size: 5,
         contactSlots: [],
         privacyDeclaration: false,
@@ -189,7 +185,7 @@ export default {
         acceptsBabies: false,
       },
       files: [],
-      isLoading: false, // Pour la pop-up de chargement
+      isLoading: false,
       availableContactSlots: [
         { name: "Avant 12h", value: "BEFORE_12H" },
         { name: "Entre 12h et 14h", value: "BETWEEN_12H_AND_14H" },
@@ -200,7 +196,6 @@ export default {
   },
   methods: {
     async submitForm() {
-      // Validation
       if (this.property.size < 5) {
         alert("La taille doit être d'au moins 5 m².");
         return;
@@ -215,7 +210,7 @@ export default {
       }
 
       try {
-        this.isLoading = true; // Activer la pop-up de chargement
+        this.isLoading = true;
 
         const propertyData = {
           adress: this.property.adress,
@@ -224,7 +219,7 @@ export default {
           numberOfRooms: Number(this.property.numberOfRooms),
           capacity: Number(this.property.capacity),
           propertyType: this.property.propertyType,
-          country: this.property.country,
+          departement: this.property.departement,
           city: this.property.city,
           size: Number(this.property.size),
           contactSlots: this.property.contactSlots.map(slot => slot.value),
@@ -246,46 +241,21 @@ export default {
           throw new Error("L'ID de la propriété n'a pas été retourné par l'API.");
         }
 
-        // Si des fichiers sont sélectionnés, attente de 3 secondes
         if (this.files.length > 0) {
-          setTimeout(async () => {
-            await this.uploadFiles(propertyId);
-            this.isLoading = false; // Désactiver la pop-up après l'envoi
-          }, 3000);
-        } else {
-          this.isLoading = false; // Désactiver la pop-up si pas d'images à envoyer
+          await uploadFiles(propertyId, this.files);
         }
 
+        this.isLoading = false;
         alert("Votre logement a été ajouté avec succès !");
         this.$router.push("/");
       } catch (error) {
         console.error("Erreur lors de la création de la propriété :", error.response ? error.response.data : error);
-        this.isLoading = false; // Désactiver la pop-up en cas d'erreur
-      }
-    },
-
-    async uploadFiles(propertyId) {
-      const formData = new FormData();
-      this.files.forEach(file => {
-        formData.append("file", file);
-      });
-
-      try {
-        const uploadUrl = `http://localhost:4001/parisjanitor-api/files/pictures/property/add/${propertyId}`;
-        const uploadResponse = await axios.post(uploadUrl, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        });
-        console.log("Fichiers téléchargés avec succès :", uploadResponse.data);
-      } catch (error) {
-        console.error("Erreur lors du téléchargement des fichiers :", error.response ? error.response.data : error);
+        this.isLoading = false;
       }
     },
 
     handleFileUpload(event) {
       this.files = Array.from(event.target.files);
-      console.log("Fichiers sélectionnés :", this.files);
     }
   },
 };

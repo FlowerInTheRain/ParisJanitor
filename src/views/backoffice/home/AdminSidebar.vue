@@ -1,26 +1,33 @@
 <template>
-  <div class="sidebar" @mouseover="hoverSidebar" @mouseleave="unhoverSidebar">
+  <div class="sidebar">
     <div class="sidebar-logo">
       <font-awesome-icon :icon="['fas', 'box']" />
     </div>
     <div class="sidebar-menu">
       <ul>
         <li
-            class="menu-item"
-            v-for="item in menuItems"
-            :key="item.label"
+            v-for="(item, index) in menuItems"
+            :key="index"
             :class="{ active: item.active }"
-            @click="setActive(item)"
+            class="menu-item"
+            @click="$emit('menu-selected', item.label)"
         >
-          <font-awesome-icon :icon="item.icon" class="icon" />
-          <span v-if="hover" class="label">{{ item.label }}</span>
+        <font-awesome-icon :icon="item.icon" class="icon" />
+        <span class="label">{{ item.label }}</span>
+
+        <ul v-if="item.label === 'Prestataires'" class="submenu">
+          <li
+              v-for="(submenu, subIndex) in item.submenuItems"
+              :key="subIndex"
+              class="menu-item submenu-item"
+              @click.stop="$emit('menu-selected', submenu.label)"
+          >
+          <font-awesome-icon :icon="submenu.icon" class="icon" />
+          <span class="label">{{ submenu.label }}</span>
+          </li>
+        </ul>
         </li>
       </ul>
-    </div>
-    <div class="sidebar-footer">
-      <li class="menu-item">
-        <font-awesome-icon :icon="['fas', 'user']" class="icon" />
-      </li>
     </div>
   </div>
 </template>
@@ -30,29 +37,23 @@ export default {
   name: "AdminSidebar",
   data() {
     return {
-      hover: false,
       menuItems: [
-        { label: "Propriété", icon: ["fas", "building-user"], active: true },
+        { label: "Propriété", icon: ["fas", "building-user"], active: false },
         { label: "Utilisateurs", icon: ["fas", "user"], active: false },
         { label: "Facturations", icon: ["fas", "file-invoice"], active: false },
-        { label: "Services", icon: ["fas", "bell-concierge"], active: false },
+        {
+          label: "Prestataires",
+          icon: ["fas", "bell-concierge"],
+          active: false,
+          submenuItems: [
+            { label: "Prestataires en attente", active: false },
+            { label: "Certificats en attente", active: false },
+          ],
+        },
         { label: "Settings", icon: ["fas", "cog"], active: false },
         { label: "Messages", icon: ["fas", "comments"], active: false },
       ],
     };
-  },
-  methods: {
-    hoverSidebar() {
-      this.hover = true;
-    },
-    unhoverSidebar() {
-      this.hover = false;
-    },
-    setActive(item) {
-      this.menuItems.forEach((menuItem) => (menuItem.active = false));
-      item.active = true;
-      this.$emit('menu-selected', item.label);
-    },
   },
 };
 </script>
@@ -119,6 +120,17 @@ export default {
 .menu-item:hover {
   background-color: #434c5e;
   border-radius: 10px;
+}
+
+.submenu {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.submenu-item {
+  padding-left: 30px;
+  margin-bottom: 5px;
 }
 
 .sidebar-footer {

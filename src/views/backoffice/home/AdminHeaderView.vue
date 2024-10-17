@@ -2,10 +2,6 @@
   <div class="admin-header">
     <img src="@/assets/home/main-logo.png" alt="Logo" class="logo" />
     <div class="header-title">Paris Janitor</div>
-    <!--<div class="header-right">
-      <div class="notification-icon"></div>
-      <div class="profile-icon"></div>
-    </div>-->
   </div>
 </template>
 

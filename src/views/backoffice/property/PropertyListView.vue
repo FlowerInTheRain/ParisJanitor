@@ -1,20 +1,23 @@
 <template>
-  <div class="properties-list">
-    <div v-for="property in properties" :key="property.id" class="property-item">
-      <PropertyCard :property="property" @open-popup="showPopup" />
+  <div>
+    <h1>Propriétés en attente</h1>
+    <div class="properties-list">
+      <div v-for="property in properties" :key="property.id" class="property-item">
+        <PropertyCard :property="property" @open-popup="showPopup" />
+      </div>
+      <PropertyPopup
+          v-if="selectedProperty"
+          :property="selectedProperty"
+          @close="closePopup"
+          @validate="validateProperty"
+          @refuse="refuseProperty"
+      />
     </div>
-    <PropertyPopup
-        v-if="selectedProperty"
-        :property="selectedProperty"
-        @close="closePopup"
-        @updateList="fetchProperties"
-    />
-
   </div>
 </template>
 
 <script>
-import axios from "axios";
+import { getAwaitedProperties, validateProperty, refuseProperty } from "@/services/parisjanitor/endpoints/properties";
 import PropertyCard from './PropertyCard.vue';
 import PropertyPopup from './PropertyPopup.vue';
 
@@ -27,7 +30,6 @@ export default {
   data() {
     return {
       properties: [],
-      loading: true,
       selectedProperty: null,
     };
   },
@@ -38,36 +40,35 @@ export default {
     closePopup() {
       this.selectedProperty = null;
     },
+    async fetchProperties() {
+      try {
+        this.properties = await getAwaitedProperties();
+      } catch (error) {
+        console.error("Erreur lors de la récupération des propriétés en attente", error);
+      }
+    },
+    async validateProperty(propertyId) {
+      try {
+        await validateProperty(propertyId);
+        alert('Propriété validée');
+        this.fetchProperties();
+      } catch (error) {
+        alert('Erreur lors de la validation de la propriété');
+      }
+    },
+    async refuseProperty(propertyId) {
+      try {
+        await refuseProperty(propertyId);
+        alert('Propriété refusée');
+        this.fetchProperties();
+      } catch (error) {
+        alert('Erreur lors du refus de la propriété');
+      }
+    },
   },
   async created() {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get('http://localhost:4001/parisjanitor-api/properties/awaited', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      this.properties = response.data;
-    } catch (error) {
-      console.error("Erreur lors de la récupération des propriétés", error);
-    } finally {
-      this.loading = false;
-    }
+    await this.fetchProperties();
   },
-  async fetchProperties() {
-    console.log('Fetching properties...');
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get('http://localhost:4001/parisjanitor-api/properties/awaited', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      this.properties = response.data;
-    } catch (error) {
-      console.error("Erreur lors de la récupération des propriétés", error);
-    }
-  }
 };
 </script>
 
@@ -77,6 +78,7 @@ export default {
   flex-wrap: wrap;
   gap: 20px;
   justify-content: space-between;
+  height: 100%;
 }
 
 .property-item {
@@ -84,28 +86,6 @@ export default {
   box-sizing: border-box;
   margin-bottom: 5px;
   max-width: calc(33.33% - 20px);
-}
-
-.property-card {
-  display: flex;
-  flex-direction: column;
-  border: 1px solid #ddd;
-  padding: 10px;
-  border-radius: 5px;
-  width: 100%;
-  background-color: white;
-}
-
-.property-image {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-}
-
-.property-info {
-  display: flex;
-  flex-direction: column;
-  margin-top: 10px;
 }
 
 .property-info h2 {

@@ -42,7 +42,13 @@ export default {
       this.isMenuOpen = !this.isMenuOpen;
     },
     handleLogout() {
-      this.$store.dispatch('logout');
+      this.$store.dispatch('logout')
+          .then(() => {
+            this.$router.push('/');
+          })
+          .catch(error => {
+            console.error("Erreur lors de la déconnexion :", error);
+          });
       this.$emit('logout');
     },
     handleLogin() {
