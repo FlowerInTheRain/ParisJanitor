@@ -93,12 +93,9 @@ export default {
         };
         try {
           const response = await providerSignIn(loginData);
-          console.log(response)
-          localStorage.setItem('providerId', response.data.id);
-          localStorage.setItem('providerPhone', response.data.phoneNumber);
-          localStorage.setItem('email', response.data.email);
-
           this.$store.dispatch('updateAuthentication', true);
+          this.$store.dispatch('updateProvider', response.data);
+          console.log(this.$store.state.provider.id);
           this.closePopup();
         } catch (error) {
           console.error("Login Failed:", error);
@@ -114,18 +111,12 @@ export default {
           joinRequestMessage: this.joinRequestMessage
         }
         try {
-          const signUpResponse = await providersSignUp(dto);
-
-
-          console.log("Registration Successful:", signUpResponse);
-          console.log(this.email, this.password);
+          await providersSignUp(dto);
           const loginData = {email: this.email, password: this.password};
           const loginResponse = await providerSignIn(loginData);
-          console.log("Login Successful after registration:", loginResponse);
-
-          localStorage.setItem('provider', loginResponse.data);
           this.$store.dispatch('updateAuthentication', true);
-
+          this.$store.dispatch('updateProvider', loginResponse.data);
+          console.log(this.$store.state.isAuthenticated);
           this.closePopup();
 
         } catch (error) {
@@ -133,8 +124,6 @@ export default {
         }
       } else {
         const res = await findProviderByEmail(this.email);
-        console.log(res);
-
         if (res) {
           this.popupTitle = 'Veuillez saisir votre mot de passe';
           this.showSignIn = true;

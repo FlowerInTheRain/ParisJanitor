@@ -170,6 +170,36 @@ const findMyPrestations = async (providerId) => {
     }
 };
 
+
+const findRefPrestationDetails = async (refPrestId) => {
+    try {
+        return await axiosInstance.get(`/providers-referenced-prestations/find-provider-prestation-details/${refPrestId}`);
+    } catch (error) {
+        console.error('Error while updating password: ', error);
+        throw error;
+    }
+};
+
+const addOrUpdateCertificateForRefPrestation = async (refPrestationId, file) => {
+    try {
+        return await axiosInstance.post(`/providers-certificates/add-certificate/${refPrestationId}`, file , {
+            headers: {
+                'Content-Type': 'multipart/form-data', // Specify the content type
+            }});
+    } catch (error) {
+        console.error('Error while updating password: ', error);
+        throw error;
+    }
+};
+
+const updateRefPrestationDetails = async (refPrestDetails) => {
+    try {
+        return await axiosInstance.put(`/providers-referenced-prestations/update-provider-prestation-details`, refPrestDetails);
+    } catch (error) {
+        console.error('Error while updating password: ', error);
+        throw error;
+    }
+};
 const verifyPassword = async (password) => {
     const token = localStorage.getItem('token');
     const data = { password };
@@ -204,4 +234,8 @@ export {
     providerSignIn,
     providersSignUp,
     findMyPrestations,
+    findRefPrestationDetails,
+    updateRefPrestationDetails,
+    
+    addOrUpdateCertificateForRefPrestation,
     verifyPassword}

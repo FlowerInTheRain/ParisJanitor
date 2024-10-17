@@ -12,11 +12,13 @@ import { faHouse, faCog, faFileAlt, faBox, faBars, faMagnifyingGlass, faArrowLef
 
 import { faUser as faUserRegular } from '@fortawesome/free-regular-svg-icons';
 library.add(faHouse, faCog, faFileAlt, faBox, faBars, faUserRegular, faUser, faMagnifyingGlass, faArrowLeft, faXmark, faBuildingUser, faFileInvoice, faBellConcierge, faComments);
+import VTooltip from 'v-tooltip';
 
 window.process = process;
 const app = createApp(App);
 app.component('font-awesome-icon', FontAwesomeIcon);
 app.use(router);
 app.use(store);
+app.use(VTooltip);
 app.config.globalProperties.$axios = axiosInstance;
 app.mount('#app');

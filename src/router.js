@@ -10,7 +10,7 @@ import CreatePropertyView from "@/views/property/CreatePropertyView";
 import AdminHomeView from "@/views/backoffice/home/AdminHomeView";
 import PaymentForm from "@/components/PaymentForm.vue";
 import ProvidersHome from "@/views/providers/ProvidersHome.vue";
-
+import ProviderRefPrestationDetails from "@/views/providers/ProviderRefPrestationDetails.vue";
 const routes = [
   {
     path: '/',
@@ -29,6 +29,14 @@ const routes = [
     name: 'providers-login',
     component: ProvidersHome,
     meta: { title: 'Paris Janitor Providers login' }
+  },
+  {
+    path: '/espace-prestataire/details-prestation/:refPrestId',
+    name: 'refPrestationDetails',
+    component: ProviderRefPrestationDetails,
+    props: true,
+    meta: { title: 'Paris Janitor Providers login' }
+    
   },
   {
     path: '/mon-compte',

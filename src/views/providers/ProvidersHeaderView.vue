@@ -5,8 +5,10 @@
     </router-link>
     <nav class="navigation">
       <ul>
-        <li><a href="#">Mon catalogue</a></li>
+        <li><a href="/espace-prestataire/home">Mon catalogue</a></li>
         <li><a href="#">Prestations</a></li>
+        <li><a href="#">Factures & Paiements</a></li>
+
         <li><router-link to="/">Espace Locataires</router-link></li>
 
       </ul>

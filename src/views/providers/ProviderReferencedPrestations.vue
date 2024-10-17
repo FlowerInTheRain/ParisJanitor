@@ -1,12 +1,13 @@
 <template>
-  <div v-if="items.length > 0">
-    <h1>Référentiel de prestations</h1>
+  <div v-if="isAuthenticated">
+    <main class="content">
+    <h1>Catalogue de prestations</h1>
     <table >
       <thead>
       <tr>
         <th>Nom</th>
         <th>Description</th>
-        <th>Statut</th>
+        <th>Validation </th>
         <th>Type de prix</th>
         <th>Détails</th>
       </tr>
@@ -15,13 +16,19 @@
         <tr v-for="(item, index) in items" :key="index">
           <td>{{ item.serviceName }}</td>
           <td>{{ item.serviceDescription }}</td>
-          <td>{{ item.approvalStatus }}</td>
-          <td>{{ item.priceType }}</td>
-          <td><button class="log-button">Détails</button></td>
+          <td :class="getCellClass(item.approvalStatus)">{{ item.approvalStatus === 'PENDING' ? "En Attente": item.approvalStatus
+ === "APPROVED" ? "Approuvée" : "Refusée"
+            }}</td>
+          <td>{{ item.priceType === "FIXED" ? 'Fixe': item.priceType === "DYNAMIC" ? "Dynamique" : "Forfait" }}</td>
+          <td><button class="log-button" @click="prestationDetails(item.id)">Détails</button></td>
         </tr>
       </tbody>
     </table>
+
+    </main>
+
   </div>
+
 </template>
 
 <script>
@@ -31,16 +38,38 @@ export default {
   data() {
     return {
       items: [],
+      isAuthenticated: this.$store.state.isAuthenticated,
+      providerId: this.$store.state.provider.id,
     };
   },
   async mounted() {
-    console.log(localStorage.getItem("providerId"))
-    if(localStorage.getItem("providerId")){
-      const res = await findMyPrestations(localStorage.getItem("providerId"))
+    if(this.isAuthenticated){
+      const res = await findMyPrestations(this.providerId)
       console.log(res.data)
       this.items = res.data;
     }
+  },
+  methods : {
+    getCellClass(cell) {
+      if (cell === "REFUSED") {
+        return 'refused-value';
+      } else if (cell === "APPROVED") {
+        return 'approved-value';
+      } else {
+        return 'pending-value';
+      }
+    },
+    prestationDetails(refPrestId) {
+      console.log(refPrestId)
+      // Data to send via query parameters
+      const dataToSend = { refPrestId: refPrestId};
 
+      // Redirect using this.$router and pass data as query params
+      this.$router.push({
+        name: 'refPrestationDetails',
+        params: dataToSend
+      });
+    }
   }
 };
 </script>
@@ -75,5 +104,18 @@ button {
   border-radius: 5px;
   cursor: pointer;
   margin-top: 10px;
+}
+.content {
+  margin-top: 60px; /* Adjust this value to create space */
+  padding: 20px;
+}
+.approved-value {
+  color: green;
+}
+.refused-value {
+  color: darkred;
+}
+.pending-value {
+  color: darkorange;
 }
 </style>

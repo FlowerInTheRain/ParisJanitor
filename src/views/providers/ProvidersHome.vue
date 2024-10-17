@@ -10,7 +10,7 @@
 
   <div v-if="showNotification" class="notification">{{ notificationMessage }}</div>
 
-  <ProviderReferencedPrestations/>
+  <ProviderReferencedPrestations v-if="isAuthenticated"/>
 </template>
 
 <script>
@@ -44,7 +44,6 @@ export default {
       this.closeLoginPopup();
       this.notificationMessage = "Vous êtes bien connecté";
       this.showNotification = true;
-      console.log(localStorage.getItem("provider"))
     this.showPrestations = true;
       setTimeout(() => {
         this.showNotification = false;
@@ -83,4 +82,5 @@ export default {
   from { opacity: 1; }
   to { opacity: 0; }
 }
+
 </style>
