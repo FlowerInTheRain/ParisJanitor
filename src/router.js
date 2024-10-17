@@ -34,7 +34,6 @@ const routes = [
     component: PropertyDetailView,
     meta: { title: 'Détail de la propriété - Paris Janitor' }
   },
-
   {
     path: '/property/:id/images',
     name: 'all-images',
@@ -63,13 +62,31 @@ const routes = [
     path: '/admin',
     name: 'Adminhome',
     component: AdminHomeView,
-    meta: { title: 'Paris Janitor' }
+    meta: { title: 'Admin - Paris Janitor', requiresAuth: true, adminOnly: true }
   },
 ];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+// Middleware pour vérifier les accès aux routes protégées
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = localStorage.getItem('token');
+  const userRole = localStorage.getItem('userRole');
+
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (!isAuthenticated) {
+      next('/');
+    } else if (to.matched.some(record => record.meta.adminOnly) && userRole !== 'ADMIN') {
+      next('/');
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
 });
 
 router.afterEach((to) => {

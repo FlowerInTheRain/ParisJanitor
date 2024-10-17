@@ -93,8 +93,21 @@ export default {
           const response = await signIn(loginData);
           console.log("Login Successful:", response);
 
+          // Enregistrer le token et le rôle de l'utilisateur
           localStorage.setItem('token', response.token);
-          this.$store.dispatch('updateAuthentication', true);
+
+          // Obtenez les détails de l'utilisateur pour vérifier son rôle
+          const user = await getUserByEmail(this.email);
+
+          // Sauvegardez le rôle dans localStorage
+          localStorage.setItem('userRole', user.role);
+
+          // Redirection selon le rôle de l'utilisateur
+          if (user.role === 'ADMIN') {
+            this.$router.push('/admin');
+          } else {
+            this.$router.push('/');
+          }
 
           this.closePopup();
         } catch (error) {
