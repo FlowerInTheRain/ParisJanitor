@@ -5,7 +5,6 @@ const endpoint = "/bookings";
 const checkAvailability = async (propertyId, startDate, endDate) => {
     try {
         const response = await axiosInstance.get(`${endpoint}/availability?propertyId=${propertyId}&startDate=${startDate}&endDate=${endDate}`);
-        console.log("Réponse complète de l'API :", response);
         return response.data;
     } catch (error) {
         console.error("Erreur lors de la vérification de la disponibilité :", error.response ? error.response : error);
@@ -16,7 +15,6 @@ const checkAvailability = async (propertyId, startDate, endDate) => {
 const createBooking = async (bookingDetails) => {
     try {
         const response = await axiosInstance.post(endpoint, bookingDetails);
-        console.log("Réservation effectuée avec succès :", response.data);
         return response.data;
     } catch (error) {
         console.error("Erreur lors de la création de la réservation :", error.response ? error.response : error);
@@ -27,7 +25,6 @@ const createBooking = async (bookingDetails) => {
 const hasBooking = async (startDate, endDate) => {
     try {
         const response = await axiosInstance.get(`${endpoint}/has-booking?startDate=${startDate}&endDate=${endDate}`);
-        console.log("Réponse de vérification des réservations existantes :", response);
         return response.data;
     } catch (error) {
         console.error("Erreur lors de la vérification des réservations existantes :", error.response ? error.response : error);

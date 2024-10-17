@@ -171,15 +171,10 @@ export default {
       this.showPasswordPopup = true;
     },
     async verifyAndUpdateProfile() {
-      console.log("Attempting to verify password:", this.password);
       const result = await verifyPassword(this.password);
-      console.log("Password verification result:", result);
-
       if (result) {
-        console.log("Password verified, updating profile with data:", this.editUser);
         try {
           const updatedUser = await updateUserProfile(this.editUser);
-          console.log("Profile updated successfully:", updatedUser);
           this.user = { ...updatedUser };
           this.isEditing = false;
           this.showPasswordPopup = false;
@@ -194,11 +189,9 @@ export default {
     },
     async requestPasswordChange() {
       try {
-        console.log("Requesting security modification");
         await requestSecurityModification();
         this.showCodePopup = true;
       } catch (error) {
-        console.error('Failed to request password change:', error);
         alert('Failed to send verification code.');
       }
     },
@@ -218,7 +211,6 @@ export default {
         alert("Passwords do not match.");
         return;
       }
-      console.log("Updating password with:", this.newPassword);
       try {
         await updatePassword(this.newPassword);
         alert('Password updated successfully.');

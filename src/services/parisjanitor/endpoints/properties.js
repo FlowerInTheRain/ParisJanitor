@@ -4,7 +4,6 @@ const getAllProperty = async () => {
     const url = `/properties/validated`;
     try {
         const response = await axiosInstance.get(url);
-        console.log("Appel de la route GET :", url);
         return response.data;
     } catch (error) {
         console.error("Erreur lors de la récupération des propriétés :", error);
@@ -65,7 +64,6 @@ const getUserFavorites = async () => {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
         });
-        console.log("Favoris récupérés :", response.data);
         return response.data;
     } catch (error) {
         console.error("Erreur lors de la récupération des favoris :", error.response ? error.response : error);

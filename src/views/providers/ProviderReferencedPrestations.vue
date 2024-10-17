@@ -45,7 +45,6 @@ export default {
   async mounted() {
     if(this.isAuthenticated){
       const res = await findMyPrestations(this.providerId)
-      console.log(res.data)
       this.items = res.data;
     }
   },
@@ -60,11 +59,7 @@ export default {
       }
     },
     prestationDetails(refPrestId) {
-      console.log(refPrestId)
-      // Data to send via query parameters
       const dataToSend = { refPrestId: refPrestId};
-
-      // Redirect using this.$router and pass data as query params
       this.$router.push({
         name: 'refPrestationDetails',
         params: dataToSend

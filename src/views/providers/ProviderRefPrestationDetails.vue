@@ -20,7 +20,7 @@
           </div>
           <!-- Approval Status -->
           <div class="form-group">
-            <label for="approvalStatus">Prestation validée :</label>
+            <label for="approvalStatus">Statut :</label>
             <span>{{ form.approvalStatus }}</span>
           </div>
 
@@ -160,7 +160,6 @@ export default {
     },
     async submitFileForm() {
       if (this.isValid && this.selectedFile) {
-        console.log(this.selectedFile)
         const formData = new FormData();
         formData.append('file', this.selectedFile);
         const res = await addOrUpdateCertificateForRefPrestation(this.refPrestId, formData);
@@ -171,11 +170,10 @@ export default {
       }
     },
     async submitForm() {
-      const res = await
+      await
           updateRefPrestationDetails(
               this.form
           );
-      console.log(res);
       // Here, you'd usually send the form data to the backend, e.g., using an API call
     },
     mapDataToForm(backendData) {

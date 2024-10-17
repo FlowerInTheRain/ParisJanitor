@@ -213,7 +213,6 @@ const updateRefPrestationDetails = async (refPrestDetails) => {
 const verifyPassword = async (password) => {
 	const token = localStorage.getItem('token');
 	const data = {password};
-	console.log("Sending password for verification:", data);
 	try {
 		const response = await axiosInstance.post(`${endpoint}/verifyPassword`, data, {
 			headers: {
@@ -221,7 +220,6 @@ const verifyPassword = async (password) => {
 				'Content-Type': 'application/json',
 			},
 		});
-		console.log("Password verification response:", response.data);
 		return response.data;
 	} catch (error) {
 		console.error("Failed to verify password:", error);

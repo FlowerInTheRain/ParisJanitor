@@ -1,5 +1,4 @@
 import axiosInstance from '../axios';
-console.log('Axios base URL:', axiosInstance.defaults.baseURL);
 const creditCardPayment = async (paymentRequest) => {
 	const url = `payment/pay`;
 	

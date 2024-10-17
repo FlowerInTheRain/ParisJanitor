@@ -91,11 +91,8 @@ export default {
         };
         try {
           const response = await signIn(loginData);
-          console.log("Login Successful:", response);
-
           localStorage.setItem('token', response.token);
           this.$store.dispatch('updateAuthentication', true);
-
           this.closePopup();
         } catch (error) {
           console.error("Login Failed:", error);
@@ -120,12 +117,8 @@ export default {
           } catch (error) {
             console.error(signUpResponse);
           }
-          console.log("Registration Successful:", signUpResponse);
-          console.log( this.email, this.password);
           const loginData = { email: this.email, password: this.password };
           const loginResponse = await signIn(loginData);
-          console.log("Login Successful after registration:", loginResponse);
-
           localStorage.setItem('token', loginResponse.token);
           this.$store.dispatch('updateAuthentication', true);
 

@@ -115,7 +115,6 @@ export default {
           const loginResponse = await providerSignIn(loginData);
           this.$store.dispatch('updateAuthentication', true);
           this.$store.dispatch('updateProvider', loginResponse.data);
-          console.log(this.$store.state.isAuthenticated);
           this.closePopup();
 
         } catch (error) {

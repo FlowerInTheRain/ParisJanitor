@@ -83,7 +83,6 @@ export default {
       if (this.isFavorite) {
         try {
           await removeFavoriteProperty(this.ad.id);
-          console.log("Propriété supprimée des favoris");
           this.isFavorite = false;
         } catch (error) {
           console.error("Erreur lors de la suppression des favoris:", error);
@@ -91,7 +90,6 @@ export default {
       } else {
         try {
           await addFavoriteProperty(this.ad.id);
-          console.log("Propriété ajoutée aux favoris");
           this.isFavorite = true;
         } catch (error) {
           console.error("Erreur lors de l'ajout aux favoris:", error);

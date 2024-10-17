@@ -203,7 +203,6 @@ export default {
         const propertyId = this.property.id;
         try {
           const isAvailable = await checkAvailability(propertyId, formattedCheckInDate, formattedCheckOutDate);
-          console.log("Résultat de la disponibilité :", isAvailable);
 
           if (isAvailable) {
             this.isAvailable = true;
