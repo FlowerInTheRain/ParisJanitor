@@ -3,7 +3,6 @@
   <div id="create-property">
     <h1>Mettre mon logement en location</h1>
 
-    <!-- Pop-up de chargement -->
     <div v-if="isLoading" class="loading-popup">
       <p>Chargement en cours, veuillez patienter...</p>
     </div>
@@ -271,7 +270,7 @@ export default {
       });
 
       try {
-        const uploadUrl = `http://localhost:4001/parisjanitor-api/files/pictures/property/add/${propertyId}`;
+        const uploadUrl = `http://localhost:4000/parisjanitor-api/files/pictures/property/add/${propertyId}`;
         const uploadResponse = await axios.post(uploadUrl, formData, {
           headers: {
             "Content-Type": "multipart/form-data"

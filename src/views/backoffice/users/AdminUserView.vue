@@ -33,9 +33,26 @@
         <td>{{ user.email }}</td>
         <td>{{ user.phoneNumber || 'Non renseigné' }}</td>
         <td>{{ user.role }}</td>
-        <td><input type="checkbox" :checked="user.role === 'USER'" disabled /></td>
-        <td><input type="checkbox" :checked="user.role === 'ADMIN'" disabled /></td>
-        <!-- Ajout de classes conditionnelles pour le statut -->
+
+        <!-- Checkbox User -->
+        <td>
+          <input
+              type="checkbox"
+              :checked="user.role === 'USER'"
+              @change="updateUserRole(user, 'USER')"
+          />
+        </td>
+
+        <!-- Checkbox Admin -->
+        <td>
+          <input
+              type="checkbox"
+              :checked="user.role === 'ADMIN'"
+              @change="updateUserRole(user, 'ADMIN')"
+          />
+        </td>
+
+        <!-- Statut avec styles conditionnels -->
         <td :class="user.statut === 'ACTIVE' ? 'status-active' : 'status-inactive'">
           <em>{{ user.statut || 'Non renseigné' }}</em>
         </td>
@@ -48,7 +65,7 @@
 </template>
 
 <script>
-import { getAllUser, searchUsers } from '@/services/parisjanitor/endpoints/users';
+import { getAllUser, searchUsers, setUserRole } from '@/services/parisjanitor/endpoints/users';
 
 export default {
   name: 'AdminUserView',
@@ -63,8 +80,6 @@ export default {
       try {
         if (this.searchQuery === '') {
           const response = await getAllUser();
-          console.log("response");
-          console.log(response);
           this.users = response;
         } else {
           const response = await searchUsers(this.searchQuery);
@@ -73,6 +88,19 @@ export default {
       } catch (error) {
         console.error('Erreur lors de la récupération des utilisateurs :', error);
         this.users = [];
+      }
+    },
+    async updateUserRole(userId, role) {
+      try {
+        const lowerCaseRole = role.toLowerCase();
+
+        await setUserRole(userId.id, lowerCaseRole);
+
+        alert(`Le rôle de l'utilisateur a été mis à jour avec succès vers ${lowerCaseRole}`);
+        this.fetchUsers();
+      } catch (error) {
+        console.error(`Erreur lors de la mise à jour du rôle pour l'utilisateur ${userId.id} :`, error);
+        alert('Erreur lors de la mise à jour du rôle.');
       }
     },
   },
@@ -116,4 +144,15 @@ export default {
   background-color: #f1f1f1;
 }
 
+/* Styles pour les statuts */
+.status-active {
+  color: green;
+  font-style: italic;
+}
+
+.status-inactive {
+  color: red;
+  font-style: italic;
+}
 </style>
+

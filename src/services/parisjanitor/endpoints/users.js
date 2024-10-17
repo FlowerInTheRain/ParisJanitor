@@ -167,6 +167,23 @@ const searchUsers = async (query) => {
     }
 };
 
+const setUserRole = async (userId, role) => {
+    const url = `/users/setRole/${role}/${userId}`;
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.put(url, {}, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error(`Erreur lors de la mise à jour du rôle de l'utilisateur ${userId} :`, error);
+        throw error;
+    }
+};
+
+
 export {
     signUp,
     signIn,
@@ -179,5 +196,6 @@ export {
     verifyPasswordCode,
     updatePassword,
     verifyPassword,
+    setUserRole,
     searchUsers
 }
